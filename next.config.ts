@@ -2,7 +2,11 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   serverExternalPackages: ["@electric-sql/pglite", "pg"],
-  allowedDevOrigins: ["pv-f9d08c8b0cfb-72442d03-53cd-4ac0-8c70-a0f260e5f115.style.dev"],
+  // Dev-only: extra hostnames allowed to reach `next dev` (e.g. cloud preview URLs).
+  allowedDevOrigins: (process.env.ALLOWED_DEV_ORIGINS ?? "")
+    .split(",")
+    .map((origin) => origin.trim())
+    .filter(Boolean),
   experimental: {
     serverActions: {
       bodySizeLimit: "4mb",
