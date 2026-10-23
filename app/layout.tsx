@@ -35,8 +35,12 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${GeistSans.variable} ${GeistMono.variable}`}>
-      <body>{children}</body>
+    // Browser extensions (password managers, translators, dark-mode readers) and
+    // preview tooling add attributes to <html>/<body> before React hydrates, which
+    // React cannot patch and reports as a hydration mismatch. Suppressing it here
+    // keeps the console clean; mismatches inside the app are still reported.
+    <html lang="en" className={`${GeistSans.variable} ${GeistMono.variable}`} suppressHydrationWarning>
+      <body suppressHydrationWarning>{children}</body>
     </html>
   );
 }
