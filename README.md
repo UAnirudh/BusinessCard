@@ -1,1 +1,155 @@
-# BusinessCard
+# Tappd
+
+**Digital business cards that remember who you met.**
+
+Tappd turns a phone into a shareable business card: tap an NFC tag, show a QR code, or send a link. Everyone you meet lands in a searchable wallet, complete with tags, notes and the context you need to follow up.
+
+Built with Next.js 15 (App Router), TypeScript, Tailwind CSS v4, Drizzle ORM and Postgres. Deploys to Vercel with any hosted Postgres (Vercel Postgres, Neon, Supabase, RDS…). Local development needs no database server: it runs on an embedded PGlite database that is migrated automatically.
+
+---
+
+## What's inside
+
+### Your card
+- Public card at `/c/your-handle` with a live accent theme, photo, bio, tags, contact rows, social links and custom links.
+- **Save contact** downloads a real `.vcf` that works in iOS, Android and Google Contacts.
+- **QR code** generated server-side (SVG, downloadable) and a scannable share sheet.
+- **NFC writing** via Web NFC — write your card link to a cheap NTAG213/215/216 tag once, then tap phones.
+- **QR scanner** in the app (camera + jsQR) to open someone else's card instantly.
+- Privacy switches for public/private cards and visitor lead capture.
+- Card views are tracked (owner views excluded) and shown on the dashboard.
+
+### Your wallet
+- Every exchange is stored with name, role, company, email, phone, website, city, tags, notes, source and the date you met.
+- Add contacts manually, import a CSV (Google Contacts, Notion, Airtable…) or receive them from your card.
+- Search, filter by tag/source/favorites, sort, favorite, annotate, export to CSV, save any contact as a `.vcf`, delete.
+- Duplicate-safe exchanges: swapping cards twice updates the existing person instead of creating a copy.
+- Two-way exchange: signed-in members who send their card back appear in each other's wallets automatically.
+- Visitors without an account can leave their details in a few seconds — no install, no signup.
+
+### Find the right person
+`/app/find` is a deterministic ranking engine (no external AI keys needed):
+- understands role synonyms — *designer ↔ design*, *VC ↔ investor*, *dev ↔ engineer*, *marketing ↔ growth*…
+- weights name and tags above bio noise, boosts exact phrase matches and favorites
+- explains each match ("role match “designer” · tag match “design”")
+- returns a relevance score, highlights matched words and suggests fallbacks when nothing matches
+
+### Account & operations
+- Email + password auth with scrypt hashing, hashed session tokens in HttpOnly cookies, 30-day sessions.
+- Sign out everywhere, change email/password, delete account (cascades card, wallet, avatar and sessions).
+- Same-origin checks on every mutating API route, best-effort rate limits on auth/exchange/view endpoints.
+- Server-side validation with Zod on every input.
+
+---
+
+## Quick start (local)
+
+```bash
+npm install
+npm run db:seed     # optional: demo account, demo cards and a populated wallet
+npm run dev
+```
+
+Open http://localhost:3000.
+
+No environment variables are required for local development. Without `DATABASE_URL`, the app boots an embedded [PGlite](https://pglite.dev) Postgres database in `.data/pglite` and applies the generated migrations on first use.
+
+Seeded demo account:
+
+```
+Email:    maya.chen@tappd.app
+Password: tappd-demo
+Demo cards: /c/maya-chen, /c/daniel-roth, /c/sofia-reyes
+```
+
+> Stop the dev server before running `db:seed` again — a single local process should own the PGlite data directory.
+
+### Useful scripts
+
+| Script | What it does |
+| --- | --- |
+| `npm run dev` | Development server with hot reload |
+| `npm run build` | Production build |
+| `npm start` | Serve the production build (requires `DATABASE_URL`) |
+| `npm run typecheck` | TypeScript, no emit |
+| `npm run db:generate` | Generate a migration after schema changes |
+| `npm run db:migrate` | Apply migrations to `DATABASE_URL` |
+| `npm run db:seed` | Load the demo workspace (idempotent) |
+| `npm run vercel-build` | Migrate then build (used by Vercel) |
+
+For a production-mode preview locally without Postgres, allow the embedded database explicitly:
+
+```bash
+TAPPD_ALLOW_EMBEDDED_DB=1 NEXT_PUBLIC_APP_URL=http://localhost:3000 npm start
+```
+
+---
+
+## Deploy to Vercel
+
+1. **Create a Postgres database** — Vercel Postgres, Neon, Supabase or any Postgres works. Copy the connection string (it must allow SSL; the app enables SSL automatically for non-localhost hosts).
+2. **Push this repo to GitHub** and import it in Vercel. The framework is detected automatically; `vercel.json` sets the build command to `npm run vercel-build`.
+3. **Set environment variables** in Vercel → Project → Settings → Environment Variables:
+   - `DATABASE_URL` — the Postgres connection string (also read: `POSTGRES_URL`, `POSTGRES_PRISMA_URL`)
+   - `NEXT_PUBLIC_APP_URL` — e.g. `https://cards.yourdomain.com` (used for QR codes, card links and metadata)
+4. **Deploy.** The build runs `node scripts/migrate.mjs` first, so the schema is created on the first deploy. If the database is unreachable the build fails loudly instead of shipping a broken app.
+5. Optional: seed demo data against the hosted database with `DATABASE_URL="postgres://…" npm run db:seed`. Skip this for a clean production workspace.
+
+`.env.example` documents the variables. Never commit real credentials.
+
+---
+
+## Architecture
+
+```
+app/
+  page.tsx                   Marketing site
+  login, signup              Auth screens
+  c/[slug]                   Public card (vCard, QR, exchange, lead capture)
+  app/                       Authenticated app shell
+    page.tsx                 Dashboard: stats, card preview, checklist, activity
+    card/                    Card studio (live preview, photo upload, theme, privacy)
+    connections/             Wallet browser + contact detail
+    find/                    Natural-language people search
+    tap/                     QR, NFC writer, camera scanner
+    settings/                Account, password, export, delete
+  api/                       Auth, card, avatar, connections, exchange, views, qr, vcard, export
+components/                  UI components (client + server)
+db/                          Drizzle schema and dual Postgres/PGlite client
+drizzle/                     Generated SQL migrations
+lib/                         Auth, validation, search ranking, CSV, vCard, helpers
+scripts/                     migrate.mjs, seed.ts
+```
+
+### Database
+
+| Table | Purpose |
+| --- | --- |
+| `users` | Accounts (email, scrypt hash, display name) |
+| `sessions` | SHA-256 hashed session tokens with expiry |
+| `cards` | One public card per user (slug, profile, tags, links, theme, privacy) |
+| `avatars` | Base64 image bytes per card, served from `/api/avatar/[cardId]` |
+| `card_views` | Card visits with attribution source |
+| `connections` | The wallet: saved people, their details, notes, tags, source |
+
+Migrations live in `drizzle/`. Change `db/schema.ts`, then run `npm run db:generate` and `npm run db:migrate`.
+
+### How the data layer works
+
+`db/index.ts` picks a driver at runtime:
+
+- `DATABASE_URL` present → `pg` connection pool (production, and local if you prefer a real Postgres).
+- no URL → embedded PGlite at `.data/pglite`, with migrations applied on first query (development).
+- production without a URL → throws a clear setup error unless `TAPPD_ALLOW_EMBEDDED_DB=1`.
+
+Both drivers share the same Drizzle schema and query API, so behaviour is identical.
+
+---
+
+## Notes, limits and next steps
+
+- **NFC:** Web NFC writing requires Chrome on Android over HTTPS (localhost works). iPhones read NFC tags natively but cannot write them from a browser, so the UI falls back to QR. There is no peer-to-peer "bump" API on modern phones — the tag/QR link is the tap.
+- **No email sending:** there is no password-reset or verification email yet; accounts are created instantly. Add a transactional email provider before opening signups publicly.
+- **Rate limiting** is in-memory per server instance. For serious abuse protection, move it to Redis/Upstash.
+- **One card per account.** Team cards, multiple identities per user, and CRM integrations (HubSpot, Notion, Google Contacts sync) are natural next steps.
+- **Images** are stored in Postgres for zero extra infrastructure. At scale, move avatars to object storage (S3/R2/Blob) — the serving route is isolated at `/api/avatar/[cardId]`.
