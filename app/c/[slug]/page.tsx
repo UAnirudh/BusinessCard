@@ -27,6 +27,7 @@ import { CardActions } from "@/components/card-actions";
 import { ExchangeForm } from "@/components/exchange-form";
 import { ViewTracker } from "@/components/view-tracker";
 import { normalizeUrl, prettyUrl, firstParam } from "@/lib/utils";
+import { walletAvailability } from "@/lib/wallet";
 
 export const dynamic = "force-dynamic";
 
@@ -88,6 +89,7 @@ export default async function PublicCardPage({
   if (!card.isPublic && !isOwner) notFound();
 
   const [photo, origin] = await Promise.all([hasAvatar(card.id), getOrigin()]);
+  const wallets = walletAvailability();
   const accent = getAccent(card.accent);
   const rawSource = firstParam(query.src);
   const source = ["qr", "nfc", "share", "link"].includes(rawSource) ? rawSource : "link";
@@ -223,6 +225,8 @@ export default async function PublicCardPage({
                 name={card.displayName}
                 url={publicUrl}
                 vcardUrl={`/api/vcard/${card.slug}`}
+                walletApple={card.isPublic && wallets.apple}
+                walletGoogle={card.isPublic && wallets.google}
               />
             </div>
           </section>
@@ -291,7 +295,7 @@ export default async function PublicCardPage({
               )}
 
               <p className="border-t border-[#f0eee7] bg-[#fbfaf6] px-5 py-2.5 text-center text-[0.68rem] text-faint">
-                Saved as a .vcf — works with iOS, Android and Google Contacts.
+                Open this card in any browser — no Tappd app needed. Save it to your contacts as a vCard.
               </p>
             </section>
           )}

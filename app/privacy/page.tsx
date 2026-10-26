@@ -73,6 +73,9 @@ export default function PrivacyPage() {
           <a href="mailto:hello@tappd.app" className="mt-4 inline-block text-[0.85rem] font-medium underline underline-offset-4">
             hello@tappd.app
           </a>
+          <p className="mt-2 text-[0.82rem] text-muted">
+            <Link href="/account-deletion" className="font-medium underline underline-offset-2">Start an account deletion</Link>
+          </p>
         </section>
       </div>
     </main>

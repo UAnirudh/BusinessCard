@@ -8,11 +8,15 @@ export function CardActions({
   name,
   url,
   vcardUrl,
+  walletApple,
+  walletGoogle,
 }: {
   slug: string;
   name: string;
   url: string;
   vcardUrl: string;
+  walletApple: boolean;
+  walletGoogle: boolean;
 }) {
   const [open, setOpen] = useState(false);
   const [copied, setCopied] = useState(false);
@@ -86,6 +90,21 @@ export function CardActions({
           {copied ? <Check className="h-4 w-4" /> : <Share2 className="h-4 w-4" />}
         </button>
       </div>
+
+      {(walletApple || walletGoogle) && (
+        <div className="mt-2 grid gap-2 sm:grid-cols-2">
+          {walletApple && (
+            <a href={`/api/wallet/apple/${encodeURIComponent(slug)}`} className="flex min-h-11 items-center justify-center rounded-xl border border-black/10 bg-white/70 px-3 text-[0.76rem] font-semibold text-[#0b0b0d] transition hover:bg-white">
+              Add to Apple Wallet
+            </a>
+          )}
+          {walletGoogle && (
+            <a href={`/api/wallet/google/${encodeURIComponent(slug)}`} className="flex min-h-11 items-center justify-center rounded-xl border border-black/10 bg-white/70 px-3 text-[0.76rem] font-semibold text-[#0b0b0d] transition hover:bg-white">
+              Add to Google Wallet
+            </a>
+          )}
+        </div>
+      )}
 
       {open && (
         <div
