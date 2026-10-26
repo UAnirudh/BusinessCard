@@ -6,8 +6,8 @@ import { toCsv } from "@/lib/csv";
 
 export const runtime = "nodejs";
 
-export async function GET() {
-  const user = await getCurrentUser();
+export async function GET(request: Request) {
+  const user = await getCurrentUser(request);
   if (!user) return new Response("Unauthorized", { status: 401 });
 
   const db = await getDb();

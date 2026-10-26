@@ -1,6 +1,7 @@
 import { relations } from "drizzle-orm";
 import {
   boolean,
+  integer,
   index,
   jsonb,
   pgTable,
@@ -77,6 +78,13 @@ export const cardViews = pgTable("card_views", {
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
 }, (t) => [index("card_views_card_idx").on(t.cardId, t.createdAt)]);
 
+/** Shared fixed-window counters for abuse-sensitive API routes. */
+export const rateLimits = pgTable("rate_limits", {
+  key: text("key").primaryKey(),
+  count: integer("count").notNull(),
+  resetAt: timestamp("reset_at", { withTimezone: true }).notNull(),
+}, (t) => [index("rate_limits_reset_at_idx").on(t.resetAt)]);
+
 /** People in a user's wallet. cardId points at their Tappd card when they have one. */
 export const connections = pgTable("connections", {
   id: uuid("id").primaryKey().defaultRandom(),
@@ -95,6 +103,8 @@ export const connections = pgTable("connections", {
   bio: text("bio"),
   tags: jsonb("tags").$type<string[]>().notNull().default([]),
   notes: text("notes"),
+  /** Local calendar date to follow up; ISO YYYY-MM-DD avoids timezone shifts. */
+  followUpDate: text("follow_up_date"),
   favorite: boolean("favorite").notNull().default(false),
   source: text("source").notNull().default("manual"),
   metAt: timestamp("met_at", { withTimezone: true }),
@@ -102,6 +112,7 @@ export const connections = pgTable("connections", {
   updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
 }, (t) => [
   index("connections_owner_idx").on(t.ownerId, t.updatedAt),
+  index("connections_follow_up_idx").on(t.ownerId, t.followUpDate),
   uniqueIndex("connections_owner_card_unique").on(t.ownerId, t.cardId),
 ]);
 

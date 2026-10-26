@@ -6,8 +6,8 @@ import { buildVCard, vcardFileName } from "@/lib/vcard";
 
 export const runtime = "nodejs";
 
-export async function GET(_request: Request, { params }: { params: Promise<{ id: string }> }) {
-  const user = await getCurrentUser();
+export async function GET(request: Request, { params }: { params: Promise<{ id: string }> }) {
+  const user = await getCurrentUser(request);
   if (!user) return new Response("Unauthorized", { status: 401 });
 
   const { id } = await params;

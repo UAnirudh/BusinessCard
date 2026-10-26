@@ -43,7 +43,7 @@ const ALIASES: Record<string, string> = {
 
 export async function POST(request: Request) {
   if (!isSameOrigin(request)) return fail("Cross-origin request blocked", 403);
-  const user = await getCurrentUser();
+  const user = await getCurrentUser(request);
   if (!user) return fail("Sign in first", 401);
 
   let body: { csv?: string };

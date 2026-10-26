@@ -5,6 +5,6 @@ export const runtime = "nodejs";
 
 export async function POST(request: Request) {
   if (!isSameOrigin(request)) return fail("Cross-origin request blocked", 403);
-  await destroySession();
+  await destroySession(request);
   return ok({ ok: true });
 }

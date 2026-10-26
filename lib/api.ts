@@ -1,5 +1,10 @@
+import { createHmac } from "node:crypto";
+import { lt, sql } from "drizzle-orm";
 import { NextResponse } from "next/server";
 import type { z } from "zod";
+import { databaseUrl, getDb } from "@/db";
+import { rateLimits } from "@/db/schema";
+import { configuredPublicOrigin } from "@/lib/public-origin";
 
 export function ok<T>(data: T, status = 200, headers?: HeadersInit) {
   return NextResponse.json(data, { status, headers });
@@ -55,31 +60,47 @@ export function clientIp(request: Request): string {
   return request.headers.get("x-real-ip") ?? "local";
 }
 
-type Bucket = { count: number; resetAt: number };
-const buckets = new Map<string, Bucket>();
+/**
+ * Shared database-backed fixed-window rate limit. A keyed digest keeps source
+ * IPs and login identifiers out of the counter table. Atomic upsert keeps
+ * concurrent server instances from each granting their own allowance.
+ */
+export async function rateLimit(key: string, limit: number, windowMs: number): Promise<boolean> {
+  const db = await getDb();
+  const digestSecret = process.env.TAPPD_RATE_LIMIT_SECRET || databaseUrl() || "tappd-local-rate-limit";
+  const digest = createHmac("sha256", digestSecret).update(key).digest("hex");
+  const now = new Date();
+  const nextReset = new Date(now.getTime() + windowMs);
+  const [counter] = await db
+    .insert(rateLimits)
+    .values({ key: digest, count: 1, resetAt: nextReset })
+    .onConflictDoUpdate({
+      target: rateLimits.key,
+      set: {
+        count: sql`case when ${rateLimits.resetAt} <= now() then 1 else ${rateLimits.count} + 1 end`,
+        resetAt: sql`case when ${rateLimits.resetAt} <= now() then now() + (${windowMs} * interval '1 millisecond') else ${rateLimits.resetAt} end`,
+      },
+    })
+    .returning({ count: rateLimits.count });
 
-/** Best-effort in-memory rate limiting (per server instance). */
-export function rateLimit(key: string, limit: number, windowMs: number): boolean {
-  const now = Date.now();
-  const bucket = buckets.get(key);
-  if (!bucket || bucket.resetAt < now) {
-    buckets.set(key, { count: 1, resetAt: now + windowMs });
-    if (buckets.size > 5000) {
-      for (const [k, v] of buckets) {
-        if (v.resetAt < now) buckets.delete(k);
-      }
-    }
-    return true;
+  // Opportunistically reap expired, hashed keys without adding a second query
+  // to every request. The index bounds the cleanup scan.
+  if (Math.random() < 0.02) {
+    await db.delete(rateLimits).where(lt(rateLimits.resetAt, new Date(now.getTime() - 24 * 60 * 60 * 1000)));
   }
-  if (bucket.count >= limit) return false;
-  bucket.count += 1;
-  return true;
+
+  return (counter?.count ?? limit + 1) <= limit;
 }
 
 export function absoluteUrl(request: Request, path: string): string {
-  const configured = process.env.NEXT_PUBLIC_APP_URL?.replace(/\/$/, "");
-  if (configured) return `${configured}${path}`;
+  if (!path.startsWith("/") || path.startsWith("//") || path.includes("\\")) {
+    throw new Error("Public URL paths must be root-relative.");
+  }
+  const configured = configuredPublicOrigin();
+  if (configured) return new URL(path, configured).toString();
   const host = request.headers.get("x-forwarded-host") ?? request.headers.get("host") ?? "localhost:3000";
-  const proto = request.headers.get("x-forwarded-proto") ?? (host.startsWith("localhost") ? "http" : "https");
-  return `${proto}://${host}${path}`;
+  const isLocal = /^(localhost|127\.0\.0\.1|0\.0\.0\.0|\[::1\])(?::\d+)?$/i.test(host);
+  const forwardedProto = request.headers.get("x-forwarded-proto");
+  const proto = forwardedProto === "http" || forwardedProto === "https" ? forwardedProto : isLocal ? "http" : "https";
+  return new URL(path, `${proto}://${host}`).toString();
 }

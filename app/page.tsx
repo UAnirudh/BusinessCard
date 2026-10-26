@@ -446,6 +446,7 @@ export default function LandingPage() {
           <div className="flex flex-wrap gap-5">
             <Link href="/login" className="hover:text-white">Log in</Link>
             <Link href="/signup" className="hover:text-white">Create a card</Link>
+            <Link href="/privacy" className="hover:text-white">Privacy</Link>
             <a href="#faq" className="hover:text-white">FAQ</a>
             <a href="mailto:hello@tappd.app" className="hover:text-white">Contact</a>
           </div>

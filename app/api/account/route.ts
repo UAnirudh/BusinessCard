@@ -15,7 +15,7 @@ export const runtime = "nodejs";
 
 export async function PATCH(request: Request) {
   if (!isSameOrigin(request)) return fail("Cross-origin request blocked", 403);
-  const user = await getCurrentUser();
+  const user = await getCurrentUser(request);
   if (!user) return fail("Sign in first", 401);
 
   const parsed = await parseBody(request, accountUpdateSchema);
@@ -61,7 +61,7 @@ export async function PATCH(request: Request) {
   }
   if (updates.passwordHash) {
     // Keep the current session, drop every other device.
-    const keep = await currentSessionId();
+    const keep = await currentSessionId(request);
     await db
       .delete(sessions)
       .where(keep ? and(eq(sessions.userId, user.id), ne(sessions.id, keep)) : eq(sessions.userId, user.id));
@@ -71,7 +71,7 @@ export async function PATCH(request: Request) {
 
 export async function DELETE(request: Request) {
   if (!isSameOrigin(request)) return fail("Cross-origin request blocked", 403);
-  const user = await getCurrentUser();
+  const user = await getCurrentUser(request);
   if (!user) return fail("Sign in first", 401);
 
   const parsed = await parseBody(request, accountUpdateSchema);
@@ -89,6 +89,6 @@ export async function DELETE(request: Request) {
   }
 
   await db.delete(users).where(eq(users.id, user.id));
-  await destroySession();
+  await destroySession(request);
   return ok({ ok: true, deleted: true });
 }

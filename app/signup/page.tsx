@@ -16,7 +16,7 @@ export default async function SignupPage({
   searchParams: Promise<{ next?: string }>;
 }) {
   const params = await searchParams;
-  const redirectTo = params.next && params.next.startsWith("/") ? params.next : "/app";
+  const redirectTo = params.next && params.next.startsWith("/") ? params.next : "/app/card";
   if (await getCurrentUser()) redirect(redirectTo);
 
   return (

@@ -3,12 +3,12 @@
  *
  *   npm run db:seed
  *
- * Runs against DATABASE_URL when present, otherwise against the embedded
- * PGlite database in .data/ (stop `npm run dev` first so only one process
- * holds the local database).
+ * Runs only against a local database: DATABASE_URL must point to loopback,
+ * otherwise the embedded PGlite database in .data/ is used. Production mode
+ * and remote database hosts are refused.
  */
 import { eq } from "drizzle-orm";
-import { getDb } from "../db";
+import { databaseUrl, getDb } from "../db";
 import { cardViews, cards, connections, users } from "../db/schema";
 import { hashPassword } from "../lib/password";
 
@@ -122,6 +122,22 @@ const MEMBERS: Member[] = [
 ];
 
 async function main() {
+  const configuredDatabaseUrl = databaseUrl();
+  if (process.env.NODE_ENV === "production") {
+    throw new Error("Demo seed data is disabled when NODE_ENV=production.");
+  }
+  if (configuredDatabaseUrl) {
+    let hostname: string;
+    try {
+      hostname = new URL(configuredDatabaseUrl).hostname.replace(/^\[|\]$/g, "").toLowerCase();
+    } catch {
+      throw new Error("Cannot verify the database host. Demo seed data is allowed only for a local database.");
+    }
+    if (!["localhost", "127.0.0.1", "::1"].includes(hostname)) {
+      throw new Error("Demo seed data is allowed only for a local database; refusing to write to a remote database.");
+    }
+  }
+
   const db = await getDb();
 
   const existing = await db.select({ id: users.id }).from(users).where(eq(users.email, DEMO_EMAIL)).limit(1);

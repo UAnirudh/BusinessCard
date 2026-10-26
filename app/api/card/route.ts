@@ -9,9 +9,16 @@ import { normalizeUrl } from "@/lib/utils";
 
 export const runtime = "nodejs";
 
+export async function GET(request: Request) {
+  const user = await getCurrentUser(request);
+  if (!user) return fail("Sign in first", 401);
+  const card = await ensureCard(user);
+  return ok({ card }, 200, { "cache-control": "private, no-store" });
+}
+
 export async function PATCH(request: Request) {
   if (!isSameOrigin(request)) return fail("Cross-origin request blocked", 403);
-  const user = await getCurrentUser();
+  const user = await getCurrentUser(request);
   if (!user) return fail("Sign in first", 401);
 
   const parsed = await parseBody(request, cardUpdateSchema);

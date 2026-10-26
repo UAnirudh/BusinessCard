@@ -10,40 +10,63 @@ export { hashPassword, verifyPassword };
 
 export const SESSION_COOKIE = "tappd_session";
 const SESSION_DAYS = 30;
+const BEARER_TOKEN_PATTERN = /^Bearer ([A-Za-z0-9_-]{43})$/i;
 
 function sessionId(token: string): string {
   return crypto.createHash("sha256").update(token).digest("hex");
 }
 
 /** Hashed id of the session cookie on this request, if any. */
-export async function currentSessionId(): Promise<string | null> {
+function requestBearerToken(request?: Request): { present: boolean; token: string | null } {
+  const authorization = request?.headers.get("authorization");
+  if (!authorization) return { present: false, token: null };
+  const match = BEARER_TOKEN_PATTERN.exec(authorization.trim());
+  return { present: true, token: match?.[1] ?? null };
+}
+
+async function sessionToken(request?: Request): Promise<string | null> {
+  const bearer = requestBearerToken(request);
+  // An explicitly supplied but malformed bearer credential must not silently
+  // fall back to a different ambient cookie credential.
+  if (bearer.present) return bearer.token;
   const store = await cookies();
-  const token = store.get(SESSION_COOKIE)?.value;
+  return store.get(SESSION_COOKIE)?.value ?? null;
+}
+
+export async function currentSessionId(request?: Request): Promise<string | null> {
+  const token = await sessionToken(request);
   return token ? sessionId(token) : null;
 }
 
-export async function createSession(userId: string): Promise<void> {
+export async function createSession(
+  userId: string,
+  options: { setCookie?: boolean } = {},
+): Promise<{ token: string; expiresAt: Date }> {
   const db = await getDb();
   const token = crypto.randomBytes(32).toString("base64url");
   const expiresAt = new Date(Date.now() + SESSION_DAYS * 24 * 60 * 60 * 1000);
   await db.insert(sessions).values({ id: sessionId(token), userId, expiresAt });
 
-  const store = await cookies();
-  store.set(SESSION_COOKIE, token, {
-    httpOnly: true,
-    sameSite: "lax",
-    secure: process.env.NODE_ENV === "production",
-    path: "/",
-    expires: expiresAt,
-  });
+  if (options.setCookie !== false) {
+    const store = await cookies();
+    store.set(SESSION_COOKIE, token, {
+      httpOnly: true,
+      sameSite: "lax",
+      secure: process.env.NODE_ENV === "production",
+      path: "/",
+      expires: expiresAt,
+    });
+  }
+
+  return { token, expiresAt };
 }
 
-export async function destroySession(): Promise<void> {
+export async function destroySession(request?: Request): Promise<void> {
   const store = await cookies();
-  const token = store.get(SESSION_COOKIE)?.value;
-  if (token) {
+  const id = await currentSessionId(request);
+  if (id) {
     const db = await getDb();
-    await db.delete(sessions).where(eq(sessions.id, sessionId(token)));
+    await db.delete(sessions).where(eq(sessions.id, id));
   }
   store.delete(SESSION_COOKIE);
 }
@@ -51,9 +74,8 @@ export async function destroySession(): Promise<void> {
 export type SessionUser = Pick<User, "id" | "email" | "name" | "createdAt">;
 
 /** Resolves the signed-in user once per request. */
-export const getCurrentUser = cache(async (): Promise<SessionUser | null> => {
-  const store = await cookies();
-  const token = store.get(SESSION_COOKIE)?.value;
+export const getCurrentUser = cache(async (request?: Request): Promise<SessionUser | null> => {
+  const token = await sessionToken(request);
   if (!token) return null;
 
   const db = await getDb();
@@ -75,8 +97,8 @@ export const getCurrentUser = cache(async (): Promise<SessionUser | null> => {
 export type Viewer = { user: SessionUser; card: Card };
 
 /** The signed-in user plus their card, or null. */
-export const getViewer = cache(async (): Promise<Viewer | null> => {
-  const user = await getCurrentUser();
+export const getViewer = cache(async (request?: Request): Promise<Viewer | null> => {
+  const user = await getCurrentUser(request);
   if (!user) return null;
   const db = await getDb();
   const rows = await db.select().from(cards).where(eq(cards.userId, user.id)).limit(1);

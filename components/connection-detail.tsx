@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
@@ -35,6 +35,7 @@ export type ConnectionRecord = {
   location: string | null;
   bio: string | null;
   notes: string | null;
+  followUpDate: string | null;
   tags: string[];
   favorite: boolean;
   source: string;
@@ -57,6 +58,9 @@ export function ConnectionDetail({ person }: { person: ConnectionRecord }) {
   const [favorite, setFavorite] = useState(person.favorite);
   const [notes, setNotes] = useState(person.notes ?? "");
   const [savedNotes, setSavedNotes] = useState(person.notes ?? "");
+  const [followUpDate, setFollowUpDate] = useState(person.followUpDate ?? "");
+  const [savedFollowUpDate, setSavedFollowUpDate] = useState(person.followUpDate ?? "");
+  const [savingFollowUp, setSavingFollowUp] = useState(false);
   const [savingNotes, setSavingNotes] = useState(false);
   const [editing, setEditing] = useState(false);
   const [draft, setDraft] = useState({
@@ -72,6 +76,12 @@ export function ConnectionDetail({ person }: { person: ConnectionRecord }) {
   const [savingEdit, setSavingEdit] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [confirmDelete, setConfirmDelete] = useState(false);
+  const [todayKey, setTodayKey] = useState<string | null>(null);
+
+  useEffect(() => {
+    const today = new Date();
+    setTodayKey(`${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, "0")}-${String(today.getDate()).padStart(2, "0")}`);
+  }, []);
 
   async function patch(payload: Record<string, unknown>) {
     const response = await fetch(`/api/connections/${person.id}`, {
@@ -109,6 +119,28 @@ export function ConnectionDetail({ person }: { person: ConnectionRecord }) {
       setSavingNotes(false);
     }
   }
+
+  async function saveFollowUp(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    setSavingFollowUp(true);
+    setError(null);
+    try {
+      await patch({ followUpDate: followUpDate || null });
+      setSavedFollowUpDate(followUpDate);
+      router.refresh();
+    } catch (caught) {
+      setError(caught instanceof Error ? caught.message : "Could not save reminder.");
+    } finally {
+      setSavingFollowUp(false);
+    }
+  }
+
+  const followUpStatus = savedFollowUpDate && todayKey
+    ? savedFollowUpDate < todayKey ? "overdue" : savedFollowUpDate === todayKey ? "today" : "upcoming"
+    : null;
+  const followUpLabel = savedFollowUpDate
+    ? new Date(`${savedFollowUpDate}T12:00:00`).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })
+    : null;
 
   async function saveEdit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -325,6 +357,39 @@ export function ConnectionDetail({ person }: { person: ConnectionRecord }) {
         </div>
 
         <div className="space-y-4">
+          <form onSubmit={saveFollowUp} className="surface p-5">
+            <div className="flex items-start gap-3">
+              <span className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-[#f3f1e8] text-[#5a5a52]">
+                <CalendarDays className="h-4 w-4" />
+              </span>
+              <div className="min-w-0 flex-1">
+                <h2 className="text-[0.95rem] font-semibold">Follow up</h2>
+                <p className="mt-0.5 text-[0.78rem] text-muted">Pick a day to reconnect. We’ll keep it visible in your wallet.</p>
+              </div>
+            </div>
+            {followUpStatus && (
+              <p className={cx("mt-3 rounded-lg px-3 py-2 text-[0.8rem] font-medium", followUpStatus === "overdue" ? "bg-[#fff2ed] text-danger" : "bg-[#f4f7e9] text-[#526523]")}>
+                {followUpStatus === "overdue" ? `Overdue · ${followUpLabel}` : followUpStatus === "today" ? `Due today · ${followUpLabel}` : `Scheduled · ${followUpLabel}`}
+              </p>
+            )}
+            <label className="label mt-3" htmlFor="follow-up-date">Follow-up date</label>
+            <input
+              id="follow-up-date"
+              className="input mt-1"
+              type="date"
+              value={followUpDate}
+              onChange={(event) => setFollowUpDate(event.target.value)}
+            />
+            <div className="mt-3 flex flex-wrap justify-end gap-2">
+              {savedFollowUpDate && (
+                <button type="button" className="btn btn-ghost btn-sm" disabled={savingFollowUp || followUpDate === ""} onClick={() => setFollowUpDate("")}>Clear</button>
+              )}
+              <button type="submit" className="btn btn-primary btn-sm" disabled={savingFollowUp || followUpDate === savedFollowUpDate}>
+                {savingFollowUp ? <Loader2 className="h-3.5 w-3.5 spin" /> : <Check className="h-3.5 w-3.5" />}
+                Save reminder
+              </button>
+            </div>
+          </form>
           <div className="surface p-5">
             <h2 className="text-[0.95rem] font-semibold">Snapshot</h2>
             <dl className="mt-3 space-y-2.5 text-[0.82rem]">

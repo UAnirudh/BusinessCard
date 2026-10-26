@@ -9,8 +9,8 @@ import { normalizeUrl } from "@/lib/utils";
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
-export async function GET() {
-  const user = await getCurrentUser();
+export async function GET(request: Request) {
+  const user = await getCurrentUser(request);
   if (!user) return fail("Sign in first", 401);
   const db = await getDb();
   const rows = await db
@@ -19,12 +19,12 @@ export async function GET() {
     .where(eq(connections.ownerId, user.id))
     .orderBy(desc(connections.updatedAt))
     .limit(1000);
-  return ok({ connections: rows });
+  return ok({ connections: rows }, 200, { "cache-control": "private, no-store" });
 }
 
 export async function POST(request: Request) {
   if (!isSameOrigin(request)) return fail("Cross-origin request blocked", 403);
-  const user = await getCurrentUser();
+  const user = await getCurrentUser(request);
   if (!user) return fail("Sign in first", 401);
 
   const parsed = await parseBody(request, connectionCreateSchema);

@@ -12,7 +12,7 @@ export async function POST(request: Request) {
   if (parsed.error) return parsed.error;
   const { email, password } = parsed.data;
 
-  if (!rateLimit(`login:${clientIp(request)}:${email}`, 10, 10 * 60 * 1000)) {
+  if (!(await rateLimit(`login:${clientIp(request)}:${email}`, 10, 10 * 60 * 1000))) {
     return fail("Too many attempts. Wait a few minutes and try again.", 429);
   }
 

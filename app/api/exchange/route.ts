@@ -29,20 +29,24 @@ export async function POST(request: Request) {
   if (parsed.error) return parsed.error;
   const input = parsed.data;
 
-  if (!rateLimit(`exchange:${clientIp(request)}:${input.slug}`, 20, 60 * 60 * 1000)) {
+  if (!(await rateLimit(`exchange:${clientIp(request)}:${input.slug}`, 20, 60 * 60 * 1000))) {
     return fail("Too many exchanges from here. Try again later.", 429);
   }
 
   const card = await getCardBySlug(input.slug);
   if (!card || !card.isPublic) return fail("That card is not available.", 404);
 
-  const user = await getCurrentUser();
+  const user = await getCurrentUser(request);
   if (user?.id === card.userId) {
     return fail("This is your own card — send it to someone else.", 400);
   }
 
   const db = await getDb();
-  const viewer = await getViewer();
+  const viewer = await getViewer(request);
+
+  if (!user && !input.email && !input.phone) {
+    return fail("Add an email or phone number so they can follow up.", 422);
+  }
 
   // Signed-in member with a card: a true two-way exchange.
   if (viewer) {
@@ -108,7 +112,7 @@ export async function POST(request: Request) {
     name: input.name,
     headline: input.headline,
     company: input.company,
-    email: input.email,
+    email: input.email ?? user?.email ?? null,
     phone: input.phone,
     notes: input.note,
     tags: input.tags ?? [],

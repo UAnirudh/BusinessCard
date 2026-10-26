@@ -104,9 +104,9 @@ export function Sidebar({
 
 export function MobileHeader({ name, avatar }: { name: string; avatar: string | null }) {
   return (
-    <header className="sticky top-0 z-30 flex h-14 items-center justify-between border-b border-line bg-paper/90 px-4 backdrop-blur lg:hidden">
+    <header className="sticky top-0 z-30 flex h-[calc(3.5rem+env(safe-area-inset-top))] items-center justify-between border-b border-line bg-paper/90 px-4 pt-[env(safe-area-inset-top)] backdrop-blur lg:hidden">
       <Logo />
-      <Link href="/app/settings" aria-label="Settings">
+      <Link href="/app/settings" aria-label="Settings" className="grid min-h-11 min-w-11 place-items-center">
         <Avatar name={name} src={avatar} size={30} />
       </Link>
     </header>
@@ -116,7 +116,7 @@ export function MobileHeader({ name, avatar }: { name: string; avatar: string | 
 export function MobileTabBar() {
   const pathname = usePathname();
   return (
-    <nav className="fixed inset-x-0 bottom-0 z-30 border-t border-line bg-white/95 pb-[env(safe-area-inset-bottom)] backdrop-blur lg:hidden">
+    <nav aria-label="Main navigation" className="fixed inset-x-0 bottom-0 z-30 border-t border-line bg-white/95 pb-[env(safe-area-inset-bottom)] backdrop-blur lg:hidden">
       <div className="flex items-stretch justify-around">
         {MOBILE_NAV.map((item) => {
           const active = isActive(pathname, item.href, item.exact);
@@ -124,8 +124,9 @@ export function MobileTabBar() {
             <Link
               key={item.href}
               href={item.href}
-              className={cx(
-                "flex flex-1 flex-col items-center gap-1 py-2.5 text-[0.62rem] font-medium transition",
+                aria-current={active ? "page" : undefined}
+                className={cx(
+                  "flex min-h-14 flex-1 flex-col items-center justify-center gap-1 py-2 text-[0.68rem] font-medium transition",
                 active ? "text-ink" : "text-faint",
               )}
             >

@@ -9,7 +9,7 @@ export const runtime = "nodejs";
 
 export async function POST(request: Request) {
   if (!isSameOrigin(request)) return fail("Cross-origin request blocked", 403);
-  if (!rateLimit(`view:${clientIp(request)}`, 90, 60 * 60 * 1000)) {
+  if (!(await rateLimit(`view:${clientIp(request)}`, 90, 60 * 60 * 1000))) {
     return ok({ ok: true, skipped: true });
   }
 
@@ -19,7 +19,7 @@ export async function POST(request: Request) {
   const card = await getCardBySlug(parsed.data.slug);
   if (!card || !card.isPublic) return ok({ ok: true, skipped: true });
 
-  const viewer = await getCurrentUser();
+  const viewer = await getCurrentUser(request);
   if (viewer?.id === card.userId) return ok({ ok: true, skipped: true });
 
   const db = await getDb();

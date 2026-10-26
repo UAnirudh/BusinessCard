@@ -39,6 +39,17 @@ export async function generateMetadata({
   const card = await getCardBySlug(slug);
   if (!card) return { title: "Card not found" };
 
+  // Private card details must not be exposed through metadata to anonymous
+  // link previews or crawlers. Owners can still see their own card metadata.
+  const user = await getCurrentUser();
+  const isOwner = user?.id === card.userId;
+  if (!card.isPublic && !isOwner) {
+    return {
+      title: "Card not found",
+      robots: { index: false, follow: false },
+    };
+  }
+
   const photo = await hasAvatar(card.id);
   const title = card.headline ? `${card.displayName} — ${card.headline}` : card.displayName;
   const description =

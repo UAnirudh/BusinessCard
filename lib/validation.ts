@@ -89,6 +89,17 @@ export const connectionUpdateSchema = z.object({
   notes: text(2000).optional(),
   tags: z.array(z.string().trim().min(1).max(30)).max(12).optional(),
   favorite: z.boolean().optional(),
+  followUpDate: z
+    .string()
+    .trim()
+    .regex(/^\d{4}-\d{2}-\d{2}$/, "Choose a valid date")
+    .refine((value) => {
+      const [year, month, day] = value.split("-").map(Number);
+      const date = new Date(Date.UTC(year, month - 1, day));
+      return date.getUTCFullYear() === year && date.getUTCMonth() === month - 1 && date.getUTCDate() === day;
+    }, "Choose a valid date")
+    .nullable()
+    .optional(),
 });
 
 /** A visitor handing their details back after opening someone's card. */

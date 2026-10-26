@@ -139,9 +139,9 @@ export function SettingsForm({
             />
           </div>
           {profileError && <p className="text-[0.78rem] text-danger sm:col-span-2">{profileError}</p>}
-          <div className="sm:col-span-2 flex items-center justify-between">
-            <p className="hint">Account created {joinedAt} · card at {cardSlug}</p>
-            <button type="submit" className="btn btn-primary btn-sm" disabled={profileStatus === "saving"}>
+          <div className="sm:col-span-2 flex min-w-0 flex-col items-stretch gap-2 sm:flex-row sm:items-center sm:justify-between">
+            <p className="hint min-w-0 break-words">Account created {joinedAt} · card at {cardSlug}</p>
+            <button type="submit" className="btn btn-primary btn-sm w-full shrink-0 sm:w-auto" disabled={profileStatus === "saving"}>
               {profileStatus === "saving" ? <Loader2 className="h-3.5 w-3.5 spin" /> : <Check className="h-3.5 w-3.5" />}
               {profileStatus === "saved" ? "Saved" : "Save profile"}
             </button>
@@ -181,12 +181,12 @@ export function SettingsForm({
             />
           </div>
           {passwordError && <p className="text-[0.78rem] text-danger sm:col-span-2">{passwordError}</p>}
-          <div className="sm:col-span-2 flex justify-end gap-2">
-            <button type="button" onClick={signOutEverywhere} className="btn btn-outline btn-sm" disabled={signingOut}>
+          <div className="sm:col-span-2 flex flex-col gap-2 sm:flex-row sm:justify-end">
+            <button type="button" onClick={signOutEverywhere} className="btn btn-outline btn-sm w-full sm:w-auto" disabled={signingOut}>
               {signingOut ? <Loader2 className="h-3.5 w-3.5 spin" /> : <LogOut className="h-3.5 w-3.5" />}
               Sign out everywhere
             </button>
-            <button type="submit" className="btn btn-primary btn-sm" disabled={passwordStatus === "saving"}>
+            <button type="submit" className="btn btn-primary btn-sm w-full sm:w-auto" disabled={passwordStatus === "saving"}>
               {passwordStatus === "saving" ? <Loader2 className="h-3.5 w-3.5 spin" /> : <Check className="h-3.5 w-3.5" />}
               {passwordStatus === "saved" ? "Updated" : "Update password"}
             </button>
@@ -207,9 +207,9 @@ export function SettingsForm({
             </p>
           </div>
         </div>
-        <div className="mt-4 flex flex-wrap gap-2">
-          <a href="/api/export" className="btn btn-outline btn-sm">Export contacts</a>
-          <button type="button" onClick={() => setDeleteOpen(true)} className="btn btn-danger btn-sm">
+        <div className="mt-4 flex flex-col gap-2 sm:flex-row">
+          <a href="/api/export" className="btn btn-outline btn-sm w-full sm:w-auto">Export contacts</a>
+          <button type="button" onClick={() => setDeleteOpen(true)} className="btn btn-danger btn-sm w-full sm:w-auto">
             <Trash2 className="h-3.5 w-3.5" />
             Delete account
           </button>
@@ -235,12 +235,12 @@ export function SettingsForm({
             />
           </div>
           {deleteError && <p className="text-[0.78rem] text-danger">{deleteError}</p>}
-          <div className="flex justify-end gap-2">
-            <button type="button" onClick={() => setDeleteOpen(false)} className="btn btn-ghost btn-sm">Keep account</button>
+          <div className="flex flex-col gap-2 sm:flex-row sm:justify-end">
+            <button type="button" onClick={() => setDeleteOpen(false)} className="btn btn-ghost btn-sm w-full sm:w-auto">Keep account</button>
             <button
               type="button"
               onClick={deleteAccount}
-              className="btn btn-danger btn-sm"
+              className="btn btn-danger btn-sm w-full sm:w-auto"
               disabled={deleting || deletePassword.length === 0}
             >
               {deleting ? <Loader2 className="h-3.5 w-3.5 spin" /> : <Trash2 className="h-3.5 w-3.5" />}

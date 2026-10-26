@@ -47,6 +47,7 @@ export default async function ConnectionPage({ params }: { params: Promise<{ id:
         location: person.location,
         bio: person.bio,
         notes: person.notes,
+        followUpDate: person.followUpDate,
         tags: person.tags,
         favorite: person.favorite,
         source: person.source,
