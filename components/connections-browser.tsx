@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
@@ -29,6 +29,7 @@ export type WalletPerson = {
   location: string | null;
   tags: string[];
   notes: string | null;
+  followUpDate: string | null;
   favorite: boolean;
   source: string;
   createdAt: string;
@@ -68,6 +69,12 @@ export function ConnectionsBrowser({
   const [favorites, setFavorites] = useState<Record<string, boolean>>({});
   const [addOpen, setAddOpen] = useState(initialNew);
   const [importOpen, setImportOpen] = useState(false);
+  const [todayKey, setTodayKey] = useState<string | null>(null);
+
+  useEffect(() => {
+    const today = new Date();
+    setTodayKey(`${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, "0")}-${String(today.getDate()).padStart(2, "0")}`);
+  }, []);
 
   const allTags = useMemo(() => {
     const set = new Set<string>();
@@ -242,6 +249,12 @@ export function ConnectionsBrowser({
           <ul className="divide-y divide-line-soft">
             {visible.map((person) => {
               const favorite = favorites[person.id] ?? person.favorite;
+              const followUpState = person.followUpDate && todayKey
+                ? person.followUpDate < todayKey ? "overdue" : person.followUpDate === todayKey ? "today" : "upcoming"
+                : null;
+              const followUpLabel = person.followUpDate
+                ? new Date(`${person.followUpDate}T12:00:00`).toLocaleDateString("en-US", { month: "short", day: "numeric" })
+                : null;
               return (
                 <li key={person.id} className="group">
                   <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3 px-4 py-3 transition hover:bg-[#fbfaf6] sm:px-5 lg:grid-cols-[minmax(0,2.2fr)_minmax(0,1.4fr)_100px_90px_60px]">
@@ -259,6 +272,11 @@ export function ConnectionsBrowser({
                         <span className="block truncate text-[0.76rem] text-muted">
                           {[person.headline, person.company].filter(Boolean).join(" · ") || person.email || "—"}
                         </span>
+                        {followUpState && (
+                          <span className={cx("mt-1 inline-flex w-fit items-center rounded-md px-1.5 py-0.5 text-[0.66rem] font-semibold", followUpState === "overdue" ? "bg-[#fff2ed] text-danger" : "bg-[#f4f7e9] text-[#526523]")}>
+                            {followUpState === "overdue" ? "Overdue" : followUpState === "today" ? "Follow up today" : `Follow up · ${followUpLabel}`}
+                          </span>
+                        )}
                         <span className="mt-0.5 flex flex-wrap gap-1 lg:hidden">
                           {person.tags.slice(0, 3).map((entry) => (
                             <span key={entry} className="tag">{entry}</span>

@@ -8,6 +8,20 @@
       "when": 1792712851976,
       "tag": "0000_glorious_falcon",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1792943630326,
+      "tag": "0001_needy_nick_fury",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1792943809729,
+      "tag": "0002_outgoing_wiccan",
+      "breakpoints": true
     }
   ]
 }

@@ -6,6 +6,7 @@ import { ensureCard } from "@/lib/cards";
 import { getOrigin } from "@/lib/origin";
 import { longDate } from "@/lib/utils";
 import { SettingsForm } from "@/components/settings-form";
+import { InstallAppCard } from "@/components/install-app-card";
 
 export const metadata: Metadata = { title: "Settings" };
 export const dynamic = "force-dynamic";
@@ -36,6 +37,7 @@ export default async function SettingsPage() {
         />
 
         <aside className="space-y-3">
+          <InstallAppCard />
           <div className="surface p-4">
             <p className="text-[0.7rem] font-semibold uppercase tracking-[0.08em] text-faint">Your card</p>
             <p className="mt-1 break-all font-mono text-[0.78rem]">{origin.replace(/^https?:\/\//, "")}/c/{card.slug}</p>
@@ -58,6 +60,9 @@ export default async function SettingsPage() {
             </p>
             <Link href="/app/card" className="mt-2 inline-block text-[0.78rem] font-medium underline underline-offset-2">
               Privacy controls
+            </Link>
+            <Link href="/privacy" className="mt-1 block text-[0.78rem] font-medium underline underline-offset-2">
+              Read Privacy Policy
             </Link>
           </div>
           <div className="surface p-4">

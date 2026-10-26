@@ -4,7 +4,7 @@
 
 Tappd turns a phone into a shareable business card: tap an NFC tag, show a QR code, or send a link. Everyone you meet lands in a searchable wallet, complete with tags, notes and the context you need to follow up.
 
-Built with Next.js 15 (App Router), TypeScript, Tailwind CSS v4, Drizzle ORM and Postgres. Deploys to Vercel with any hosted Postgres (Vercel Postgres, Neon, Supabase, RDS…). Local development needs no database server: it runs on an embedded PGlite database that is migrated automatically.
+The web service is built with Next.js 16 (App Router), TypeScript, Tailwind CSS v4, Drizzle ORM and Postgres. The repository also includes an Expo / React Native app for iOS and Android. The web service can deploy to Vercel with any hosted Postgres (Vercel Postgres, Neon, Supabase, RDS…). Local web development needs no database server: it runs on an embedded PGlite database that is migrated automatically.
 
 ---
 
@@ -37,8 +37,18 @@ Built with Next.js 15 (App Router), TypeScript, Tailwind CSS v4, Drizzle ORM and
 ### Account & operations
 - Email + password auth with scrypt hashing, hashed session tokens in HttpOnly cookies, 30-day sessions.
 - Sign out everywhere, change email/password, delete account (cascades card, wallet, avatar and sessions).
-- Same-origin checks on every mutating API route, best-effort rate limits on auth/exchange/view endpoints.
+- Same-origin checks on every mutating API route, with shared database-backed rate limits for authentication, exchanges, and card views.
 - Server-side validation with Zod on every input.
+
+### Mobile install
+- Installable on iPhone and Android from the browser, with app shortcuts for sharing your card and opening your wallet.
+- A small offline page explains when the network is unavailable. Private pages, wallet data and API responses are never cached by the service worker.
+- The installable web app keeps the public card experience available in mobile browsers. For native share sheets, QR camera scanning, contact saving, and NFC tag writing, use the Expo app described below.
+
+### Native iOS and Android app
+- `mobile/` contains the Expo / React Native client. It signs in to the same service, keeps its bearer session in iOS Keychain / Android Keystore through SecureStore, and keeps wallet responses in memory.
+- The native app includes card sharing, QR display and scanning, NFC tag writing, wallet connections, follow-up dates, native contact saving, and privacy links.
+- Camera and NFC require a custom development or release build; Expo Go does not include the NFC native module. Store builds are not configured or released yet; see [`mobile/README.md`](mobile/README.md) and [`docs/mobile-release.md`](docs/mobile-release.md).
 
 ---
 
@@ -74,8 +84,10 @@ Demo cards: /c/maya-chen, /c/daniel-roth, /c/sofia-reyes
 | `npm run typecheck` | TypeScript, no emit |
 | `npm run db:generate` | Generate a migration after schema changes |
 | `npm run db:migrate` | Apply migrations to `DATABASE_URL` |
-| `npm run db:seed` | Load the demo workspace (idempotent) |
+| `npm run db:seed` | Load the demo workspace into a local database (idempotent; blocked for production and remote databases) |
 | `npm run vercel-build` | Migrate then build (used by Vercel) |
+
+For the native client, see [`mobile/README.md`](mobile/README.md) for Expo development and EAS build commands. A native build requires a deployed backend URL in `EXPO_PUBLIC_API_URL`.
 
 For a production-mode preview locally without Postgres, allow the embedded database explicitly:
 
@@ -93,7 +105,7 @@ TAPPD_ALLOW_EMBEDDED_DB=1 NEXT_PUBLIC_APP_URL=http://localhost:3000 npm start
    - `DATABASE_URL` — the Postgres connection string (also read: `POSTGRES_URL`, `POSTGRES_PRISMA_URL`)
    - `NEXT_PUBLIC_APP_URL` — e.g. `https://cards.yourdomain.com` (used for QR codes, card links and metadata)
 4. **Deploy.** The build runs `node scripts/migrate.mjs` first, so the schema is created on the first deploy. If the database is unreachable the build fails loudly instead of shipping a broken app.
-5. Optional: seed demo data against the hosted database with `DATABASE_URL="postgres://…" npm run db:seed`. Skip this for a clean production workspace.
+5. Do not seed the hosted database. `npm run db:seed` is restricted to local development databases and refuses production mode or remote database hosts, so the documented demo credentials and sample records cannot be added to a deployed workspace.
 
 `.env.example` documents the variables. Never commit real credentials.
 
@@ -113,12 +125,13 @@ app/
     find/                    Natural-language people search
     tap/                     QR, NFC writer, camera scanner
     settings/                Account, password, export, delete
-  api/                       Auth, card, avatar, connections, exchange, views, qr, vcard, export
+  api/                       Web and native auth, card, avatar, wallet, exchange, views, export
 components/                  UI components (client + server)
 db/                          Drizzle schema and dual Postgres/PGlite client
 drizzle/                     Generated SQL migrations
 lib/                         Auth, validation, search ranking, CSV, vCard, helpers
 scripts/                     migrate.mjs, seed.ts
+mobile/                      Expo / React Native iOS and Android client
 ```
 
 ### Database
@@ -149,7 +162,8 @@ Both drivers share the same Drizzle schema and query API, so behaviour is identi
 ## Notes, limits and next steps
 
 - **NFC:** Web NFC writing requires Chrome on Android over HTTPS (localhost works). iPhones read NFC tags natively but cannot write them from a browser, so the UI falls back to QR. There is no peer-to-peer "bump" API on modern phones — the tag/QR link is the tap.
+- **App stores:** An Expo / React Native iOS and Android client now exists in `mobile/`; it is not yet a signed, device-verified, or published store build. Store release still needs a production backend, publisher-owned application identifiers, EAS project/build configuration, Apple and Google signing credentials, listing assets and disclosures, physical-device testing, and store review. See [`docs/mobile-release.md`](docs/mobile-release.md) for the current checklist.
 - **No email sending:** there is no password-reset or verification email yet; accounts are created instantly. Add a transactional email provider before opening signups publicly.
-- **Rate limiting** is in-memory per server instance. For serious abuse protection, move it to Redis/Upstash.
+- **Rate limiting** uses shared database-backed counters, so app instances connected to the same Postgres database share rate limits. Review capacity and retention as production traffic and abuse patterns become clear.
 - **One card per account.** Team cards, multiple identities per user, and CRM integrations (HubSpot, Notion, Google Contacts sync) are natural next steps.
 - **Images** are stored in Postgres for zero extra infrastructure. At scale, move avatars to object storage (S3/R2/Blob) — the serving route is isolated at `/api/avatar/[cardId]`.

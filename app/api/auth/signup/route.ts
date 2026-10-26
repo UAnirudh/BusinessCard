@@ -9,7 +9,7 @@ import { signupSchema } from "@/lib/validation";
 export const runtime = "nodejs";
 
 export async function POST(request: Request) {
-  if (!rateLimit(`signup:${clientIp(request)}`, 12, 10 * 60 * 1000)) {
+  if (!(await rateLimit(`signup:${clientIp(request)}`, 12, 10 * 60 * 1000))) {
     return fail("Too many attempts. Try again in a few minutes.", 429);
   }
 

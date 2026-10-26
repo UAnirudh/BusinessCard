@@ -42,8 +42,14 @@ export function parseCsv(input: string): string[][] {
 }
 
 export function escapeCsv(value: unknown): string {
-  const text = value === null || value === undefined ? "" : String(value);
-  if (/[",\n]/.test(text)) return `"${text.replace(/"/g, '""')}"`;
+  const rawText = value === null || value === undefined ? "" : String(value);
+  // CSV quoting alone does not stop spreadsheet software from evaluating a
+  // cell as a formula. Prefix formula-like text with an apostrophe so exported
+  // names, notes, tags, and other user-provided values stay inert when opened.
+  const text = /^[\p{White_Space}\u0000-\u001F]*[=+\-@]/u.test(rawText)
+    ? `'${rawText}`
+    : rawText;
+  if (/[",\r\n]/.test(text)) return `"${text.replace(/"/g, '""')}"`;
   return text;
 }
 

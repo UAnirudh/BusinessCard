@@ -34,6 +34,10 @@ export function ExchangeForm({
   async function submit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (state === "sending") return;
+    if (!signedIn && !email.trim() && !phone.trim()) {
+      setError("Add an email or phone number so they can follow up.");
+      return;
+    }
     setState("sending");
     setError(null);
 
@@ -65,7 +69,7 @@ export function ExchangeForm({
 
   if (state === "done") {
     return (
-      <div className="rounded-2xl border border-[#d9ecc0] bg-[#f5fbe9] p-5 text-center">
+      <div role="status" aria-live="polite" className="rounded-2xl border border-[#d9ecc0] bg-[#f5fbe9] p-5 text-center">
         <span className="mx-auto grid h-10 w-10 place-items-center rounded-full bg-ink text-lime">
           <Check className="h-5 w-5" />
         </span>
@@ -146,39 +150,75 @@ export function ExchangeForm({
         </p>
       </div>
       <div className="grid gap-2.5 sm:grid-cols-2">
+        <div className="sm:col-span-2">
+          <label htmlFor="exchange-name" className="label">Your name</label>
+          <input
+            id="exchange-name"
+            name="name"
+            autoComplete="name"
+            className="input"
+            value={name}
+            onChange={(event) => setName(event.target.value)}
+            placeholder="Maya Chen"
+            required
+            maxLength={120}
+          />
+        </div>
+        <div>
+          <label htmlFor="exchange-email" className="label">Email</label>
+          <input
+            id="exchange-email"
+            name="email"
+            autoComplete="email"
+            aria-describedby="exchange-contact-hint"
+            className="input"
+            type="email"
+            value={email}
+            onChange={(event) => {
+              setEmail(event.target.value);
+              if (event.target.value.trim() || phone.trim()) setError(null);
+            }}
+            placeholder="you@company.com"
+            maxLength={200}
+          />
+        </div>
+        <div>
+          <label htmlFor="exchange-phone" className="label">Phone</label>
+          <input
+            id="exchange-phone"
+            name="phone"
+            autoComplete="tel"
+            aria-describedby="exchange-contact-hint"
+            className="input"
+            type="tel"
+            value={phone}
+            onChange={(event) => {
+              setPhone(event.target.value);
+              if (event.target.value.trim() || email.trim()) setError(null);
+            }}
+            placeholder="Optional if you add email"
+            maxLength={40}
+          />
+        </div>
+      </div>
+      <p id="exchange-contact-hint" className="text-[0.72rem] text-muted">Add at least one so {ownerFirstName} can follow up.</p>
+      <div>
+        <label htmlFor="exchange-note" className="label">A note for {ownerFirstName} <span className="font-normal text-faint">(optional)</span></label>
         <input
-          className="input sm:col-span-2"
-          value={name}
-          onChange={(event) => setName(event.target.value)}
-          placeholder="Your name"
-          required
-          maxLength={120}
-        />
-        <input
+          id="exchange-note"
+          name="note"
           className="input"
-          type="email"
-          value={email}
-          onChange={(event) => setEmail(event.target.value)}
-          placeholder="Email"
-          maxLength={200}
-        />
-        <input
-          className="input"
-          type="tel"
-          value={phone}
-          onChange={(event) => setPhone(event.target.value)}
-          placeholder="Phone (optional)"
-          maxLength={40}
+          value={note}
+          onChange={(event) => setNote(event.target.value)}
+          placeholder="Where did you meet?"
+          maxLength={500}
         />
       </div>
-      <input
-        className="input"
-        value={note}
-        onChange={(event) => setNote(event.target.value)}
-        placeholder="Where did you meet? What should they remember?"
-        maxLength={500}
-      />
-      {error && <p className="text-[0.75rem] text-danger">{error}</p>}
+      <p className="text-[0.72rem] leading-relaxed text-muted">
+        Your details will be saved to {ownerFirstName}’s Tappd wallet. Read our{" "}
+        <Link href="/privacy" className="underline underline-offset-2">Privacy Policy</Link>.
+      </p>
+      {error && <p role="alert" className="text-[0.75rem] text-danger">{error}</p>}
       <button type="submit" className="btn btn-primary w-full" disabled={state === "sending"}>
         {state === "sending" ? <Loader2 className="h-4 w-4 spin" /> : <ArrowRight className="h-4 w-4" />}
         {state === "sending" ? "Sending…" : "Send my details"}

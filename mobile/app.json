@@ -1,0 +1,44 @@
+{
+  "expo": {
+    "name": "Tappd",
+    "slug": "tappd",
+    "version": "1.0.0",
+    "scheme": "tappd",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.tappd.app"
+    },
+    "android": {
+      "package": "com.tappd.app",
+      "adaptiveIcon": {
+        "backgroundColor": "#F7F6F1",
+        "foregroundImage": "./assets/android-icon-foreground.png",
+        "backgroundImage": "./assets/android-icon-background.png",
+        "monochromeImage": "./assets/android-icon-monochrome.png"
+      },
+      "predictiveBackGestureEnabled": false
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "plugins": [
+      "expo-secure-store",
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "Allow Tappd to scan another person's card QR code.",
+          "recordAudioAndroid": false
+        }
+      ],
+      [
+        "react-native-nfc-manager",
+        {
+          "nfcPermission": "Allow Tappd to share a card through an NFC tag."
+        }
+      ]
+    ]
+  }
+}

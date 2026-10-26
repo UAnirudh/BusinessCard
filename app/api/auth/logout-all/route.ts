@@ -9,7 +9,7 @@ export const runtime = "nodejs";
 
 export async function POST(request: Request) {
   if (!isSameOrigin(request)) return fail("Cross-origin request blocked", 403);
-  const user = await getCurrentUser();
+  const user = await getCurrentUser(request);
   if (!user) return fail("Sign in first", 401);
 
   const db = await getDb();

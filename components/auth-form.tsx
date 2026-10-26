@@ -144,6 +144,12 @@ export function AuthForm({ mode, redirectTo }: { mode: "login" | "signup"; redir
           </>
         )}
       </p>
+      <p className="text-center text-[0.72rem] leading-relaxed text-faint">
+        Your details are handled as described in our{" "}
+        <Link href="/privacy" className="font-medium text-muted underline underline-offset-2 hover:text-ink">
+          Privacy Policy
+        </Link>.
+      </p>
     </form>
   );
 }

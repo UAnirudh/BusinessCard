@@ -1,0 +1,84 @@
+name: Quality gate
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: quality-gate-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  web:
+    name: Web audit, typecheck, and build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install web dependencies
+        run: npm ci
+
+      - name: Audit web dependencies
+        run: npm audit --audit-level=low
+
+      - name: Typecheck web app
+        run: npm run typecheck
+
+      - name: Build web app
+        run: npm run build
+        env:
+          NEXT_PUBLIC_APP_URL: https://tappd.example.invalid
+
+  android-bundle:
+    name: Mobile checks and Android debug build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: mobile/package-lock.json
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Install mobile dependencies
+        working-directory: mobile
+        run: npm ci
+
+      - name: Typecheck mobile app
+        working-directory: mobile
+        run: npm run typecheck
+
+      - name: Export Android bundle
+        working-directory: mobile
+        run: npx expo export --platform android --output-dir "$RUNNER_TEMP/android-export"
+        env:
+          EXPO_PUBLIC_API_URL: https://api.example.invalid
+
+      - name: Generate Android native project
+        working-directory: mobile
+        run: npx expo prebuild --platform android --no-install --clean
+
+      - name: Compile Android debug APK
+        working-directory: mobile/android
+        run: ./gradlew assembleDebug --no-daemon

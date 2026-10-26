@@ -21,10 +21,13 @@ if (!url) {
   process.exit(1);
 }
 
+const host = new URL(url).hostname;
+const isLocal = host === "localhost" || host === "127.0.0.1" || host === "::1";
 const pool = new pg.Pool({
   connectionString: url,
   max: 1,
-  ssl: /localhost|127\.0\.0\.1/.test(url) ? undefined : { rejectUnauthorized: false },
+  // Keep migration traffic on a verified TLS connection in hosted environments.
+  ssl: isLocal ? undefined : { rejectUnauthorized: true },
 });
 const db = drizzle(pool);
 

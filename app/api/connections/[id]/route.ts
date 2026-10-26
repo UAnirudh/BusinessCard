@@ -20,7 +20,7 @@ async function ownedConnection(id: string, userId: string) {
 
 export async function PATCH(request: Request, { params }: { params: Promise<{ id: string }> }) {
   if (!isSameOrigin(request)) return fail("Cross-origin request blocked", 403);
-  const user = await getCurrentUser();
+  const user = await getCurrentUser(request);
   if (!user) return fail("Sign in first", 401);
 
   const { id } = await params;
@@ -42,6 +42,7 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
   if (input.notes !== undefined) updates.notes = input.notes;
   if (input.tags !== undefined) updates.tags = input.tags;
   if (input.favorite !== undefined) updates.favorite = input.favorite;
+  if (input.followUpDate !== undefined) updates.followUpDate = input.followUpDate;
 
   const db = await getDb();
   await db.update(connections).set(updates).where(eq(connections.id, id));
@@ -50,7 +51,7 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
 
 export async function DELETE(request: Request, { params }: { params: Promise<{ id: string }> }) {
   if (!isSameOrigin(request)) return fail("Cross-origin request blocked", 403);
-  const user = await getCurrentUser();
+  const user = await getCurrentUser(request);
   if (!user) return fail("Sign in first", 401);
 
   const { id } = await params;
