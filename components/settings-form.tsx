@@ -194,7 +194,7 @@ export function SettingsForm({
         </form>
       </section>
 
-      <section className="surface border-[#f0dcd1] p-5">
+      <section id="delete-account" className="surface scroll-mt-6 border-[#f0dcd1] p-5">
         <div className="flex items-start gap-3">
           <span className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-[#fff3ec] text-danger">
             <ShieldAlert className="h-4 w-4" />

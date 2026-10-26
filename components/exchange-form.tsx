@@ -89,6 +89,11 @@ export function ExchangeForm({
             </>
           )}
         </p>
+        {!signedIn && (
+          <Link href="/signup" className="btn btn-primary btn-sm mt-4 w-full">
+            Make your own free card <ArrowRight className="h-3.5 w-3.5" />
+          </Link>
+        )}
       </div>
     );
   }

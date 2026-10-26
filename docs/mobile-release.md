@@ -59,6 +59,8 @@ These builds require an EAS account/project, `EXPO_PUBLIC_API_URL` set in the pr
 - Set `DATABASE_URL`, canonical HTTPS `NEXT_PUBLIC_APP_URL`, and the mobile production `EXPO_PUBLIC_API_URL`; run migrations and verify the live service before building store clients.
 - Configure `TAPPD_TRUSTED_CLIENT_IP_HEADER` to the single-IP header injected by the production reverse proxy for login, signup, and exchange rate limits. The proxy must remove any incoming client value for that header and set its own. With this setting absent or invalid, requests share an `unattributed` rate-limit bucket; do not trust `X-Forwarded-For` or `X-Real-IP` directly.
 - Review `/privacy` and complete Apple privacy details and Google Play Data safety disclosures against the actual deployed providers and data handling. The privacy page still needs verified operator, service-provider, region, retention, and support details.
+- Publish and verify the public self-service deletion page at `/account-deletion`; add its canonical HTTPS URL to the Google Play listing. The page takes account holders to password-confirmed deletion in web Settings, and is linked from the website footer and privacy page.
+- For actual Wallet passes on public cards, configure an Apple Pass Type ID/team/certificate and Google Wallet issuer/service-account plus an approved Generic Pass class. Add the values in `.env.example` to the production secret store, never to client/mobile environment variables. Apple pass generation requires OpenSSL in the Node server runtime; set `OPENSSL_BIN` if needed. Buttons remain hidden unless a complete server-side configuration is present. Google Wallet demo issuer access only supports configured test users until publishing access is granted.
 - Confirm the production account recovery/support path. Email verification and password-reset email delivery are not implemented.
 
 ### Native functionality and quality
@@ -79,6 +81,8 @@ These builds require an EAS account/project, `EXPO_PUBLIC_API_URL` set in the pr
 ## Platform references
 
 - [Expo EAS Build](https://docs.expo.dev/build/introduction/)
+- [Apple Wallet pass certificates](https://developer.apple.com/help/account/capabilities/create-wallet-identifiers-and-certificates)
+- [Google Wallet issuer onboarding](https://developers.google.com/wallet/generic/getting-started/issuer-onboarding)
 - [Apple Core NFC](https://developer.apple.com/documentation/corenfc/)
 - [Android NFC](https://developer.android.com/develop/connectivity/nfc)
 - [Apple App Review Guidelines](https://developer.apple.com/app-store/review/guidelines/)
