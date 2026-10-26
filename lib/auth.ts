@@ -42,23 +42,34 @@ export async function createSession(
   userId: string,
   options: { setCookie?: boolean } = {},
 ): Promise<{ token: string; expiresAt: Date }> {
+  const session = createSessionRecord(userId);
   const db = await getDb();
-  const token = crypto.randomBytes(32).toString("base64url");
-  const expiresAt = new Date(Date.now() + SESSION_DAYS * 24 * 60 * 60 * 1000);
-  await db.insert(sessions).values({ id: sessionId(token), userId, expiresAt });
+  await db.insert(sessions).values(session.row);
 
   if (options.setCookie !== false) {
-    const store = await cookies();
-    store.set(SESSION_COOKIE, token, {
-      httpOnly: true,
-      sameSite: "lax",
-      secure: process.env.NODE_ENV === "production",
-      path: "/",
-      expires: expiresAt,
-    });
+    await setSessionCookie(session.token, session.expiresAt);
   }
 
-  return { token, expiresAt };
+  return { token: session.token, expiresAt: session.expiresAt };
+}
+
+/** Creates session credentials without persisting them, for atomic signup transactions. */
+export function createSessionRecord(userId: string) {
+  const token = crypto.randomBytes(32).toString("base64url");
+  const expiresAt = new Date(Date.now() + SESSION_DAYS * 24 * 60 * 60 * 1000);
+  return { token, expiresAt, row: { id: sessionId(token), userId, expiresAt } };
+}
+
+/** Sets the browser session cookie after its database row has been persisted. */
+export async function setSessionCookie(token: string, expiresAt: Date): Promise<void> {
+  const store = await cookies();
+  store.set(SESSION_COOKIE, token, {
+    httpOnly: true,
+    sameSite: "lax",
+    secure: process.env.NODE_ENV === "production",
+    path: "/",
+    expires: expiresAt,
+  });
 }
 
 export async function destroySession(request?: Request): Promise<void> {

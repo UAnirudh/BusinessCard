@@ -1,7 +1,7 @@
 import { eq } from "drizzle-orm";
 import { getDb } from "@/db";
-import { cards, users } from "@/db/schema";
-import { createSession, hashPassword } from "@/lib/auth";
+import { cards, sessions, users } from "@/db/schema";
+import { createSessionRecord, hashPassword } from "@/lib/auth";
 import { clientIp, fail, isSameOrigin, ok, parseBody, rateLimit } from "@/lib/api";
 import { generateUniqueSlug } from "@/lib/cards";
 import { signupSchema } from "@/lib/validation";
@@ -23,15 +23,27 @@ export async function POST(request: Request) {
   if (existing) return fail("An account with that email already exists. Try logging in.", 409, { field: "email" });
 
   const slug = await generateUniqueSlug(email.split("@")[0].replace(/[._-]+/g, " ") || name);
-  const [account] = await db
-    .insert(users)
-    .values({ email, name, passwordHash: hashPassword(password) })
-    .returning({ id: users.id, name: users.name, email: users.email });
-  const [card] = await db
-    .insert(cards)
-    .values({ userId: account.id, slug, displayName: name, email, accent: "lime" })
-    .returning();
-  const session = await createSession(account.id, { setCookie: false });
+  let result;
+  try {
+    result = await db.transaction(async (tx) => {
+      const [account] = await tx
+        .insert(users)
+        .values({ email, name, passwordHash: hashPassword(password) })
+        .returning({ id: users.id, name: users.name, email: users.email });
+      const [card] = await tx
+        .insert(cards)
+        .values({ userId: account.id, slug, displayName: name, email, accent: "lime" })
+        .returning();
+      const session = createSessionRecord(account.id);
+      await tx.insert(sessions).values(session.row);
+      return { account, card, session };
+    });
+  } catch (error) {
+    const [duplicate] = await db.select({ id: users.id }).from(users).where(eq(users.email, email)).limit(1);
+    if (duplicate) return fail("An account with that email already exists. Try logging in.", 409, { field: "email" });
+    throw error;
+  }
+  const { account, card, session } = result;
 
   return ok(
     {
