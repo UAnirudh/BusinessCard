@@ -1,4 +1,5 @@
 import { createHmac } from "node:crypto";
+import { isIP } from "node:net";
 import { lt, sql } from "drizzle-orm";
 import { NextResponse } from "next/server";
 import type { z } from "zod";
@@ -55,9 +56,17 @@ export function isSameOrigin(request: Request): boolean {
 }
 
 export function clientIp(request: Request): string {
-  const forwarded = request.headers.get("x-forwarded-for");
-  if (forwarded) return forwarded.split(",")[0].trim();
-  return request.headers.get("x-real-ip") ?? "local";
+  // Forwarding headers are client-controlled unless the deployment's trusted
+  // edge strips incoming values and writes its own. Never infer trust from a
+  // conventional header name. Without an explicit deployment setting, use a
+  // shared bucket so an attacker cannot evade throttles by rotating headers.
+  const headerName = process.env.TAPPD_TRUSTED_CLIENT_IP_HEADER?.trim().toLowerCase();
+  if (!headerName || !/^[!#$%&'*+.^_`|~0-9a-z-]+$/.test(headerName)) return "unattributed";
+
+  const value = request.headers.get(headerName)?.trim();
+  // The configured header must contain one IP address, not a client-supplied
+  // comma-separated forwarding chain.
+  return value && isIP(value) ? value : "unattributed";
 }
 
 /**

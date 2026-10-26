@@ -57,6 +57,7 @@ These builds require an EAS account/project, `EXPO_PUBLIC_API_URL` set in the pr
 
 - Select and configure the production host, Postgres provider, processing region, backups/retention, domain, and support contact.
 - Set `DATABASE_URL`, canonical HTTPS `NEXT_PUBLIC_APP_URL`, and the mobile production `EXPO_PUBLIC_API_URL`; run migrations and verify the live service before building store clients.
+- Configure `TAPPD_TRUSTED_CLIENT_IP_HEADER` to the single-IP header injected by the production reverse proxy for login, signup, and exchange rate limits. The proxy must remove any incoming client value for that header and set its own. With this setting absent or invalid, requests share an `unattributed` rate-limit bucket; do not trust `X-Forwarded-For` or `X-Real-IP` directly.
 - Review `/privacy` and complete Apple privacy details and Google Play Data safety disclosures against the actual deployed providers and data handling. The privacy page still needs verified operator, service-provider, region, retention, and support details.
 - Confirm the production account recovery/support path. Email verification and password-reset email delivery are not implemented.
 

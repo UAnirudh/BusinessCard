@@ -51,6 +51,9 @@ export async function POST(request: Request) {
   // Signed-in member with a card: a true two-way exchange.
   if (viewer) {
     const mine = viewer.card;
+    if (!mine.isPublic) {
+      return fail("Make your card public before exchanging details.", 403);
+    }
     const fields = cardFields(mine);
 
     const [existing] = await db

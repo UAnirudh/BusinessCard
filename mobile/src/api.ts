@@ -48,6 +48,13 @@ export type NativeSession = {
   card: BusinessCard;
 };
 
+export class ApiError extends Error {
+  constructor(public readonly status: number, message: string) {
+    super(message);
+    this.name = "ApiError";
+  }
+}
+
 export function apiConfigured() {
   return Boolean(API_ORIGIN);
 }
@@ -107,7 +114,15 @@ export async function apiRequest<T>(
     : {};
   if (!response.ok) {
     const message = typeof payload.error === "string" ? payload.error : "Something went wrong. Try again.";
-    throw new Error(message);
+    throw new ApiError(response.status, message);
   }
   return payload as T;
+}
+
+export async function deleteAccount(token: string, currentPassword: string) {
+  return apiRequest<{ ok: true; deleted: true }>("/api/account", {
+    method: "DELETE",
+    token,
+    body: { agreedToDelete: true, currentPassword },
+  });
 }
