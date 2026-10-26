@@ -1,7 +1,7 @@
 import { eq } from "drizzle-orm";
 import { getDb } from "@/db";
-import { cards, users } from "@/db/schema";
-import { createSession, hashPassword } from "@/lib/auth";
+import { cards, sessions, users } from "@/db/schema";
+import { createSessionRecord, hashPassword, setSessionCookie } from "@/lib/auth";
 import { clientIp, fail, ok, parseBody, rateLimit } from "@/lib/api";
 import { generateUniqueSlug } from "@/lib/cards";
 import { signupSchema } from "@/lib/validation";
@@ -24,19 +24,29 @@ export async function POST(request: Request) {
   }
 
   const slug = await generateUniqueSlug(email.split("@")[0].replace(/[._-]+/g, " ") || name);
-  const [user] = await db
-    .insert(users)
-    .values({ email, name, passwordHash: hashPassword(password) })
-    .returning({ id: users.id, name: users.name });
+  try {
+    const session = await db.transaction(async (tx) => {
+      const [user] = await tx
+        .insert(users)
+        .values({ email, name, passwordHash: hashPassword(password) })
+        .returning({ id: users.id });
+      await tx.insert(cards).values({
+        userId: user.id,
+        slug,
+        displayName: name,
+        email,
+        accent: "lime",
+      });
+      const credentials = createSessionRecord(user.id);
+      await tx.insert(sessions).values(credentials.row);
+      return credentials;
+    });
+    await setSessionCookie(session.token, session.expiresAt);
+  } catch (error) {
+    const [duplicate] = await db.select({ id: users.id }).from(users).where(eq(users.email, email)).limit(1);
+    if (duplicate) return fail("An account with that email already exists. Try logging in.", 409, { field: "email" });
+    throw error;
+  }
 
-  await db.insert(cards).values({
-    userId: user.id,
-    slug,
-    displayName: name,
-    email,
-    accent: "lime",
-  });
-
-  await createSession(user.id);
   return ok({ ok: true, slug });
 }
