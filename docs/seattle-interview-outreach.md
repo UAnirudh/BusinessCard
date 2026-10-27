@@ -70,3 +70,37 @@ Ask about the most recent real example before describing Tappd. Record the inter
 ## Product wording until Wallet issuance is configured
 
 The current public-card path works in a browser without Tappd and offers a vCard contact download. Apple Wallet and Google Wallet passes require issuer/signing credentials and approvals, which are not configured yet. Describe that feature as planned or in setup; do not promise that it is available until real passes have been issued and verified on devices.
+
+## Seattle prospects and community connectors (checked October 2026)
+
+The Apollo people-search source is unavailable until the Firecrawl organization administrator accepts that provider's terms. No private contact details were retrieved. Use the following people only as public community connectors; their listing does not mean they agreed to interview or endorse Tappd. Start by asking the organization to forward an opt-in invitation.
+
+| Publicly listed person | Published role and organization | Why they may be a useful connector | Appropriate first route |
+| --- | --- | --- | --- |
+| Nancee Johnson | Fractional CMO, marketing coach, and agency owner; WSI Digital Connections; Eastgate group | Closely matches independent, relationship-driven service work | Ask ProVisors' Seattle region whether it can forward the invitation to consultants or fractional executives |
+| Goran Marinkovic | Digital marketing consultant; WSI Digital Shop Keys; South Puget Sound group | Direct consultant fit and client-facing professional-services work | Request a referral through ProVisors' public Seattle group contact path |
+| Loala McCann | Executive coach; Intrinsic Consulting; PNW Women's Affinity Group | Independent advisory/coaching role with recurring client introductions | Ask the affinity-group organizer to share the opt-in invitation |
+| Dan Weedin | Consultant/broker; Emerging Risk Solutions; South Puget Sound group | Independent consultant/broker role; useful for testing the advisor segment | Ask ProVisors to route the request to the appropriate group leader |
+
+All four were listed on the [official ProVisors Seattle page](https://www.provisors.com/seattle-networking-group/), whose page metadata showed an update on March 12, 2026 when checked October 26, 2026. The page describes 13 Home Groups and 4 Affinity Groups and says the network is invitation-only, so use its published regional contact path rather than cold-emailing members. The [Seattle Metro Chamber events page](https://www.seattlechamber.com/events-by-program/) currently describes recurring networking and professional-development programming and links to its event calendar; ask whether a short member-forwarded research invitation is appropriate. Its events may be member-focused, so do not assume access or audience fit.
+
+### Tailored request for a professional community
+
+**Subject:** Could you forward a Seattle product-research invitation?
+
+> Hello [organizer/team],
+>
+> I’m a Seattle-area founder researching how independent professionals share contact details and follow up after meeting a potential client or collaborator. I’m building Tappd, a digital business card with a contact wallet and follow-up reminders. I’m looking for a few consultants, coaches, fractional leaders, and other client-facing professionals for a 15-minute conversation about their current process. This is research, not a sales call, and there is no preparation required.
+>
+> Would you be willing to forward the invitation below to interested members, or point me to the right public channel? I don’t need a member list, and I won’t imply your organization endorses Tappd.
+>
+> Thank you,
+> [Your name]
+> [Your email]
+> [Scheduling link, if available]
+
+### Short opt-in message
+
+> Seattle consultants, coaches, and independent professionals: I’m looking for a few people to talk for 15 minutes about how you exchange contact details and remember to follow up after meeting someone. I’m building Tappd, but this is research—not a sales pitch. No prep needed. Interested? Contact [your email] or book here: [scheduling link].
+
+Do not describe anyone as a customer or interview participant until they opt in. Verify the public page and channel again before sending, and ask for permission before recording a call.
