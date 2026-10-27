@@ -67,6 +67,10 @@ export function privacyUrl() {
   return `${API_ORIGIN}/privacy`;
 }
 
+export function passwordResetUrl() {
+  return `${API_ORIGIN}/forgot-password`;
+}
+
 export function cardSettingsUrl() {
   return `${API_ORIGIN}/app/card`;
 }

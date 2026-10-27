@@ -27,7 +27,7 @@ const sections = [
   },
   {
     title: "How information is used and stored",
-    body: "Tappd uses this information to display cards, exchange and organize contacts, provide search, export your wallet and protect accounts from abuse. It is stored by the database and hosting services configured for Tappd. We do not sell card or wallet contact information or use it for third-party ad targeting.",
+    body: "Tappd uses this information to display cards, exchange and organize contacts, provide search, export your wallet and protect accounts from abuse. It is stored by the database and hosting services configured for Tappd. When password recovery is enabled, Tappd sends your account email and a one-time reset link through Resend so it can deliver the message. We do not sell card or wallet contact information or use it for third-party ad targeting.",
   },
   {
     title: "Your choices and deletion",
@@ -56,7 +56,7 @@ export default function PrivacyPage() {
             <ShieldCheck className="h-4 w-4" /> Your information, explained
           </div>
           <h1 className="mt-3 text-[2rem] font-semibold tracking-[-0.035em] sm:text-[2.5rem]">Privacy at Tappd</h1>
-          <p className="mt-2 text-[0.82rem] text-faint">Last updated October 25, 2026</p>
+          <p className="mt-2 text-[0.82rem] text-faint">Last updated October 26, 2026</p>
           <p className="mt-5 max-w-2xl text-[0.95rem] leading-relaxed text-muted">
             Tappd helps people share business cards and remember who they meet. This page explains what the app stores and what happens when you exchange details.
           </p>

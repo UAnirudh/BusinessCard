@@ -61,11 +61,12 @@ These builds require an EAS account/project, `EXPO_PUBLIC_API_URL` set in the pr
 - Review `/privacy` and complete Apple privacy details and Google Play Data safety disclosures against the actual deployed providers and data handling. The privacy page still needs verified operator, service-provider, region, retention, and support details.
 - Publish and verify the public self-service deletion page at `/account-deletion`; add its canonical HTTPS URL to the Google Play listing. The page takes account holders to password-confirmed deletion in web Settings, and is linked from the website footer and privacy page.
 - For actual Wallet passes on public cards, configure an Apple Pass Type ID/team/certificate and Google Wallet issuer/service-account plus an approved Generic Pass class. Add the values in `.env.example` to the production secret store, never to client/mobile environment variables. Apple pass generation requires OpenSSL in the Node server runtime; set `OPENSSL_BIN` if needed. Buttons remain hidden unless a complete server-side configuration is present. Google Wallet demo issuer access only supports configured test users until publishing access is granted.
-- Confirm the production account recovery/support path. Email verification and password-reset email delivery are not implemented.
+- Configure `RESEND_API_KEY` and `TAPPD_EMAIL_FROM` using a verified sending domain to enable password recovery. The reset token is single-use, expires after one hour, is stored as a digest, and revokes all sessions. Test delivery, expiry, replay, and email-provider failure behavior before launch. Email verification and verified account-email changes are still not implemented. Set the build/runtime to Node 22.13 or later to satisfy Expo SDK 58's documented minimum.
 
 ### Native functionality and quality
 
 - Configure EAS and publisher-owned bundle/package IDs; create development builds for each platform.
+- Review the mobile dependency audit before store upload: the current Expo CLI dependency tree reports high `node-forge` and Zod advisories. The `node-forge` advisory currently has no patched release; recheck the upstream Expo dependency tree and advisories before release. Do not use `npm audit fix --force`, which proposes downgrading Expo to SDK 44.
 - Test signup/sign-in, token restore/revocation, public/private card states, QR exchange, wallet refresh, follow-up editing, contact saving, sign-out, and account deletion against the production-like backend.
 - Test camera and Contacts permissions, NFC-capable and NFC-unavailable devices, writable tags, denied permissions, offline/network failure, and small/large screen layouts on physical iPhones and Android devices.
 - Confirm deep-link behavior, accessibility, app icons, splash/safe-area layout, and release versioning on signed builds.
@@ -81,6 +82,8 @@ These builds require an EAS account/project, `EXPO_PUBLIC_API_URL` set in the pr
 ## Platform references
 
 - [Expo EAS Build](https://docs.expo.dev/build/introduction/)
+- [node-forge advisory GHSA-86w9-cpqp-85rv](https://github.com/advisories/GHSA-86w9-cpqp-85rv)
+- [Zod advisory GHSA-mrhx-c7xc-m3w5](https://github.com/advisories/GHSA-mrhx-c7xc-m3w5)
 - [Apple Wallet pass certificates](https://developer.apple.com/help/account/capabilities/create-wallet-identifiers-and-certificates)
 - [Google Wallet issuer onboarding](https://developers.google.com/wallet/generic/getting-started/issuer-onboarding)
 - [Apple Core NFC](https://developer.apple.com/documentation/corenfc/)

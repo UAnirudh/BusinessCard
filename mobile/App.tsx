@@ -6,7 +6,7 @@ import { CameraView, useCameraPermissions } from 'expo-camera';
 import { Contact } from 'expo-contacts';
 import QRCode from 'react-native-qrcode-svg';
 import NfcManager, { Ndef, NfcTech } from 'react-native-nfc-manager';
-import { ApiError, apiConfigured, apiRequest, BusinessCard, cardSettingsUrl, clearToken, deleteAccount, loadToken, NativeSession, NativeUser, privacyUrl, publicCardUrl, saveToken, WalletContact } from './src/api';
+import { ApiError, apiConfigured, apiRequest, BusinessCard, cardSettingsUrl, clearToken, deleteAccount, loadToken, NativeSession, NativeUser, passwordResetUrl, privacyUrl, publicCardUrl, saveToken, WalletContact } from './src/api';
 
 type Tab = 'card' | 'wallet' | 'scan' | 'settings';
 const C = { bg: '#F7F6F1', ink: '#18211B', muted: '#717970', line: '#E5E7DF', green: '#D8FB45', white: '#FFFFFF', dark: '#20352B', soft: '#EDF1E8', red: '#B84032' };
@@ -204,6 +204,7 @@ export default function App() {
   if (!token || !card) return <SafeAreaView style={styles.safe}><StatusBar style="dark" /><KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined} style={{ flex: 1 }}><ScrollView contentContainerStyle={styles.authPage} keyboardShouldPersistTaps="handled"><Text style={styles.brand}>tappd®</Text><Text style={styles.eyebrow}>YOUR NETWORK, IN YOUR POCKET</Text><Text style={styles.hero}>Good things start{ '\n' }with an introduction.</Text><Text style={styles.body}>One card to share. A wallet that remembers the people behind every conversation.</Text><View style={styles.authPanel}><Text style={styles.panelTitle}>{authMode === 'login' ? 'Welcome back' : 'Make your card'}</Text><Text style={styles.panelSub}>{authMode === 'login' ? 'Pick up where your network left off.' : 'Create an account to keep every introduction.'}</Text>{authMode === 'signup' && <Field label="YOUR NAME" placeholder="Alex Morgan" value={name} onChangeText={setName} autoCapitalize="words" returnKeyType="next" />}
     <Field label="EMAIL ADDRESS" placeholder="you@example.com" value={email} onChangeText={setEmail} keyboardType="email-address" returnKeyType="next" />
     <Field label="PASSWORD" placeholder="At least 8 characters" value={password} onChangeText={setPassword} secureTextEntry autoCapitalize="none" onSubmitEditing={signIn} />
+    {authMode === 'login' && apiConfigured() && <Pressable accessibilityRole="link" onPress={() => { Linking.openURL(passwordResetUrl()).catch(() => Alert.alert('Could not open password reset', 'Check your connection and try again.')); }} style={{ alignSelf: 'flex-end', paddingVertical: 6 }}><Text style={{ color: C.muted, fontSize: 11, fontWeight: '700', textDecorationLine: 'underline' }}>Forgot password?</Text></Pressable>}
     {!!restoreError && <Text style={styles.error}>{restoreError}</Text>}
     {!!error && <Text style={styles.error}>{error}</Text>}
     {!!restoreError && <Button title="Retry saved session" variant="outline" onPress={retryRestore} disabled={booting} />}
