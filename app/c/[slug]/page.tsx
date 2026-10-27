@@ -367,7 +367,7 @@ export default async function PublicCardPage({
               >
                 <Eye className="h-4 w-4 text-lime" />
                 <p className="mt-2 text-[0.86rem] font-medium">{viewCount} card views</p>
-                <p className="mt-0.5 text-[0.72rem] text-white/45">See who’s landed in your wallet.</p>
+                <p className="mt-0.5 text-[0.72rem] text-white/45">See how many people viewed your card.</p>
               </Link>
             </section>
           )}

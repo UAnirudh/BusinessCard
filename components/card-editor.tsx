@@ -296,7 +296,7 @@ export function CardEditor({
                     if (file) handlePhoto(file);
                   }}
                 />
-                <p className="hint mt-2">Square crop, up to 1.5 MB. Photos make a card 3× more memorable.</p>
+                <p className="hint mt-2">Square crop, up to 1.5 MB. Your photo appears on your public card.</p>
               </div>
             </div>
 
