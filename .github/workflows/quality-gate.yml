@@ -95,3 +95,35 @@ jobs:
       - name: Compile Android debug APK
         working-directory: mobile/android
         run: ./gradlew assembleDebug --no-daemon
+
+  ios-simulator:
+    name: iOS simulator build
+    runs-on: macos-26
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: mobile/package-lock.json
+
+      - name: Install mobile dependencies
+        working-directory: mobile
+        run: npm ci
+
+      - name: Generate iOS native project
+        working-directory: mobile
+        run: npx expo prebuild --platform ios --no-install --clean
+
+      - name: Install iOS native dependencies
+        working-directory: mobile/ios
+        run: pod install
+
+      - name: Compile iOS simulator app
+        working-directory: mobile/ios
+        run: xcodebuild -workspace Tappd.xcworkspace -scheme Tappd -configuration Debug -sdk iphonesimulator -destination 'generic/platform=iOS Simulator' CODE_SIGNING_ALLOWED=NO build
+        env:
+          EXPO_PUBLIC_API_URL: https://api.example.invalid

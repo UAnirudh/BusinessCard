@@ -1,15 +1,17 @@
 export class EmailNotConfiguredError extends Error {
   constructor() {
-    super("Password recovery email is not configured.");
+    super("Transactional email is not configured.");
     this.name = "EmailNotConfiguredError";
   }
 }
 
-export function passwordResetEmailConfigured() {
+export function emailDeliveryConfigured() {
   return Boolean(process.env.RESEND_API_KEY?.trim() && process.env.TAPPD_EMAIL_FROM?.trim());
 }
 
-export async function sendPasswordResetEmail(to: string, resetUrl: string, idempotencyKey: string) {
+export const passwordResetEmailConfigured = emailDeliveryConfigured;
+
+async function sendTransactionalEmail(to: string, subject: string, text: string, idempotencyKey: string) {
   const apiKey = process.env.RESEND_API_KEY?.trim();
   const from = process.env.TAPPD_EMAIL_FROM?.trim();
   if (!apiKey || !from) throw new EmailNotConfiguredError();
@@ -24,24 +26,46 @@ export async function sendPasswordResetEmail(to: string, resetUrl: string, idemp
         "content-type": "application/json",
         "idempotency-key": idempotencyKey,
       },
-      body: JSON.stringify({
-        from,
-        to: [to],
-        subject: "Reset your Tappd password",
-        text: [
-          "We received a request to reset the password for your Tappd account.",
-          "",
-          `Reset your password: ${resetUrl}`,
-          "",
-          "This link expires in 60 minutes and can only be used once. If you did not request this, you can ignore this email; your password will not change.",
-          "",
-          "Tappd Support",
-        ].join("\n"),
-      }),
+      body: JSON.stringify({ from, to: [to], subject, text }),
       signal: controller.signal,
     });
     if (!response.ok) throw new Error(`Email provider returned HTTP ${response.status}`);
   } finally {
     clearTimeout(timeout);
   }
+}
+
+export async function sendPasswordResetEmail(to: string, resetUrl: string, idempotencyKey: string) {
+  await sendTransactionalEmail(
+    to,
+    "Reset your Tappd password",
+    [
+      "We received a request to reset the password for your Tappd account.",
+      "",
+      `Reset your password: ${resetUrl}`,
+      "",
+      "This link expires in 60 minutes and can only be used once. If you did not request this, you can ignore this email; your password will not change.",
+      "",
+      "Tappd Support",
+    ].join("\n"),
+    idempotencyKey,
+  );
+}
+
+export async function sendAccountEmailChangeEmail(to: string, confirmUrl: string, idempotencyKey: string) {
+  await sendTransactionalEmail(
+    to,
+    "Confirm your new Tappd email",
+    [
+      "We received a request to change the sign-in email for your Tappd account.",
+      "",
+      `Confirm your new email address: ${confirmUrl}`,
+      "",
+      "This link expires in 60 minutes and can only be used once. Your account email will not change until you confirm it.",
+      "If you did not request this, you can ignore this message.",
+      "",
+      "Tappd Support",
+    ].join("\n"),
+    idempotencyKey,
+  );
 }
