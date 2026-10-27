@@ -46,7 +46,7 @@ Ask about the specific $5.99/month and $49.99/year hypotheses only after observe
 
 For a store subscription, estimate monthly contribution per paying subscriber as `collected subscription revenue − store fee − taxes/refunds − variable infrastructure/support`. At the illustrative $5.99/month and 15% store-fee assumption above, only about $5.09 remains before those other costs. Annual pricing must be converted to monthly equivalent when comparing contribution and retention. Do not call this gross margin or profit until actual costs are measured.
 
-Once a paid cohort exists, calculate `monthly contribution per payer × retained paid subscribers − fixed monthly operating costs`. Track acquisition cost by channel as `cash spent + founder outreach time at an explicit hourly value ÷ new paying subscribers`. Do not scale paid acquisition until a real cohort's contribution margin, renewal/churn, refund rate, and acquisition payback are measured. Until then, keep acquisition low-cost and founder-led, and describe revenue projections as scenarios rather than forecasts.
+Once a paid cohort exists, calculate `monthly contribution per payer × retained paid subscribers − fixed monthly operating costs`. Track acquisition cost by channel as `(cash spent + founder outreach hours × agreed hourly value) ÷ new paying subscribers attributable to that channel`. Do not scale paid acquisition until a real cohort's contribution margin, renewal/churn, refund rate, and acquisition payback are measured. Until then, keep acquisition low-cost and founder-led, and describe revenue projections as scenarios rather than forecasts.
 
 Platform policy and fee pages checked 2026-10-26:
 
