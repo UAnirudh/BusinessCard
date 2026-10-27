@@ -2,6 +2,7 @@ import * as SecureStore from "expo-secure-store";
 
 const TOKEN_KEY = "tappd.native.session.v1";
 const API_ORIGIN = (process.env.EXPO_PUBLIC_API_URL ?? "").trim().replace(/\/+$/, "");
+const API_TIMEOUT_MS = 20_000;
 
 export type NativeUser = { id: string; name: string; email: string };
 export type BusinessCard = {
@@ -109,26 +110,38 @@ export async function apiRequest<T>(
   if (options.body !== undefined) headers["Content-Type"] = "application/json";
   if (options.token) headers.Authorization = `Bearer ${options.token}`;
 
-  let response: Response;
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), API_TIMEOUT_MS);
   try {
-    response = await fetch(`${API_ORIGIN}${path}`, {
+    const response = await fetch(`${API_ORIGIN}${path}`, {
       method: options.method ?? "GET",
       headers,
       body: options.body === undefined ? undefined : JSON.stringify(options.body),
+      signal: controller.signal,
     });
-  } catch {
+    const contentType = response.headers.get("content-type") ?? "";
+    let payload: Record<string, unknown> = {};
+    if (contentType.includes("application/json")) {
+      try {
+        payload = await response.json();
+      } catch (error) {
+        if (controller.signal.aborted) throw error;
+      }
+    }
+    if (!response.ok) {
+      const message = typeof payload.error === "string" ? payload.error : "Something went wrong. Try again.";
+      throw new ApiError(response.status, message);
+    }
+    return payload as T;
+  } catch (error) {
+    if (error instanceof ApiError) throw error;
+    if (controller.signal.aborted) {
+      throw new Error("Tappd took too long to respond. Check your connection and try again.");
+    }
     throw new Error("Couldn’t reach Tappd. Check your connection and try again.");
+  } finally {
+    clearTimeout(timeout);
   }
-
-  const contentType = response.headers.get("content-type") ?? "";
-  const payload = contentType.includes("application/json")
-    ? await response.json().catch(() => ({}))
-    : {};
-  if (!response.ok) {
-    const message = typeof payload.error === "string" ? payload.error : "Something went wrong. Try again.";
-    throw new ApiError(response.status, message);
-  }
-  return payload as T;
 }
 
 export async function deleteAccount(token: string, currentPassword: string) {
