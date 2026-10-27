@@ -23,11 +23,14 @@ if (!url) {
 
 const host = new URL(url).hostname;
 const isLocal = host === "localhost" || host === "127.0.0.1" || host === "::1";
+const allowSelfSignedCertificate =
+  process.env.TAPPD_ALLOW_SELF_SIGNED_DATABASE_CERT === "true";
 const pool = new pg.Pool({
   connectionString: url,
   max: 1,
-  // Keep migration traffic on a verified TLS connection in hosted environments.
-  ssl: isLocal ? undefined : { rejectUnauthorized: true },
+  // Railway's private Postgres endpoint presents a self-signed certificate.
+  // TLS stays on; its deployment may explicitly opt out of chain validation.
+  ssl: isLocal ? undefined : { rejectUnauthorized: !allowSelfSignedCertificate },
 });
 const db = drizzle(pool);
 

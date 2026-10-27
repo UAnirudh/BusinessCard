@@ -45,12 +45,15 @@ async function createLocalDatabase(): Promise<Database> {
 function createPostgresDatabase(url: string): Database {
   const host = new URL(url).hostname;
   const isLocal = host === "localhost" || host === "127.0.0.1" || host === "::1";
+  const allowSelfSignedCertificate =
+    process.env.TAPPD_ALLOW_SELF_SIGNED_DATABASE_CERT === "true";
   const pool = new Pool({
     connectionString: url,
     max: Number(process.env.PG_POOL_MAX ?? 5),
-    // Validate remote PostgreSQL certificates; disabling this allows an on-path
-    // attacker to impersonate the database and read or alter user data.
-    ssl: isLocal ? undefined : { rejectUnauthorized: true },
+    // Keep TLS enabled for remote databases. Railway's private Postgres endpoint
+    // presents a self-signed certificate, so its deployment can explicitly opt
+    // out of certificate-chain validation without disabling TLS encryption.
+    ssl: isLocal ? undefined : { rejectUnauthorized: !allowSelfSignedCertificate },
   });
   pool.on("error", (err) => console.error("[db] idle client error", err.message));
   const db = drizzlePg(pool, { schema });
