@@ -72,7 +72,7 @@ Use terms that describe the app, rather than competitor names or unsupported out
 - **Contact email:** [monitored support address]
 - **Release notes:** [specific changes in the submitted build]
 
-The app has a public support route at `/support` with help topics, privacy, sign-in, and account-deletion links. Set `TAPPD_SUPPORT_EMAIL` to an inbox the operator controls and monitors before production release; the support and privacy pages hide the email action when this value is missing. The native app opens `/support` on its configured `EXPO_PUBLIC_API_URL`. Use the final Support URL only after the production host has actually been assigned and verified.
+The app has a public support route at `https://tappd.up.railway.app/support` with help topics, privacy, sign-in, and account-deletion links. Set `TAPPD_SUPPORT_EMAIL` to an inbox the operator controls and monitors before production release; the support and privacy pages hide the email action when this value is missing. The native app opens `/support` on its configured `EXPO_PUBLIC_API_URL`. Verify the production route before submitting the listing.
 
 ## Store metadata limits to preserve
 
