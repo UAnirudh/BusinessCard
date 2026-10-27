@@ -70,7 +70,7 @@ These builds require an EAS account/project, `EXPO_PUBLIC_API_URL` set in the pr
 - Test signup/sign-in, token restore/revocation, public/private card states, QR exchange, wallet refresh, follow-up editing, contact saving, sign-out, and account deletion against the production-like backend.
 - Test camera and Contacts permissions, NFC-capable and NFC-unavailable devices, writable tags, denied permissions, offline/network failure, and small/large screen layouts on physical iPhones and Android devices.
 - Confirm deep-link behavior, accessibility, app icons, splash/safe-area layout, and release versioning on signed builds.
-- Add and verify crash reporting, support and privacy URLs, reviewer access, store screenshots, descriptions, age ratings, and release notes.
+- The public `/support` route is implemented and linked from the landing-page footer. Before submission, verify its production URL, confirm `hello@tappd.app` is monitored, and complete crash reporting, reviewer access, store screenshots, descriptions, age ratings, and release notes.
 
 ### Store submission
 
