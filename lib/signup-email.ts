@@ -6,7 +6,7 @@ import { emailDeliveryConfigured, EmailNotConfiguredError, sendSignupVerificatio
 import { hashVerificationToken, makeVerificationToken, replacePendingSignup } from "@/lib/signup-verification";
 
 /** Send or rotate a signup link while keeping the response independent of account existence. */
-export async function requestSignupVerification(request: Request, email: string) {
+export async function requestSignupVerification(request: Request, email: string, options: { returnToApp?: boolean } = {}) {
   if (!emailDeliveryConfigured()) throw new EmailNotConfiguredError();
   const db = await getDb();
   const [account] = await db.select({ id: users.id }).from(users).where(eq(users.email, email)).limit(1);
@@ -15,7 +15,9 @@ export async function requestSignupVerification(request: Request, email: string)
   const token = makeVerificationToken();
   const tokenHash = hashVerificationToken(token);
   await replacePendingSignup(db, email, tokenHash);
-  const verifyUrl = absoluteUrl(request, `/verify-email?token=${encodeURIComponent(token)}`);
+  const query = new URLSearchParams({ token });
+  if (options.returnToApp) query.set("returnToApp", "1");
+  const verifyUrl = absoluteUrl(request, `/verify-email?${query.toString()}`);
   try {
     await sendSignupVerificationEmail(email, verifyUrl, `signup-verification/${tokenHash}`);
   } catch (error) {

@@ -24,7 +24,7 @@ export async function POST(request: Request) {
   }
 
   try {
-    await requestSignupVerification(request, email);
+    await requestSignupVerification(request, email, { returnToApp: true });
   } catch (error) {
     if (!(error instanceof EmailNotConfiguredError)) throw error;
     return fail("Email verification is temporarily unavailable. Try again later.", 503);

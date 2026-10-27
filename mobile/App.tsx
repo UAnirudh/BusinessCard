@@ -36,6 +36,7 @@ export default function App() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [verificationEmail, setVerificationEmail] = useState('');
+  const [verificationNotice, setVerificationNotice] = useState('');
   const [error, setError] = useState('');
   const [restoreError, setRestoreError] = useState('');
   const [deleteAccountOpen, setDeleteAccountOpen] = useState(false);
@@ -99,8 +100,30 @@ export default function App() {
 
   useEffect(() => { restore().finally(() => setBooting(false)); }, [restore]);
 
+  const handleVerificationReturn = useCallback((url: string | null | undefined) => {
+    if (!url) return;
+    try {
+      const parsed = new URL(url);
+      if (parsed.protocol !== 'tappd:' || parsed.hostname !== 'auth' || parsed.pathname !== '/verified') return;
+      setAuthMode('login');
+      setVerificationEmail('');
+      setPassword('');
+      setError('');
+      setVerificationNotice('Your email is verified. Sign in to finish setting up your card.');
+    } catch {
+      // Ignore unrelated or malformed URLs.
+    }
+  }, []);
+
+  useEffect(() => {
+    let mounted = true;
+    const subscription = Linking.addEventListener('url', ({ url }) => handleVerificationReturn(url));
+    Linking.getInitialURL().then((url) => { if (mounted) handleVerificationReturn(url); }).catch(() => undefined);
+    return () => { mounted = false; subscription.remove(); };
+  }, [handleVerificationReturn]);
+
   const signIn = async () => {
-    setBusy(true); setError('');
+    setBusy(true); setError(''); setVerificationNotice('');
     try {
       const result = await apiRequest<NativeSession | NativeSignupVerification>(`/api/native/auth/${authMode}`, { method: 'POST', body: authMode === 'signup' ? { name: name.trim(), email: email.trim() } : { email: email.trim(), password } });
       if (!('token' in result)) {
@@ -277,9 +300,10 @@ export default function App() {
 
   if (booting) return <SafeAreaView style={styles.center}><ActivityIndicator color={C.ink} /><Text style={styles.muted}>Opening your wallet…</Text></SafeAreaView>;
 
-  if (!token || !card) return <SafeAreaView style={styles.safe}><StatusBar style="dark" /><KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined} style={{ flex: 1 }}><ScrollView contentContainerStyle={styles.authPage} keyboardShouldPersistTaps="handled"><Text style={styles.brand}>tappd®</Text><Text style={styles.eyebrow}>YOUR NETWORK, IN YOUR POCKET</Text>{verificationEmail ? <View style={styles.authPanel}><Text style={styles.panelTitle}>Check your inbox</Text><Text accessibilityRole="text" style={styles.panelSub}>If this address can create an account, watch for a verification link at {verificationEmail}. Open it on this device to verify your email and choose your password. Then return here and sign in. The link expires in 24 hours. If it doesn’t arrive, return to signup and request a fresh link.</Text><View style={{ height: 18 }} /><Button title="Back to sign in" onPress={() => { setVerificationEmail(''); setAuthMode('login'); setPassword(''); setError(''); }} /><Pressable accessibilityRole="button" onPress={() => { setVerificationEmail(''); setAuthMode('signup'); setError(''); }} style={styles.authSwitch}><Text style={styles.muted}>Try again or edit email</Text></Pressable></View> : <><Text style={styles.hero}>Good things start{ '\n' }with an introduction.</Text><Text style={styles.body}>One card to share. A wallet that remembers the people behind every conversation.</Text><View style={styles.authPanel}><Text style={styles.panelTitle}>{authMode === 'login' ? 'Welcome back' : 'Make your card'}</Text><Text style={styles.panelSub}>{authMode === 'login' ? 'Pick up where your network left off.' : 'Verify your email before setting up your card.'}</Text>{authMode === 'signup' && <Field label="YOUR NAME" placeholder="Alex Morgan" value={name} onChangeText={setName} autoCapitalize="words" returnKeyType="next" />}
+  if (!token || !card) return <SafeAreaView style={styles.safe}><StatusBar style="dark" /><KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined} style={{ flex: 1 }}><ScrollView contentContainerStyle={styles.authPage} keyboardShouldPersistTaps="handled"><Text style={styles.brand}>tappd®</Text><Text style={styles.eyebrow}>YOUR NETWORK, IN YOUR POCKET</Text>{verificationEmail ? <View style={styles.authPanel}><Text style={styles.panelTitle}>Check your inbox</Text><Text accessibilityRole="text" style={styles.panelSub}>If this address can create an account, watch for a verification link at {verificationEmail}. Open it on this device to verify your email and choose your password. On the confirmation page, tap Return to Tappd and sign in here. The link expires in 24 hours. If it doesn’t arrive, return to signup and request a fresh link.</Text><View style={{ height: 18 }} /><Button title="Back to sign in" onPress={() => { setVerificationEmail(''); setAuthMode('login'); setPassword(''); setError(''); }} /><Pressable accessibilityRole="button" onPress={() => { setVerificationEmail(''); setAuthMode('signup'); setError(''); }} style={styles.authSwitch}><Text style={styles.muted}>Try again or edit email</Text></Pressable></View> : <><Text style={styles.hero}>Good things start{ '\n' }with an introduction.</Text><Text style={styles.body}>One card to share. A wallet that remembers the people behind every conversation.</Text><View style={styles.authPanel}><Text style={styles.panelTitle}>{authMode === 'login' ? 'Welcome back' : 'Make your card'}</Text><Text style={styles.panelSub}>{authMode === 'login' ? 'Pick up where your network left off.' : 'Verify your email before setting up your card.'}</Text>{authMode === 'signup' && <Field label="YOUR NAME" placeholder="Alex Morgan" value={name} onChangeText={setName} autoCapitalize="words" returnKeyType="next" />}
     <Field label="EMAIL ADDRESS" placeholder="you@example.com" value={email} onChangeText={setEmail} keyboardType="email-address" returnKeyType="next" />
     {authMode === 'login' ? <Field label="PASSWORD" placeholder="Your password" value={password} onChangeText={setPassword} secureTextEntry autoCapitalize="none" onSubmitEditing={signIn} /> : <Text style={styles.panelSub}>We’ll ask you to choose a password after you verify your email.</Text>}
+    {!!verificationNotice && <Text accessibilityRole="alert" style={{ color: C.dark, backgroundColor: C.soft, borderRadius: 12, padding: 12, fontSize: 13, lineHeight: 19 }}>{verificationNotice}</Text>}
     {authMode === 'login' && apiConfigured() && <Pressable accessibilityRole="link" onPress={() => { Linking.openURL(passwordResetUrl()).catch(() => Alert.alert('Could not open password reset', 'Check your connection and try again.')); }} style={{ alignSelf: 'flex-end', paddingVertical: 6 }}><Text style={{ color: C.muted, fontSize: 11, fontWeight: '700', textDecorationLine: 'underline' }}>Forgot password?</Text></Pressable>}
     {!!restoreError && <Text style={styles.error}>{restoreError}</Text>}
     {!!error && <Text style={styles.error}>{error}</Text>}

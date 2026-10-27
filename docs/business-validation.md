@@ -27,6 +27,27 @@ Use these directional gates to decide which cohort to test next:
 
 These are **pricing hypotheses**, not validated offers or a profit forecast. At a hypothetical $5.99 monthly price, a 15% platform-fee assumption leaves about $5.09; at $49.99 annually it leaves about $42.49 per year. Both figures are before taxes, refunds, support, infrastructure, and acquisition costs. The 15% assumption is illustrative: Apple lists a 15% rate for accepted App Store Small Business Program members, while Google Play's current service-fee page lists auto-renewing subscriptions as 10% service fee plus 5% billing fee in its specified markets, and 15% subscription service fees in remaining markets until its updates roll out. Google fees for other transactions and some regions differ. Do not use one global rate in a forecast; verify the platform, user's market, transaction type, and program eligibility before launch.
 
+## A practical 14-day validation sprint
+
+This is a learning sprint, not a claim that ten interviews can establish product-market fit or profitability. The first cohort should stay small enough for the founder to observe real usage.
+
+| Days | Action | Evidence to record |
+| --- | --- | --- |
+| 1–2 | Send 20 personalized, opt-in interview invitations through at least three public community routes. Keep the 4 consultant / 3 recruiter / 3 real-estate interview quotas visible. | Invites sent, replies, booked calls, role, and referral channel. Do not treat community connectors as prospects who have agreed to participate. |
+| 3–6 | Complete the ten 15-minute interviews. Ask for recent examples before showing Tappd. Invite the earliest four suitable participants into a free, observed pilot. | Concrete recent failures, existing workaround and spend, introductions per month, and whether the problem repeats within each role. |
+| 4–13 | Have pilot participants use Tappd for real introductions. Keep the browser card and vCard path available to recipients who do not have Tappd. Follow up once after the first use and near the end; do not coach them through the product. | Activation (card published and shared), real introductions captured, notes or follow-up dates added, second use after setup, and abandonment points. Count observed actions, not stated intent. |
+| 14 | Review results by role and recruitment channel. Choose one segment for the next cohort only if the same problem and repeated behavior appear in that segment. | Interview-to-pilot conversion, first real use, repeat use, and unresolved trust or setup barriers. Preserve negative and mixed results. |
+
+Use the existing qualitative gates as stop / continue signals, not statistical claims: at least 6/10 describe a recent concrete follow-up failure or costly workaround; at least 4/10 accept the pilot; and at least 3 pilot users capture a real introduction. For the first cohort, a second real use on a different day is a stronger signal than a completed profile. If people share cards but do not use the follow-up workflow, test a card-sharing wedge instead of assuming the paid follow-up product is validated. If interviews do not reveal one repeated problem in a segment, do not pick a winner from compliments or tiny differences in counts.
+
+Ask about the specific $5.99/month and $49.99/year hypotheses only after observed use, and record objections verbatim. This is still not willingness-to-pay evidence. Do not charge for premium functionality until compliant store billing exists and users actually complete a paid transaction.
+
+### Unit-economics worksheet (unknowns stay unknown)
+
+For a store subscription, estimate monthly contribution per paying subscriber as `collected subscription revenue − store fee − taxes/refunds − variable infrastructure/support`. At the illustrative $5.99/month and 15% store-fee assumption above, only about $5.09 remains before those other costs. Annual pricing must be converted to monthly equivalent when comparing contribution and retention. Do not call this gross margin or profit until actual costs are measured.
+
+Once a paid cohort exists, calculate `monthly contribution per payer × retained paid subscribers − fixed monthly operating costs`. Track acquisition cost by channel as `cash spent + founder outreach time at an explicit hourly value ÷ new paying subscribers`. Do not scale paid acquisition until a real cohort's contribution margin, renewal/churn, refund rate, and acquisition payback are measured. Until then, keep acquisition low-cost and founder-led, and describe revenue projections as scenarios rather than forecasts.
+
 Platform policy and fee pages checked 2026-10-26:
 
 - [Apple App Store Small Business Program](https://developer.apple.com/help/account/membership/programs-overview) — 15% on paid apps and in-app purchases for eligible program members.

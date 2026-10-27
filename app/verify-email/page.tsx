@@ -10,15 +10,18 @@ export default function VerifyEmailPage() {
   const [token, setToken] = useState("");
   const [name, setName] = useState("");
   const [password, setPassword] = useState("");
-  const [state, setState] = useState<"loading" | "ready" | "confirming" | "error">("loading");
+  const [state, setState] = useState<"loading" | "ready" | "confirming" | "complete" | "error">("loading");
   const [message, setMessage] = useState("");
+  const [returnToApp, setReturnToApp] = useState(false);
 
   useEffect(() => {
     const url = new URL(window.location.href);
     const receivedToken = url.searchParams.get("token") ?? "";
+    const shouldReturnToApp = url.searchParams.get("returnToApp") === "1";
     setToken(receivedToken);
+    setReturnToApp(shouldReturnToApp);
     // Remove the one-time bearer token from browser history and later referrers.
-    if (receivedToken) window.history.replaceState(null, "", url.pathname);
+    if (receivedToken) window.history.replaceState(null, "", `${url.pathname}${shouldReturnToApp ? "?returnToApp=1" : ""}`);
     setState(receivedToken ? "ready" : "error");
     if (!receivedToken) setMessage("This verification link is missing its token. Sign up again to request a fresh link.");
   }, []);
@@ -38,6 +41,12 @@ export default function VerifyEmailPage() {
       if (!response.ok) {
         setMessage(data.error ?? "This verification link could not be used. Request a fresh link and try again.");
         setState("error");
+        return;
+      }
+      if (returnToApp) {
+        setPassword("");
+        setMessage("Your email is verified. Return to Tappd and sign in to finish setting up your card.");
+        setState("complete");
         return;
       }
       router.replace("/app/card");
@@ -79,6 +88,11 @@ export default function VerifyEmailPage() {
             </button>
           </form>
         ) : null}
+        {state === "complete" && (
+          <a href="tappd://auth/verified" className="btn btn-primary mt-6 w-full justify-center">
+            Return to Tappd
+          </a>
+        )}
         {state === "error" && <Link href="/signup" className="btn btn-outline mt-6 w-full justify-center">Request a new verification link</Link>}
         <p className="mt-6 text-center text-xs text-faint">Need help? Visit <Link href="/support" className="font-medium underline underline-offset-2">Tappd support</Link>.</p>
       </section>
