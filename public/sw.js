@@ -1,4 +1,6 @@
-const CACHE_NAME = "tappd-offline-v1";
+// Version the offline shell so installed clients discard stale cached markup
+// when the offline experience changes.
+const CACHE_NAME = "tappd-offline-v2";
 const OFFLINE_URL = "/offline.html";
 
 self.addEventListener("install", (event) => {
