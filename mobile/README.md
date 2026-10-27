@@ -4,7 +4,7 @@ An Expo / React Native client for Android and iOS. It uses the same Tappd accoun
 
 ## Run locally
 
-1. Install dependencies with `npm install`.
+1. Use Node.js 22.13 or newer (required by Expo SDK 58), then install dependencies with `npm ci`.
 2. Copy `.env.example` to `.env` and set `EXPO_PUBLIC_API_URL` to the deployed backend origin (no trailing slash). Expo embeds public environment variables into the app binary; this value is not a secret.
 3. Run `npx expo start` for the JS app. Camera and NFC require a custom native development build (`npx expo run:android` / `npx expo run:ios` or an EAS development build); Expo Go cannot load the NFC native module.
 

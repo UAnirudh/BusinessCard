@@ -82,7 +82,7 @@ export function AuthForm({ mode, redirectTo }: { mode: "login" | "signup"; redir
       <div>
         <div className="flex items-baseline justify-between">
           <label htmlFor="password" className="label">Password</label>
-          {isSignup && <span className="hint">8+ characters</span>}
+          {isSignup ? <span className="hint">8+ characters</span> : <Link href="/forgot-password" className="text-[0.74rem] font-medium text-muted underline underline-offset-2 hover:text-ink">Forgot password?</Link>}
         </div>
         <div className="relative">
           <input

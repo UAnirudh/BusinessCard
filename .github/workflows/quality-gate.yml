@@ -36,6 +36,9 @@ jobs:
       - name: Typecheck web app
         run: npm run typecheck
 
+      - name: Test password reset and session revocation
+        run: npm run test:auth
+
       - name: Build web app
         run: npm run build
         env:
@@ -69,9 +72,19 @@ jobs:
         working-directory: mobile
         run: npm run typecheck
 
+      - name: Check Expo configuration and dependencies
+        working-directory: mobile
+        run: npx expo-doctor
+
       - name: Export Android bundle
         working-directory: mobile
         run: npx expo export --platform android --output-dir "$RUNNER_TEMP/android-export"
+        env:
+          EXPO_PUBLIC_API_URL: https://api.example.invalid
+
+      - name: Export iOS bundle
+        working-directory: mobile
+        run: npx expo export --platform ios --output-dir "$RUNNER_TEMP/ios-export"
         env:
           EXPO_PUBLIC_API_URL: https://api.example.invalid
 

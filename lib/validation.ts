@@ -29,6 +29,15 @@ export const loginSchema = z.object({
   password: z.string().min(1, "Enter your password"),
 });
 
+export const passwordResetRequestSchema = z.object({
+  email: z.string().trim().toLowerCase().email("Enter a valid email address").max(200),
+});
+
+export const passwordResetConfirmSchema = z.object({
+  token: z.string().min(20).max(200),
+  password: z.string().min(8, "Use at least 8 characters").max(200),
+});
+
 export const slugSchema = z
   .string()
   .trim()

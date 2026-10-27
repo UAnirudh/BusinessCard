@@ -1,6 +1,9 @@
 {
   "name": "mobile",
   "version": "1.0.0",
+  "engines": {
+    "node": ">=22.13.0"
+  },
   "main": "index.ts",
   "dependencies": {
     "expo": "~58.0.19",
