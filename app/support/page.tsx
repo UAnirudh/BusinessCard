@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowLeft, ArrowRight, HelpCircle, Mail } from "lucide-react";
 import { Logo } from "@/components/logo";
+import { SUPPORT_EMAIL } from "@/lib/support";
 
 export const metadata: Metadata = {
   title: "Support",
@@ -60,12 +61,12 @@ export default function SupportPage() {
           <div className="mt-7 flex flex-col gap-4 rounded-2xl border border-line bg-white/70 p-4 sm:flex-row sm:items-center sm:justify-between">
             <div>
               <h2 className="font-semibold">Still need help?</h2>
-              <p className="mt-1 text-sm text-muted">Email the Tappd support address. Never send your password.</p>
+              <p className="mt-1 text-sm text-muted">{SUPPORT_EMAIL ? "Email the Tappd support address. Never send your password." : "Support email is not configured yet. Never send your password by email."}</p>
             </div>
-            <a href="mailto:hello@tappd.app" className="btn btn-primary shrink-0">
+            {SUPPORT_EMAIL && <a href={`mailto:${SUPPORT_EMAIL}`} className="btn btn-primary shrink-0">
               <Mail className="h-4 w-4" />
               Email support
-            </a>
+            </a>}
           </div>
 
           <nav aria-label="Account and policy links" className="mt-6 flex flex-wrap gap-x-5 gap-y-3 text-sm">

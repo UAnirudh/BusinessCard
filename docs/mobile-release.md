@@ -22,7 +22,7 @@ npm run build
 npm run dev
 ```
 
-Without `DATABASE_URL`, local web development uses PGlite. For a deployed service, configure a hosted Postgres database, set `DATABASE_URL` and the canonical HTTPS `NEXT_PUBLIC_APP_URL`, and deploy the Next.js app. The Vercel build command runs migrations before the production build. No production host or database is configured in this repository checkout.
+Without `DATABASE_URL`, local web development uses PGlite. For Railway, configure a production Postgres database, set `DATABASE_URL` and the canonical HTTPS `NEXT_PUBLIC_APP_URL`, then deploy the Next.js app. `railway.json` runs `npm run db:migrate` as the pre-deploy command and starts the app with `npm start`. The proposed public service domain is `https://tappd.up.railway.app`; Railway must assign it to the service before it can be treated as live. No Tappd production host or database is configured in this repository checkout.
 
 Native app:
 
@@ -55,7 +55,7 @@ These builds require an EAS account/project, `EXPO_PUBLIC_API_URL` set in the pr
 
 ### Production service and privacy
 
-- Select and configure the production host, Postgres provider, processing region, backups/retention, domain, and support contact.
+- Create the Tappd Railway project and service, configure a production Postgres database, choose its region and backup/retention settings, and generate/verify the proposed `tappd.up.railway.app` service domain. Set `DATABASE_URL`, canonical HTTPS `NEXT_PUBLIC_APP_URL`, `TAPPD_SUPPORT_EMAIL`, and the mobile production `EXPO_PUBLIC_API_URL`; run migrations and verify the live service before building store clients.
 - Set `DATABASE_URL`, canonical HTTPS `NEXT_PUBLIC_APP_URL`, and the mobile production `EXPO_PUBLIC_API_URL`; run migrations and verify the live service before building store clients.
 - Configure `TAPPD_TRUSTED_CLIENT_IP_HEADER` to the single-IP header injected by the production reverse proxy for login, signup, and exchange rate limits. The proxy must remove any incoming client value for that header and set its own. With this setting absent or invalid, requests share an `unattributed` rate-limit bucket; do not trust `X-Forwarded-For` or `X-Real-IP` directly.
 - Review `/privacy` and complete Apple privacy details and Google Play Data safety disclosures against the actual deployed providers and data handling. The privacy page still needs verified operator, service-provider, region, retention, and support details.
@@ -70,7 +70,7 @@ These builds require an EAS account/project, `EXPO_PUBLIC_API_URL` set in the pr
 - Test signup/sign-in, token restore/revocation, public/private card states, QR exchange, wallet refresh, follow-up editing, contact saving, sign-out, and account deletion against the production-like backend.
 - Test camera and Contacts permissions, NFC-capable and NFC-unavailable devices, writable tags, denied permissions, offline/network failure, and small/large screen layouts on physical iPhones and Android devices.
 - Confirm deep-link behavior, accessibility, app icons, splash/safe-area layout, and release versioning on signed builds.
-- The public `/support` route is implemented and linked from the landing-page footer. Before submission, verify its production URL, confirm `hello@tappd.app` is monitored, and complete crash reporting, reviewer access, store screenshots, descriptions, age ratings, and release notes.
+- The public `/support` route is linked from the landing-page footer when `TAPPD_SUPPORT_EMAIL` is set. The native app opens `/support` on its configured `EXPO_PUBLIC_API_URL`. Set a monitored `TAPPD_SUPPORT_EMAIL` before publishing, and complete crash reporting, reviewer access, store screenshots, descriptions, age ratings, and release notes.
 
 ### Store submission
 

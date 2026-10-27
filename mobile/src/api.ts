@@ -71,6 +71,10 @@ export function privacyUrl() {
   return `${API_ORIGIN}/privacy`;
 }
 
+export function supportUrl() {
+  return API_ORIGIN ? `${API_ORIGIN}/support` : "";
+}
+
 export function passwordResetUrl() {
   return `${API_ORIGIN}/forgot-password`;
 }

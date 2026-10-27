@@ -3,6 +3,7 @@ import Link from "next/link";
 import { ArrowLeft, ArrowRight, ShieldAlert } from "lucide-react";
 import { Logo } from "@/components/logo";
 import { getCurrentUser } from "@/lib/auth";
+import { SUPPORT_EMAIL } from "@/lib/support";
 
 export const metadata: Metadata = {
   title: "Delete your account",
@@ -45,8 +46,8 @@ export default async function AccountDeletionPage() {
           </Link>
 
           <p className="mt-5 text-[0.78rem] leading-relaxed text-faint">
-            This self-service process uses your Tappd password to verify the request. If you cannot access your account, contact{" "}
-            <a className="font-medium underline underline-offset-2" href="mailto:hello@tappd.app?subject=Tappd%20account%20deletion%20help">hello@tappd.app</a>.
+            This self-service process uses your Tappd password to verify the request. {SUPPORT_EMAIL ? <>If you cannot access your account, contact{" "}
+            <a className="font-medium underline underline-offset-2" href={`mailto:${SUPPORT_EMAIL}?subject=Tappd%20account%20deletion%20help`}>{SUPPORT_EMAIL}</a>. </> : "A monitored support address must be configured by the operator before production release."}
             Never send your password by email.
           </p>
         </section>
