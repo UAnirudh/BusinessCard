@@ -15,12 +15,13 @@ import {
 } from "lucide-react";
 import { Logo } from "@/components/logo";
 import { Avatar } from "@/components/avatar";
+import { SUPPORT_EMAIL } from "@/lib/support";
 
 const steps = [
   {
     number: "01",
     title: "Build your card",
-    body: "Add your role, company, links and photo. Pick an accent, claim your handle at tappd.app/c/you.",
+    body: "Add your role, company, links and photo. Pick an accent and share your public card link.",
     icon: Smartphone,
   },
   {
@@ -222,7 +223,7 @@ export default function LandingPage() {
               <p className="text-[0.62rem] font-medium uppercase tracking-[0.14em] text-white/40">Tag read</p>
               <p className="mt-1 flex items-center gap-1.5 text-[0.78rem] font-medium">
                 <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-lime" />
-                maya.tappd.app
+                Maya’s public card
               </p>
             </div>
 
@@ -389,13 +390,13 @@ export default function LandingPage() {
           <div>
             <span className="eyebrow !text-white/40">Questions</span>
             <h2 className="display mt-4 text-[clamp(1.9rem,3.5vw,2.6rem)]">The details people ask about.</h2>
-            <p className="mt-4 text-sm leading-relaxed text-white/45">
+            {SUPPORT_EMAIL && <p className="mt-4 text-sm leading-relaxed text-white/45">
               Still curious? Write to{" "}
-              <a href="mailto:hello@tappd.app" className="text-lime underline decoration-lime/30 underline-offset-4">
-                hello@tappd.app
+              <a href={`mailto:${SUPPORT_EMAIL}`} className="text-lime underline decoration-lime/30 underline-offset-4">
+                {SUPPORT_EMAIL}
               </a>
               .
-            </p>
+            </p>}
           </div>
           <div className="divide-y divide-white/10 border-y border-white/10">
             {faqs.map((faq) => (
@@ -450,7 +451,7 @@ export default function LandingPage() {
             <Link href="/support" className="hover:text-white">Support</Link>
             <Link href="/account-deletion" className="hover:text-white">Delete account</Link>
             <a href="#faq" className="hover:text-white">FAQ</a>
-            <a href="mailto:hello@tappd.app" className="hover:text-white">Contact</a>
+            {SUPPORT_EMAIL && <a href={`mailto:${SUPPORT_EMAIL}`} className="hover:text-white">Contact</a>}
           </div>
           <p className="w-full text-xs text-white/25 sm:w-auto">© {new Date().getFullYear()} Tappd</p>
         </div>

@@ -4,11 +4,13 @@
 
 Start with individuals who meet prospective clients or collaborators often. Keep creating, opening, and saving a public card free. Test whether a reliable follow-up workflow—capturing who someone is, where you met, notes, reminders, and export—is valuable enough to pay for. Do not treat a price survey or competitor price as proof of demand.
 
-The category is free-first and crowded. Blinq lists a free tier and Premium at $9.99 monthly or $7.33 per month billed annually; HiHello lists Personal free and Professional at $6 per month billed annually; Wave lists a free individual tier with wallet, QR, and NFC sharing. This makes card creation and basic sharing a weak paid differentiator. Recheck the live pages before setting Tappd pricing:
+**Competitor snapshot checked 2026-10-26 (three vendor pages, not an exhaustive market count or proof of demand):** Blinq offers a free individual tier and Premium at $9.99 monthly or $7.33/month billed annually; its team plan is $6.99/user/month monthly or $4.99/user/month billed annually. HiHello lists Personal free, Professional at $6/month ($72 billed yearly), and Business at $5/user/month ($60 per user/year, five-seat minimum). Wave's individual page describes a free card with QR and Apple/Google Wallet sharing; it does not establish that NFC sharing is part of that free tier. These pages show that basic card creation and sharing are already available free from multiple competitors, so they are weak paid differentiators. Recheck the live pages before setting Tappd pricing:
 
 - [Blinq pricing](https://blinq.me/pricing)
 - [HiHello pricing](https://www.hihello.com/pricing)
 - [Wave individual plans](https://wavecnct.com/individuals)
+
+The prices above are competitor list prices observed on 2026-10-26, not Tappd prices or evidence of willingness to pay.
 
 ## First 10 interviews
 
@@ -23,7 +25,13 @@ Use these directional gates to decide which cohort to test next:
 - Continue only if people return after the initial card setup and use the follow-up feature in real situations.
 - After repeated use, test a specific offer such as $5.99/month or $49.99/year against free. These are hypotheses, not validated prices or a profit forecast.
 
-At a hypothetical $5.99 monthly price, 15% store commission leaves about $5.09 before taxes, refunds, support, infrastructure, and acquisition costs. At $49.99 annually it leaves about $42.49 per year on the same commission assumption. Actual store fees depend on eligibility and program rules; check them before building a forecast.
+These are **pricing hypotheses**, not validated offers or a profit forecast. At a hypothetical $5.99 monthly price, a 15% platform-fee assumption leaves about $5.09; at $49.99 annually it leaves about $42.49 per year. Both figures are before taxes, refunds, support, infrastructure, and acquisition costs. The 15% assumption is illustrative: Apple lists a 15% rate for accepted App Store Small Business Program members, while Google Play's current service-fee page lists auto-renewing subscriptions as 10% service fee plus 5% billing fee in its specified markets, and 15% subscription service fees in remaining markets until its updates roll out. Google fees for other transactions and some regions differ. Do not use one global rate in a forecast; verify the platform, user's market, transaction type, and program eligibility before launch.
+
+Platform policy and fee pages checked 2026-10-26:
+
+- [Apple App Store Small Business Program](https://developer.apple.com/help/account/membership/programs-overview) — 15% on paid apps and in-app purchases for eligible program members.
+- [Google Play service fees](https://support.google.com/googleplay/android-developer/answer/112622?hl=en) — for the listed US, EEA, UK, Japan, and Australia markets, the updated table specifies 10% service fee plus 5% billing fee for auto-renewing subscriptions; the rollout dates are June 30, 2026 for US/EEA/UK and September 30, 2026 for Australia/Japan. Other purchase types have different rates. The page lists 15% subscription service fees for remaining markets until the updated fees roll out there.
+- [Apple App Review Guidelines](https://developer.apple.com/app-store/review/guidelines/) and [Google Play payments policy](https://support.google.com/googleplay/android-developer/answer/10281818?hl=en) — check current purchase requirements before implementing premium feature sales.
 
 ## Copy to send
 
@@ -65,7 +73,9 @@ These are organization-level channels published by the organizations. They are r
 | --- | --- | --- |
 | Recruiters | [Seattle Corporate Search contact form](https://www.seattlecorporatesearch.com/contact) | Official contact page. The firm describes recruiting work and a form for employers/job seekers. |
 | Recruiters | [Robert Half Seattle office](https://www.roberthalf.com/us/en/locations/wa-seattle/601-union-street), published main line: (360) 845-7762 | Official Seattle office page; use the general office channel and ask if a recruiter is available for research. |
+| Recruiters / HR professionals | [Seattle SHRM events](https://seattleshrm.org/events/), published chapter email: admin@shrm-seattle.com | Official event calendar brings the Seattle HR community together for learning and networking. The listed board meetings are for members, so use the public chapter email to ask whether the invitation can be forwarded to relevant HR or recruiting professionals; do not buy membership for recruitment. |
 | Real-estate professionals | [Windermere Seattle–West Seattle office](https://www.windermere.com/directory/offices/seattlewest-seattle), main line: (206) 935-7200; shared email: westseattle@windermere.com | Official office listing. |
+| Real-estate professionals | [Seattle King County REALTORS® public contact form](https://members.nwrealtor.com/contact-us), shared phone: (425) 974-1011; [Young Professionals Network](https://www.nwrealtor.com/ypn/) | Official YPN page describes Puget Sound professional-development and networking events and says other real-estate professionals are invited and encouraged to attend. Use the general form or phone to ask whether the invitation can be forwarded; do not use a named direct email or recommend a membership purchase. |
 | Consultants | [RedCloud Consulting](https://www.redcloudconsulting.com/), shared email: info@redcloudconsulting.com | Official site publishes this general contact email; it is a Seattle-area consulting company, not a list of solo consultants. Ask for a referral to independent consultants or use it only as an exploratory channel. |
 | Consultants | [Independent Consultants Network](https://www.linkedin.com/company/us-independent-consultants-network) | Public community listing; location and a Seattle-specific contact channel were not verified. Treat as a discovery lead, not a confirmed Seattle group. |
 | Broad professional mix | [Young Professionals of Seattle](https://www.ypcommunities.com/young-professionals-of-seattle) | Official page says it hosts 50+ events per year for social networking and professional development. It links to the [official LinkedIn group](https://linkedin.com/groups/4052472/) and [YPCommunities Facebook page](https://www.facebook.com/YPCommunities); no general email was verified. Ask through an official channel whether the invitation can be shared. |
@@ -101,6 +111,25 @@ Prefer warm introductions and professional community referrals. For direct inter
 
 > Hello, I’m exploring how independent consultants manage contacts and follow-up after networking. Could you forward this invitation to any independent consultants in your network who might be open to a 15-minute research conversation? I’m building Tappd, a digital card and follow-up tool, and want to understand real workflows before deciding what to build. This is research, not a sales pitch. Thank you.
 
+**Seattle SHRM chapter email**
+
+> Subject: Could you forward an opt-in research invitation to Seattle HR professionals?
+>
+> Hello Seattle SHRM team,
+>
+> I’m researching how Seattle HR and recruiting professionals exchange contact details and follow up after meeting someone. I’m inviting people to opt into a 15-minute customer-research conversation about their current workflow. This is not a sales pitch, and there’s no preparation required.
+>
+> If appropriate, could you forward this invitation to interested members or event attendees? Participation is entirely optional. I understand some chapter activities are member-only, so I’m not asking to attend a restricted meeting or for a member list.
+>
+> Thank you,
+> [Founder]
+
+**Seattle King County REALTORS® public contact form or general phone**
+
+> Hello, I’m researching how Seattle-area real-estate agents exchange contact details and follow up after meeting new people. I’m inviting agents to opt into a 15-minute customer-research conversation about their current workflow. This is not a sales pitch, and there’s no preparation required.
+>
+> Would the association be willing to forward a short invitation to interested real-estate professionals or YPN event attendees, or point me to the right public channel? Participation is voluntary, and I’m not asking for a member list or endorsement. Thank you.
+
 ## Wallet and no-app sharing
 
 Anyone can already open `/c/{slug}` in a browser without installing Tappd, scan its QR with a standard camera, and save the public contact as a vCard. Make this the default “works for everyone” path. A vCard download is a contacts import file, not an Apple Wallet or Google Wallet pass.
@@ -114,10 +143,10 @@ True Wallet passes are separate from the no-app vCard path. This repo now has Ap
 
 ## Brand and business risk
 
-An existing digital-card business uses the Tappd name at [tappd.co.za](https://tappd.co.za/pages/pricing). Before spending on paid acquisition or final brand assets, check trademark availability, app-store name conflicts, and whether the domain/brand could confuse users. This is a diligence item, not a legal conclusion.
+**Brand risk is a launch gate.** On 2026-10-26, public product sites using the same `tappd` name were live at [tappd.co.za](https://tappd.co.za/pages/pricing), [tappd.solutions](https://tappd.solutions/help), and [tappd.store](https://tappd.store/). They market overlapping digital business cards, NFC/QR sharing, and, on tappd.co.za and tappd.solutions, Apple/Google Wallet passes. These pages establish user-facing name and product-category overlap, but not who owns a mark or whether Tappd can legally use it in the United States. Do not publish store listings or spend on paid acquisition under this name until the publisher checks the USPTO and target-store names and obtains qualified trademark advice. The official [USPTO trademark search](https://tmsearch.uspto.gov/search/) is the starting point, not a legal clearance opinion. Consider selecting a distinct name before creating permanent Android/iOS identifiers.
 
 ## Store economics and launch gate
 
-Store fees, payment rules, and enrollment requirements change. Before launch, verify the current [Apple App Review Guidelines](https://developer.apple.com/app-store/review/guidelines/) and [Google Play payments policy](https://support.google.com/googleplay/android-developer/answer/10281818?hl=en). Digital in-app features may require store billing. Keep this pricing experiment out of production until there is repeat usage and a compliant purchase flow.
+Store fees, payment rules, and enrollment requirements change. The current links and date-checked fee snapshot above are for research, not a guarantee of the rate Tappd will receive. Apple generally requires In-App Purchase when an iOS app unlocks digital functionality; Google Play generally requires Play Billing for digital features sold inside the Play app. Both policies describe exceptions and region-specific programs, so choose and verify the purchase path before implementation. Before launch, recheck the live [Apple App Review Guidelines](https://developer.apple.com/app-store/review/guidelines/), [Apple Small Business Program](https://developer.apple.com/help/account/membership/programs-overview), [Google Play payments policy](https://support.google.com/googleplay/android-developer/answer/10281818?hl=en), and [Google Play service fees](https://support.google.com/googleplay/android-developer/answer/112622?hl=en). Keep this pricing experiment out of production until there is repeat usage and a compliant purchase flow.
 
 This plan does not claim profitability. Profitability depends on retained paid users, store fees, service costs, support, and customer acquisition, none of which have been measured yet.

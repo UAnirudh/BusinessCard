@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowLeft, ShieldCheck } from "lucide-react";
 import { Logo } from "@/components/logo";
+import { SUPPORT_EMAIL } from "@/lib/support";
 
 export const metadata: Metadata = {
   title: "Privacy",
@@ -35,7 +36,7 @@ const sections = [
   },
   {
     title: "Security and contact",
-    body: "Tappd uses hashed passwords, hashed session identifiers and access controls for signed-in pages. No online service can promise perfect security. For a privacy question or removal request, contact hello@tappd.app.",
+    body: `Tappd uses hashed passwords, hashed session identifiers and access controls for signed-in pages. No online service can promise perfect security.${SUPPORT_EMAIL ? ` For a privacy question or removal request, contact ${SUPPORT_EMAIL}.` : " A monitored privacy contact must be configured by the operator before production release."}`,
   },
 ];
 
@@ -70,9 +71,9 @@ export default function PrivacyPage() {
             ))}
           </div>
 
-          <a href="mailto:hello@tappd.app" className="mt-4 inline-block text-[0.85rem] font-medium underline underline-offset-4">
-            hello@tappd.app
-          </a>
+          {SUPPORT_EMAIL && <a href={`mailto:${SUPPORT_EMAIL}`} className="mt-4 inline-block text-[0.85rem] font-medium underline underline-offset-4">
+            {SUPPORT_EMAIL}
+          </a>}
           <p className="mt-2 text-[0.82rem] text-muted">
             <Link href="/account-deletion" className="font-medium underline underline-offset-2">Start an account deletion</Link>
           </p>

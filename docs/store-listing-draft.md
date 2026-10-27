@@ -1,6 +1,6 @@
 # Tappd store listing draft
 
-Draft only. Claims below reflect the current product in this repository. Before submission, confirm each claim against the signed production build, deployed backend, and completed Apple/Google privacy disclosures. Replace founder and support placeholders before publishing.
+Draft only. Claims below reflect the current product in this repository. The name Tappd is not cleared for app-store use: several active digital-card sites use the same name, including products with overlapping Wallet/NFC features. Resolve brand and trademark clearance, then choose publisher-owned package and bundle identifiers before creating permanent store records. Before submission, confirm each claim against the signed production build, deployed backend, and completed Apple/Google privacy disclosures. Replace founder and support placeholders before publishing.
 
 ## App name and short copy
 
@@ -72,7 +72,7 @@ Use terms that describe the app, rather than competitor names or unsupported out
 - **Contact email:** [monitored support address]
 - **Release notes:** [specific changes in the submitted build]
 
-The app now has a public support route at `/support` with help topics, a support email link, privacy, sign-in, and account-deletion links. Set the final Support URL to `https://<production-host>/support` only after the production host is selected and the page and email address are verified. The owner must confirm that `hello@tappd.app` is monitored before using it as store support contact information.
+The app has a public support route at `/support` with help topics, privacy, sign-in, and account-deletion links. Set `TAPPD_SUPPORT_EMAIL` to an inbox the operator controls and monitors before production release; the support and privacy pages hide the email action when this value is missing. The native app opens `/support` on its configured `EXPO_PUBLIC_API_URL`. Use the final Support URL only after the production host has actually been assigned and verified.
 
 ## Store metadata limits to preserve
 
@@ -80,7 +80,7 @@ The app now has a public support route at `/support` with help topics, a support
 - App Store Connect: name and subtitle up to 30 characters each; promotional text up to 170; description up to 4,000; keywords up to 100 bytes. Privacy policy URL is required and Support URL must provide contact information. See [App information](https://developer.apple.com/help/app-store-connect/reference/app-information/app-information) and [platform version information](https://developer.apple.com/help/app-store-connect/reference/app-information/platform-version-information).
 - Apple screenshots are required (1–10 per localization). Capture from the final build and confirm the chosen device's current size in [Apple screenshot specifications](https://developer.apple.com/help/app-store-connect/reference/app-information/screenshot-specifications/).
 
-The current privacy page uses `hello@tappd.app` and describes Tappd's data handling, but operator identity, production providers, data region, backup/retention details, and support ownership must be verified before that page is treated as final store documentation.
+The privacy page describes Tappd's current code-level data handling, but operator identity, production providers, data region, backup/retention details, and a monitored `TAPPD_SUPPORT_EMAIL` must be verified before that page is treated as final store documentation.
 
 ## Screenshot and preview checklist
 

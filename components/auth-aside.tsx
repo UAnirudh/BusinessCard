@@ -58,7 +58,7 @@ export function AuthAside() {
       </div>
 
       <p className="relative text-xs text-white/25">
-        <Link href="/" className="hover:text-white/50">← Back to tappd.app</Link>
+        <Link href="/" className="hover:text-white/50">← Back to Tappd</Link>
       </p>
     </aside>
   );

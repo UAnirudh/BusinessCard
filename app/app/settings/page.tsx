@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
 import { getCurrentUser } from "@/lib/auth";
+import { SUPPORT_EMAIL } from "@/lib/support";
 import { ensureCard } from "@/lib/cards";
 import { getOrigin } from "@/lib/origin";
 import { longDate } from "@/lib/utils";
@@ -68,8 +69,8 @@ export default async function SettingsPage() {
           <div className="surface p-4">
             <p className="text-[0.7rem] font-semibold uppercase tracking-[0.08em] text-faint">Need a hand?</p>
             <p className="mt-2 text-[0.78rem] leading-relaxed text-muted">
-              NFC tags, imports, broken links — write to{" "}
-              <a href="mailto:hello@tappd.app" className="underline underline-offset-2">hello@tappd.app</a>.
+              {SUPPORT_EMAIL ? <>NFC tags, imports, broken links — write to{" "}
+              <a href={`mailto:${SUPPORT_EMAIL}`} className="underline underline-offset-2">{SUPPORT_EMAIL}</a>.</> : "Support contact is not configured yet. Use the support page after the operator publishes a monitored contact."}
             </p>
           </div>
         </aside>

@@ -4,7 +4,7 @@
 
 Tappd turns a phone into a shareable business card: tap an NFC tag, show a QR code, or send a link. Everyone you meet lands in a searchable wallet, complete with tags, notes and the context you need to follow up.
 
-The web service is built with Next.js 16 (App Router), TypeScript, Tailwind CSS v4, Drizzle ORM and Postgres. The repository also includes an Expo / React Native app for iOS and Android. The web service can deploy to Vercel with any hosted Postgres (Vercel Postgres, Neon, Supabase, RDS…). Local web development needs no database server: it runs on an embedded PGlite database that is migrated automatically.
+The web service is built with Next.js 16 (App Router), TypeScript, Tailwind CSS v4, Drizzle ORM and Postgres. The repository also includes an Expo / React Native app for iOS and Android. The intended production host is Railway with a hosted Postgres database. Local web development needs no database server: it runs on an embedded PGlite database that is migrated automatically.
 
 ---
 
@@ -85,7 +85,7 @@ Demo cards: /c/maya-chen, /c/daniel-roth, /c/sofia-reyes
 | `npm run db:generate` | Generate a migration after schema changes |
 | `npm run db:migrate` | Apply migrations to `DATABASE_URL` |
 | `npm run db:seed` | Load the demo workspace into a local database (idempotent; blocked for production and remote databases) |
-| `npm run vercel-build` | Migrate then build (used by Vercel) |
+| `npm run vercel-build` | Migrate then build (used by the existing Vercel configuration) |
 
 For the native client, see [`mobile/README.md`](mobile/README.md) for Expo development and EAS build commands. A native build requires a deployed backend URL in `EXPO_PUBLIC_API_URL`.
 
@@ -97,17 +97,20 @@ TAPPD_ALLOW_EMBEDDED_DB=1 NEXT_PUBLIC_APP_URL=http://localhost:3000 npm start
 
 ---
 
-## Deploy to Vercel
+## Deploy to Railway
 
-1. **Create a Postgres database** — Vercel Postgres, Neon, Supabase or any Postgres works. Copy the connection string (it must allow SSL; the app enables SSL automatically for non-localhost hosts).
-2. **Push this repo to GitHub** and import it in Vercel. The framework is detected automatically; `vercel.json` sets the build command to `npm run vercel-build`.
-3. **Set environment variables** in Vercel → Project → Settings → Environment Variables:
+1. **Create a Railway project and Postgres service.** Copy the database connection string. The app enables SSL automatically for non-localhost hosts.
+2. **Create a web service from this GitHub repository.** Set the build command to `npm run build`, pre-deploy command to `npm run db:migrate`, and start command to `npm start`. The migration must finish before the new app version starts.
+3. **Generate a public Railway domain** in the service's Networking settings. `tappd.up.railway.app` is the requested label, but it is not assigned yet; use the exact hostname Railway returns if that name is unavailable.
+4. **Set the production environment variables** in the Railway service:
    - `DATABASE_URL` — the Postgres connection string (also read: `POSTGRES_URL`, `POSTGRES_PRISMA_URL`)
-   - `NEXT_PUBLIC_APP_URL` — e.g. `https://cards.yourdomain.com` (used for QR codes, card links and metadata)
-4. **Deploy.** The build runs `node scripts/migrate.mjs` first, so the schema is created on the first deploy. If the database is unreachable the build fails loudly instead of shipping a broken app.
-5. Do not seed the hosted database. `npm run db:seed` is restricted to local development databases and refuses production mode or remote database hosts, so the documented demo credentials and sample records cannot be added to a deployed workspace.
+   - `NEXT_PUBLIC_APP_URL` — the assigned production HTTPS Railway origin (used for QR codes, card links and metadata)
+   - `TAPPD_SUPPORT_EMAIL` — monitored support and privacy inbox controlled by the operator
+   - `TAPPD_TRUSTED_CLIENT_IP_HEADER` — set only to the trusted single-IP header that Railway's edge injects after stripping client-supplied values; confirm the proxy behavior before enabling rate limiting.
+   - Add Resend and Wallet secrets only after their respective provider accounts and credentials are configured.
+5. **Deploy and verify** the health of the service, then set the same HTTPS origin in `mobile/.env` as `EXPO_PUBLIC_API_URL` and in EAS production build variables. Do not seed the hosted database: `npm run db:seed` is restricted to local development databases and refuses production mode or remote database hosts.
 
-`.env.example` documents the variables. Never commit real credentials.
+`.env.example` documents the variables. Never commit real credentials. This repository does not yet have a Tappd Railway project or production database.
 
 ---
 
