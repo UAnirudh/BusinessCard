@@ -69,7 +69,7 @@ After downloading the Android App Bundle, inspect the manifest from the signed r
 ### Native functionality and quality
 
 - Configure EAS and publisher-owned bundle/package IDs; create development builds for each platform.
-- Review the mobile dependency audit before store upload: Expo SDK 58's Expo CLI tooling currently pulls high-severity `node-forge@1.4.0` and `zod@3.25.76` advisories. The `node-forge` advisory has no patched release; the Zod advisory's patched version is 4.6.6, while Expo CLI 58.1.15 declares Zod `^3.25.76`. These are build/developer-tool dependencies rather than the shipped app runtime, but they still affect local and cloud builds. Recheck the upstream Expo dependency tree and advisories before release; do not force a major override without compatibility evidence. `npm audit fix --force` proposes downgrading Expo to SDK 44 and is not a safe fix.
+- Dependency audit checked October 27, 2026: the root production dependency audit reports no advisories. The mobile audit reports high-severity Zod advisory GHSA-mrhx-c7xc-m3w5 through `expo@58.0.20` → `@expo/cli@58.1.16` → `zod@3.25.76` (<4.6.6); the current audit reports no high-severity `node-forge` advisory. Zod is in Expo build tooling, not the shipped app runtime. Do not force a Zod 4 override without verifying Expo CLI compatibility; recheck the dependency tree before store upload.
 - Test signup/sign-in, token restore/revocation, public/private card states, QR exchange, wallet refresh, follow-up editing, contact saving, sign-out, and account deletion against the production-like backend.
 - Test camera and Contacts permissions, NFC-capable and NFC-unavailable devices, writable tags, denied permissions, offline/network failure, and small/large screen layouts on physical iPhones and Android devices.
 - Confirm deep-link behavior, accessibility, app icons, splash/safe-area layout, and release versioning on signed builds.
@@ -94,7 +94,6 @@ After downloading the Android App Bundle, inspect the manifest from the signed r
 - [Google Play target API level requirements](https://support.google.com/googleplay/android-developer/answer/11926878?hl=en)
 - [Google Play testing requirements for new personal accounts](https://support.google.com/googleplay/android-developer/answer/14151465?hl=en)
 - [Apple upcoming submission requirements](https://developer.apple.com/news/upcoming-requirements/)
-- [node-forge advisory GHSA-86w9-cpqp-85rv](https://github.com/advisories/GHSA-86w9-cpqp-85rv)
 - [Zod advisory GHSA-mrhx-c7xc-m3w5](https://github.com/advisories/GHSA-mrhx-c7xc-m3w5)
 - [Apple Wallet pass certificates](https://developer.apple.com/help/account/capabilities/create-wallet-identifiers-and-certificates)
 - [Google Wallet issuer onboarding](https://developers.google.com/wallet/generic/getting-started/issuer-onboarding)
