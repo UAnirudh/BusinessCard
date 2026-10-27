@@ -12,7 +12,7 @@ The category is free-first and crowded. Blinq lists a free tier and Premium at $
 
 ## First 10 interviews
 
-Recruit a balanced sample because the founder has not selected a niche: four independent consultants/freelancers, three recruiters, and three real-estate agents. Screen for people who meet at least two new professional contacts per month. These are discovery cohorts, not a conclusion about which group will pay.
+Recruit a balanced sample because the founder has not selected a niche: four independent consultants/freelancers, three recruiters, and three real-estate agents. Screen for people who meet at least two new professional contacts per month. Use more than one Seattle channel, and keep these cohort counts even if one organization produces most of the replies. Young Professionals of Seattle can help reach early-career professionals, but do not let that channel silently replace the three role-based quotas. These are discovery cohorts, not a conclusion about which group will pay.
 
 Ask about their last three introductions, how each person’s details were captured, what happened next, what was forgotten, and the exact consequences. Ask them to demonstrate their current workflow if they are comfortable. Only after hearing their story, show the public Tappd card and contact-saving flow. Invite participants into a two-week pilot and observe real use.
 
@@ -59,7 +59,7 @@ Avoid leading questions such as “Would you use this?” Ask about past behavio
 
 ## Seattle public outreach channels
 
-These are organization-level channels published by the organizations. Ask whether they can share the interview invitation with relevant members or professionals; they are not a verified list of individual interviewees. Do not imply endorsement or send bulk messages.
+These are organization-level channels published by the organizations. They are recruitment routes, not confirmed interviewees or evidence that an organization has agreed to help. Ask whether a relevant organizer can forward the invitation; do not imply endorsement, buy membership just to recruit, or send bulk messages.
 
 | Cohort | Public channel | Source |
 | --- | --- | --- |
@@ -68,8 +68,24 @@ These are organization-level channels published by the organizations. Ask whethe
 | Real-estate professionals | [Windermere Seattle–West Seattle office](https://www.windermere.com/directory/offices/seattlewest-seattle), main line: (206) 935-7200; shared email: westseattle@windermere.com | Official office listing. |
 | Consultants | [RedCloud Consulting](https://www.redcloudconsulting.com/), shared email: info@redcloudconsulting.com | Official site publishes this general contact email; it is a Seattle-area consulting company, not a list of solo consultants. Ask for a referral to independent consultants or use it only as an exploratory channel. |
 | Consultants | [Independent Consultants Network](https://www.linkedin.com/company/us-independent-consultants-network) | Public community listing; location and a Seattle-specific contact channel were not verified. Treat as a discovery lead, not a confirmed Seattle group. |
+| Broad professional mix | [Young Professionals of Seattle](https://www.ypcommunities.com/young-professionals-of-seattle) | Official page says it hosts 50+ events per year for social networking and professional development. It links to the [official LinkedIn group](https://linkedin.com/groups/4052472/) and [YPCommunities Facebook page](https://www.facebook.com/YPCommunities); no general email was verified. Ask through an official channel whether the invitation can be shared. |
+| Broad professional mix / solopreneurs | [Seattle Metro Chamber FAQ](https://www.seattlechamber.com/faq/) and [networking programs](https://www.seattlechamber.com/events-by-program/) | Use the general contact channel published on the FAQ (phone: (206) 389-7200) or the events page to ask about an appropriate program and whether an invitation can be forwarded. The Chamber says its events generally serve member-company employees; it describes 300+ annual programs, including networking and professional development. |
+| Independent professional-service advisors | [ProVisors Seattle](https://www.provisors.com/seattle-networking-group/) | Official page describes 13 Home Groups and 4 Affinity Groups and says membership is invitation-only and vetted for at least ten years of professional experience. Shared organization channels: [provisors@provisors.com](mailto:provisors@provisors.com), (888) 684-4437. Ask whether the invitation can be forwarded to eligible Seattle advisors; do not recommend or purchase membership for research access. |
 
-Prefer warm introductions and professional community referrals. For direct interview prospects, verify that the person is an independent professional and that their public channel is meant for business inquiries before contacting them.
+Prefer warm introductions and professional community referrals. For direct interview prospects, verify that the person is an independent professional and that their public channel is meant for business inquiries before contacting them. Recruit to the 4/3/3 consultant/recruiter/real-estate quotas across channels; record each participant's role and recruitment source so channel mix does not get mistaken for market demand.
+
+### Reusable organization-forwarding message
+
+**Subject:** Could you forward a short Seattle professional-research invitation?
+
+> Hello,
+>
+> I’m researching how Seattle professionals exchange contact details and follow up after meeting someone new. I’m building Tappd, a digital business card and follow-up tool that people can open and save without installing the app. I’m looking for four independent consultants/freelancers, three recruiters, and three real-estate agents for 15-minute conversations about their current workflow. This is customer research, not a sales pitch, and there is no preparation required.
+>
+> Would you be willing to forward this invitation to relevant members or attendees, or point me to the right public channel? Please feel free to decline if it is not a fit. I’ll avoid implying your organization endorses Tappd.
+>
+> Thank you,
+> [Founder]
 
 ### Messages for those public channels
 

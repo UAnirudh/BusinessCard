@@ -40,6 +40,17 @@ export const passwordResetTokens = pgTable("password_reset_tokens", {
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
 }, (t) => [index("password_reset_tokens_user_idx").on(t.userId), index("password_reset_tokens_expiry_idx").on(t.expiresAt)]);
 
+/** One-time account email change confirmations. Only the SHA-256 token digest is stored. */
+export const accountEmailChangeTokens = pgTable("account_email_change_tokens", {
+  id: text("id").primaryKey(),
+  userId: uuid("user_id")
+    .notNull()
+    .references(() => users.id, { onDelete: "cascade" }),
+  pendingEmail: text("pending_email").notNull(),
+  expiresAt: timestamp("expires_at", { withTimezone: true }).notNull(),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+}, (t) => [uniqueIndex("account_email_change_tokens_user_unique").on(t.userId), index("account_email_change_tokens_expiry_idx").on(t.expiresAt)]);
+
 /** One public card per account. */
 export const cards = pgTable("cards", {
   id: uuid("id").primaryKey().defaultRandom(),

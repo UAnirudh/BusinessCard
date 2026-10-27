@@ -1,6 +1,6 @@
 import { eq, ne, and } from "drizzle-orm";
 import { getDb } from "@/db";
-import { cards, sessions, users } from "@/db/schema";
+import { sessions, users } from "@/db/schema";
 import {
   currentSessionId,
   destroySession,
@@ -31,16 +31,6 @@ export async function PATCH(request: Request) {
 
   if (input.name && input.name !== account.name) updates.name = input.name;
 
-  if (input.email && input.email !== account.email) {
-    const [taken] = await db
-      .select({ id: users.id })
-      .from(users)
-      .where(and(eq(users.email, input.email), ne(users.id, user.id)))
-      .limit(1);
-    if (taken) return fail("That email is already used by another account.", 409, { field: "email" });
-    updates.email = input.email;
-  }
-
   if (input.newPassword) {
     if (!input.currentPassword) return fail("Enter your current password to set a new one.", 422, { field: "currentPassword" });
     if (!verifyPassword(input.currentPassword, account.passwordHash)) {
@@ -52,13 +42,6 @@ export async function PATCH(request: Request) {
   if (Object.keys(updates).length === 0) return ok({ ok: true, unchanged: true });
 
   await db.update(users).set(updates).where(eq(users.id, user.id));
-  if (updates.email) {
-    // Keep the public card's contact email in sync with the account email.
-    await db
-      .update(cards)
-      .set({ email: String(updates.email), updatedAt: new Date() })
-      .where(eq(cards.userId, user.id));
-  }
   if (updates.passwordHash) {
     // Keep the current session, drop every other device.
     const keep = await currentSessionId(request);

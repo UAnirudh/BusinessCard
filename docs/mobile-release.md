@@ -61,7 +61,7 @@ These builds require an EAS account/project, `EXPO_PUBLIC_API_URL` set in the pr
 - Review `/privacy` and complete Apple privacy details and Google Play Data safety disclosures against the actual deployed providers and data handling. The privacy page still needs verified operator, service-provider, region, retention, and support details.
 - Publish and verify the public self-service deletion page at `/account-deletion`; add its canonical HTTPS URL to the Google Play listing. The page takes account holders to password-confirmed deletion in web Settings, and is linked from the website footer and privacy page.
 - For actual Wallet passes on public cards, configure an Apple Pass Type ID/team/certificate and Google Wallet issuer/service-account plus an approved Generic Pass class. Add the values in `.env.example` to the production secret store, never to client/mobile environment variables. Apple pass generation requires OpenSSL in the Node server runtime; set `OPENSSL_BIN` if needed. Buttons remain hidden unless a complete server-side configuration is present. Google Wallet demo issuer access only supports configured test users until publishing access is granted.
-- Configure `RESEND_API_KEY` and `TAPPD_EMAIL_FROM` using a verified sending domain to enable password recovery. The reset token is single-use, expires after one hour, is stored as a digest, and revokes all sessions. Test delivery, expiry, replay, and email-provider failure behavior before launch. Email verification and verified account-email changes are still not implemented. Set the build/runtime to Node 22.13 or later to satisfy Expo SDK 58's documented minimum.
+- Configure `RESEND_API_KEY` and `TAPPD_EMAIL_FROM` using a verified sending domain to enable password recovery and account-email change confirmation. Password-reset and email-change tokens are single-use, expire after one hour, and are stored as digests; password reset revokes all sessions, while email change keeps the current sessions. Test delivery, expiry, replay, password reauthentication, and email-provider failure behavior before launch. Initial signup email verification is still not implemented. Set the build/runtime to Node 22.13 or later to satisfy Expo SDK 58's documented minimum.
 
 ### Native functionality and quality
 
@@ -79,9 +79,18 @@ These builds require an EAS account/project, `EXPO_PUBLIC_API_URL` set in the pr
 - Upload the iOS build to TestFlight and prepare a reviewer-ready account and sample QR/NFC tag.
 - Submit disclosures and builds through the publisher accounts, address review feedback, and publish only after both stores approve.
 
+### Submission requirements checked October 2026
+
+- New Google Play apps and updates must target Android 16 (API level 36) or higher from August 31, 2026. Expo SDK 58's default target API is 36; confirm the generated release manifest before uploading.
+- If the Play Console publisher uses a personal developer account created after November 13, 2023, production access requires a closed test with at least 12 testers opted in continuously for 14 days, followed by a production-access application. Confirm the account type and creation date in Play Console; this requirement does not apply to every publisher account.
+- App Store Connect uploads must use Xcode 26 or later and an SDK for iOS 26 or later, effective April 28, 2026. Confirm the selected EAS build image when creating the signed iOS build.
+
 ## Platform references
 
 - [Expo EAS Build](https://docs.expo.dev/build/introduction/)
+- [Google Play target API level requirements](https://support.google.com/googleplay/android-developer/answer/11926878?hl=en)
+- [Google Play testing requirements for new personal accounts](https://support.google.com/googleplay/android-developer/answer/14151465?hl=en)
+- [Apple upcoming submission requirements](https://developer.apple.com/news/upcoming-requirements/)
 - [node-forge advisory GHSA-86w9-cpqp-85rv](https://github.com/advisories/GHSA-86w9-cpqp-85rv)
 - [Zod advisory GHSA-mrhx-c7xc-m3w5](https://github.com/advisories/GHSA-mrhx-c7xc-m3w5)
 - [Apple Wallet pass certificates](https://developer.apple.com/help/account/capabilities/create-wallet-identifiers-and-certificates)

@@ -1,0 +1,11 @@
+CREATE TABLE "account_email_change_tokens" (
+	"id" text PRIMARY KEY NOT NULL,
+	"user_id" uuid NOT NULL,
+	"pending_email" text NOT NULL,
+	"expires_at" timestamp with time zone NOT NULL,
+	"created_at" timestamp with time zone DEFAULT now() NOT NULL
+);
+--> statement-breakpoint
+ALTER TABLE "account_email_change_tokens" ADD CONSTRAINT "account_email_change_tokens_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+CREATE UNIQUE INDEX "account_email_change_tokens_user_unique" ON "account_email_change_tokens" USING btree ("user_id");--> statement-breakpoint
+CREATE INDEX "account_email_change_tokens_expiry_idx" ON "account_email_change_tokens" USING btree ("expires_at");

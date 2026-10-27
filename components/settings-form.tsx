@@ -17,9 +17,14 @@ export function SettingsForm({
   joinedAt: string;
 }) {
   const router = useRouter();
-  const [profile, setProfile] = useState({ name: initialName, email: initialEmail });
+  const [profile, setProfile] = useState({ name: initialName });
   const [profileStatus, setProfileStatus] = useState<"idle" | "saving" | "saved" | "error">("idle");
   const [profileError, setProfileError] = useState<string | null>(null);
+
+  const [emailChange, setEmailChange] = useState({ email: "", currentPassword: "" });
+  const [emailChangeStatus, setEmailChangeStatus] = useState<"idle" | "saving" | "sent" | "error">("idle");
+  const [emailChangeMessage, setEmailChangeMessage] = useState<string | null>(null);
+  const [emailChangeError, setEmailChangeError] = useState<string | null>(null);
 
   const [passwords, setPasswords] = useState({ currentPassword: "", newPassword: "" });
   const [passwordStatus, setPasswordStatus] = useState<"idle" | "saving" | "saved" | "error">("idle");
@@ -53,6 +58,32 @@ export function SettingsForm({
     } catch {
       setProfileError("Network error — try again.");
       setProfileStatus("error");
+    }
+  }
+
+  async function requestEmailChange(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    setEmailChangeStatus("saving");
+    setEmailChangeMessage(null);
+    setEmailChangeError(null);
+    try {
+      const response = await fetch("/api/account/email-change/request", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify(emailChange),
+      });
+      const data = (await response.json().catch(() => ({}))) as { error?: string; message?: string };
+      if (!response.ok) {
+        setEmailChangeError(data.error ?? "Could not send a confirmation email.");
+        setEmailChangeStatus("error");
+        return;
+      }
+      setEmailChange({ email: "", currentPassword: "" });
+      setEmailChangeMessage(data.message ?? "Check your new inbox for a confirmation link.");
+      setEmailChangeStatus("sent");
+    } catch {
+      setEmailChangeError("Network error — try again.");
+      setEmailChangeStatus("error");
     }
   }
 
@@ -127,23 +158,55 @@ export function SettingsForm({
               maxLength={80}
             />
           </div>
-          <div>
-            <label htmlFor="account-email" className="label">Email</label>
-            <input
-              id="account-email"
-              className="input"
-              type="email"
-              value={profile.email}
-              onChange={(event) => setProfile((current) => ({ ...current, email: event.target.value }))}
-              maxLength={200}
-            />
-          </div>
           {profileError && <p className="text-[0.78rem] text-danger sm:col-span-2">{profileError}</p>}
           <div className="sm:col-span-2 flex min-w-0 flex-col items-stretch gap-2 sm:flex-row sm:items-center sm:justify-between">
             <p className="hint min-w-0 break-words">Account created {joinedAt} · card at {cardSlug}</p>
             <button type="submit" className="btn btn-primary btn-sm w-full shrink-0 sm:w-auto" disabled={profileStatus === "saving"}>
               {profileStatus === "saving" ? <Loader2 className="h-3.5 w-3.5 spin" /> : <Check className="h-3.5 w-3.5" />}
               {profileStatus === "saved" ? "Saved" : "Save profile"}
+            </button>
+          </div>
+        </form>
+      </section>
+
+      <section className="surface p-5">
+        <h2 className="text-[0.95rem] font-semibold">Sign-in email</h2>
+        <p className="mt-1 text-[0.78rem] text-muted">Confirm the new address from its inbox before it becomes your login or replaces the email on your public card.</p>
+        <p className="mt-3 text-[0.82rem] font-medium">Current email: <span className="font-normal text-muted">{initialEmail}</span></p>
+        <form onSubmit={requestEmailChange} className="mt-4 grid gap-3 sm:grid-cols-2">
+          <div>
+            <label htmlFor="new-account-email" className="label">New email</label>
+            <input
+              id="new-account-email"
+              className="input"
+              type="email"
+              inputMode="email"
+              autoComplete="email"
+              value={emailChange.email}
+              onChange={(event) => setEmailChange((current) => ({ ...current, email: event.target.value }))}
+              maxLength={200}
+              required
+            />
+          </div>
+          <div>
+            <label htmlFor="email-change-password" className="label">Confirm your password</label>
+            <input
+              id="email-change-password"
+              className="input"
+              type="password"
+              autoComplete="current-password"
+              value={emailChange.currentPassword}
+              onChange={(event) => setEmailChange((current) => ({ ...current, currentPassword: event.target.value }))}
+              maxLength={200}
+              required
+            />
+          </div>
+          {emailChangeError && <p role="alert" className="text-[0.78rem] text-danger sm:col-span-2">{emailChangeError}</p>}
+          {emailChangeMessage && <p role="status" className="text-[0.78rem] text-ink sm:col-span-2">{emailChangeMessage}</p>}
+          <div className="sm:col-span-2 flex justify-end">
+            <button type="submit" className="btn btn-primary btn-sm w-full sm:w-auto" disabled={emailChangeStatus === "saving"}>
+              {emailChangeStatus === "saving" ? <Loader2 className="h-3.5 w-3.5 spin" /> : <Check className="h-3.5 w-3.5" />}
+              {emailChangeStatus === "sent" ? "Send another link" : "Verify new email"}
             </button>
           </div>
         </form>

@@ -125,10 +125,18 @@ export const exchangeSchema = z.object({
 
 export const accountUpdateSchema = z.object({
   name: z.string().trim().min(2).max(80).optional(),
-  email: z.string().trim().toLowerCase().email().max(200).optional(),
   currentPassword: z.string().max(200).optional(),
   newPassword: z.string().min(8, "Use at least 8 characters").max(200).optional(),
   agreedToDelete: z.literal(true).optional(),
+});
+
+export const accountEmailChangeRequestSchema = z.object({
+  email: z.string().trim().toLowerCase().email("Enter a valid email address").max(200),
+  currentPassword: z.string().min(1, "Enter your current password").max(200),
+});
+
+export const accountEmailChangeConfirmSchema = z.object({
+  token: z.string().min(20).max(200),
 });
 
 export const viewSchema = z.object({

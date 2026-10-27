@@ -34,6 +34,12 @@
         }
       ],
       [
+        "expo-contacts",
+        {
+          "contactsPermission": "Tappd uses contact access only when you tap ‘Save to phone contacts’ to create a contact."
+        }
+      ],
+      [
         "react-native-nfc-manager",
         {
           "nfcPermission": "Allow Tappd to share a card through an NFC tag."
