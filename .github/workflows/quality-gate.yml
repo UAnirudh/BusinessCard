@@ -72,6 +72,10 @@ jobs:
         working-directory: mobile
         run: npm run typecheck
 
+      - name: Lint mobile app
+        working-directory: mobile
+        run: npm run lint
+
       - name: Check Expo configuration and dependencies
         working-directory: mobile
         run: npx expo-doctor
