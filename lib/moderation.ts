@@ -24,6 +24,19 @@ export function isModeratorEmail(email: string | null | undefined): boolean {
 
 export type ModerationAction = "dismiss" | "hide_card" | "suspend_user";
 
+/** Creates one open report per signed-in reporter and card. Reviewed reports can be submitted again. */
+export async function createCardReport(
+  db: Database,
+  report: { cardId: string; reporterUserId: string | null; reason: string; details: string | null },
+): Promise<boolean> {
+  const [created] = await db
+    .insert(cardReports)
+    .values(report)
+    .onConflictDoNothing()
+    .returning({ id: cardReports.id });
+  return Boolean(created);
+}
+
 /** Applies a moderator decision atomically; false means the report is no longer open. */
 export async function applyModerationDecision(
   db: Database,

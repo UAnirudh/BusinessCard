@@ -8,7 +8,7 @@ import { migrate } from "drizzle-orm/pglite/migrator";
 import * as schema from "@/db/schema";
 import type { Database } from "@/db";
 import { cardReports, cards, sessions, userBlocks, users } from "@/db/schema";
-import { applyModerationDecision, isModeratorEmail, publicCardTextIssue } from "@/lib/moderation";
+import { applyModerationDecision, createCardReport, isModeratorEmail, publicCardTextIssue } from "@/lib/moderation";
 
 async function testDatabase() {
   const client = new PGlite();
@@ -36,18 +36,52 @@ test("moderator access matches configured email addresses without case sensitivi
   }
 });
 
-test("moderation reports persist and member blocks are idempotent", async () => {
+test("signed-in reporters can report again after review but cannot duplicate an open report", async () => {
   const { client, db } = await testDatabase();
   try {
     const [owner] = await db.insert(users).values({ email: "owner@example.test", passwordHash: "hash", name: "Card Owner" }).returning();
     const [reporter] = await db.insert(users).values({ email: "reporter@example.test", passwordHash: "hash", name: "Reporter" }).returning();
     const [card] = await db.insert(cards).values({ userId: owner.id, slug: "card-owner", displayName: "Card Owner", isPublic: true }).returning();
 
-    await db.insert(cardReports).values({ cardId: card.id, reporterUserId: reporter.id, reason: "impersonation", details: "This profile claims to be someone else." });
-    await db.insert(cardReports).values({ cardId: card.id, reporterUserId: reporter.id, reason: "spam" }).onConflictDoNothing();
+    assert.equal(await createCardReport(db, {
+      cardId: card.id,
+      reporterUserId: reporter.id,
+      reason: "impersonation",
+      details: "This profile claims to be someone else.",
+    }), true);
+    assert.equal(await createCardReport(db, {
+      cardId: card.id,
+      reporterUserId: reporter.id,
+      reason: "spam",
+      details: null,
+    }), false);
     const reports = await db.select().from(cardReports).where(eq(cardReports.cardId, card.id));
     assert.equal(reports.length, 1);
     assert.equal(reports[0].status, "open");
+
+    await db.update(cardReports).set({ status: "dismissed", reviewedAt: new Date() }).where(eq(cardReports.id, reports[0].id));
+    assert.equal(await createCardReport(db, {
+      cardId: card.id,
+      reporterUserId: reporter.id,
+      reason: "spam",
+      details: "The content is still present.",
+    }), true);
+    const reportsAfterReview = await db.select().from(cardReports).where(eq(cardReports.cardId, card.id));
+    assert.equal(reportsAfterReview.length, 2);
+    assert.deepEqual(reportsAfterReview.map((report) => report.status).sort(), ["dismissed", "open"]);
+
+    assert.equal(await createCardReport(db, {
+      cardId: card.id,
+      reporterUserId: null,
+      reason: "spam",
+      details: null,
+    }), true);
+    assert.equal(await createCardReport(db, {
+      cardId: card.id,
+      reporterUserId: null,
+      reason: "spam",
+      details: null,
+    }), true);
 
     await db.insert(userBlocks).values({ blockerUserId: reporter.id, blockedUserId: owner.id }).onConflictDoNothing();
     await db.insert(userBlocks).values({ blockerUserId: reporter.id, blockedUserId: owner.id }).onConflictDoNothing();

@@ -104,7 +104,9 @@ export const cardReports = pgTable("card_reports", {
 }, (t) => [
   index("card_reports_status_created_idx").on(t.status, t.createdAt),
   index("card_reports_card_idx").on(t.cardId),
-  uniqueIndex("card_reports_reporter_once_idx").on(t.cardId, t.reporterUserId).where(sql`${t.reporterUserId} is not null`),
+  uniqueIndex("card_reports_open_reporter_once_idx")
+    .on(t.cardId, t.reporterUserId)
+    .where(sql`${t.reporterUserId} is not null and ${t.status} = 'open'`),
 ]);
 
 /** Viewer-initiated blocks; blocked card content and exchanges are hidden from the blocker. */

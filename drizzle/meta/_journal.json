@@ -50,6 +50,13 @@
       "when": 1793074638132,
       "tag": "0006_card_safety_moderation",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1793143941480,
+      "tag": "0007_reopen_reviewed_card_reports",
+      "breakpoints": true
     }
   ]
 }

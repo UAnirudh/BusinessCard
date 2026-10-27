@@ -1,8 +1,8 @@
 import { getDb } from "@/db";
-import { cardReports } from "@/db/schema";
 import { getCardBySlug } from "@/lib/cards";
 import { clientIp, fail, isSameOrigin, ok, parseBody, rateLimit } from "@/lib/api";
 import { getCurrentUser } from "@/lib/auth";
+import { createCardReport } from "@/lib/moderation";
 import { cardReportSchema } from "@/lib/validation";
 
 export const runtime = "nodejs";
@@ -22,15 +22,15 @@ export async function POST(request: Request) {
   }
 
   const db = await getDb();
-  await db
-    .insert(cardReports)
-    .values({
-      cardId: card.id,
-      reporterUserId: reporter?.id ?? null,
-      reason: parsed.data.reason,
-      details: parsed.data.details,
-    })
-    .onConflictDoNothing();
+  const created = await createCardReport(db, {
+    cardId: card.id,
+    reporterUserId: reporter?.id ?? null,
+    reason: parsed.data.reason,
+    details: parsed.data.details,
+  });
+  if (!created && reporter) {
+    return fail("You already have an open report for this card.", 409);
+  }
 
   return ok({ ok: true, message: "Thanks. Your report has been sent for review." }, 202, {
     "cache-control": "no-store",
