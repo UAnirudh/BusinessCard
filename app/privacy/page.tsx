@@ -27,6 +27,10 @@ const sections = [
     body: "Tappd records the card viewed, the link source (such as QR or NFC) and the time, then shows aggregate view counts to the card owner. A short-lived session-storage entry prevents repeat counting in the same browser tab session. Sign-in uses an HttpOnly session cookie. The service worker saves only the offline help page; it does not cache signed-in pages, wallet data or API responses. Hosting providers may process connection and diagnostic data in their own server logs.",
   },
   {
+    title: "Reports and blocks",
+    body: "Anyone can report a public card and optionally add details. If you are signed in, the report is linked to your account; reports are stored for moderator review. Signed-in members can block another member to hide that member’s card from their account and prevent exchanges between those accounts. A moderator may hide a reported card or suspend an account, which makes its cards private and revokes its sessions. Report details and moderation records remain in the active database until the card is deleted or the operator removes the records; backup copies may remain until provider backups rotate out.",
+  },
+  {
     title: "How information is used and stored",
     body: "Tappd uses this information to display cards, exchange and organize contacts, provide search, export your wallet and protect accounts from abuse. It is stored by the database and hosting services configured for Tappd. When password recovery is enabled, Tappd sends your account email and a one-time reset link through Resend so it can deliver the message. We do not sell card or wallet contact information or use it for third-party ad targeting.",
   },

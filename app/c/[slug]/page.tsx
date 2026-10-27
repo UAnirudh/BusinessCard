@@ -15,7 +15,7 @@ import {
 } from "lucide-react";
 import { SocialIcon } from "@/components/social-icon";
 import { getDb } from "@/db";
-import { cardViews } from "@/db/schema";
+import { cardViews, userBlocks } from "@/db/schema";
 import { getCardBySlug } from "@/lib/cards";
 import { getCurrentUser, getViewer } from "@/lib/auth";
 import { hasAvatar } from "@/lib/avatars";
@@ -28,6 +28,7 @@ import { ExchangeForm } from "@/components/exchange-form";
 import { ViewTracker } from "@/components/view-tracker";
 import { normalizeUrl, prettyUrl, firstParam } from "@/lib/utils";
 import { walletAvailability } from "@/lib/wallet";
+import { CardSafetyActions } from "@/components/card-safety-actions";
 
 export const dynamic = "force-dynamic";
 
@@ -49,6 +50,16 @@ export async function generateMetadata({
       title: "Card not found",
       robots: { index: false, follow: false },
     };
+  }
+
+  if (user && !isOwner) {
+    const db = await getDb();
+    const [block] = await db
+      .select({ blockerUserId: userBlocks.blockerUserId })
+      .from(userBlocks)
+      .where(and(eq(userBlocks.blockerUserId, user.id), eq(userBlocks.blockedUserId, card.userId)))
+      .limit(1);
+    if (block) return { title: "Card hidden" };
   }
 
   const photo = await hasAvatar(card.id);
@@ -87,6 +98,29 @@ export default async function PublicCardPage({
   const viewer = await getViewer();
   const isOwner = user?.id === card.userId;
   if (!card.isPublic && !isOwner) notFound();
+
+  let viewerBlockedCardOwner = false;
+  if (user && !isOwner) {
+    const db = await getDb();
+    const [block] = await db
+      .select({ blockerUserId: userBlocks.blockerUserId })
+      .from(userBlocks)
+      .where(and(eq(userBlocks.blockerUserId, user.id), eq(userBlocks.blockedUserId, card.userId)))
+      .limit(1);
+    viewerBlockedCardOwner = Boolean(block);
+  }
+
+  if (viewerBlockedCardOwner) {
+    return (
+      <main className="grid min-h-dvh place-items-center bg-ink px-5 text-white">
+        <div className="w-full max-w-md rounded-3xl border border-white/10 bg-white/[0.05] p-6 text-center">
+          <h1 className="text-xl font-semibold">You blocked this member</h1>
+          <p className="mt-2 text-sm leading-relaxed text-white/60">Their card is hidden from your account and you can’t exchange details with them while the block is active.</p>
+          <div className="mt-4 text-left"><CardSafetyActions slug={card.slug} signedIn initiallyBlocked /></div>
+        </div>
+      </main>
+    );
+  }
 
   const [photo, origin] = await Promise.all([hasAvatar(card.id), getOrigin()]);
   const wallets = walletAvailability();
@@ -314,6 +348,8 @@ export default async function PublicCardPage({
               />
             </section>
           )}
+
+          {!isOwner && <CardSafetyActions slug={card.slug} signedIn={Boolean(user)} />}
 
           {isOwner && (
             <section className="mt-3 grid grid-cols-2 gap-3">

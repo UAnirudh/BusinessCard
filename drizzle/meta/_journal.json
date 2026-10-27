@@ -43,6 +43,13 @@
       "when": 1793073316011,
       "tag": "0005_pending_signup_verification",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1793074638132,
+      "tag": "0006_card_safety_moderation",
+      "breakpoints": true
     }
   ]
 }

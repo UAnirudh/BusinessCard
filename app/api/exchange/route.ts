@@ -1,6 +1,6 @@
-import { and, eq, isNull } from "drizzle-orm";
+import { and, eq, isNull, or } from "drizzle-orm";
 import { getDb } from "@/db";
-import { connections, type Card } from "@/db/schema";
+import { connections, userBlocks, type Card } from "@/db/schema";
 import { getCardBySlug } from "@/lib/cards";
 import { getCurrentUser, getViewer } from "@/lib/auth";
 import { clientIp, fail, isSameOrigin, ok, parseBody, rateLimit } from "@/lib/api";
@@ -43,6 +43,18 @@ export async function POST(request: Request) {
 
   const db = await getDb();
   const viewer = await getViewer(request);
+
+  if (viewer) {
+    const [block] = await db
+      .select({ blockerUserId: userBlocks.blockerUserId })
+      .from(userBlocks)
+      .where(or(
+        and(eq(userBlocks.blockerUserId, viewer.user.id), eq(userBlocks.blockedUserId, card.userId)),
+        and(eq(userBlocks.blockerUserId, card.userId), eq(userBlocks.blockedUserId, viewer.user.id)),
+      ))
+      .limit(1);
+    if (block) return fail("This exchange is unavailable because one of these members has blocked the other.", 403);
+  }
 
   if (!user && !input.email && !input.phone) {
     return fail("Add an email or phone number so they can follow up.", 422);

@@ -8,6 +8,11 @@ import { getOrigin } from "@/lib/origin";
 import { longDate } from "@/lib/utils";
 import { SettingsForm } from "@/components/settings-form";
 import { InstallAppCard } from "@/components/install-app-card";
+import { isModeratorEmail } from "@/lib/moderation";
+import { getDb } from "@/db";
+import { cards, userBlocks } from "@/db/schema";
+import { eq, asc } from "drizzle-orm";
+import { BlockedMembers } from "@/components/blocked-members";
 
 export const metadata: Metadata = { title: "Settings" };
 export const dynamic = "force-dynamic";
@@ -17,6 +22,13 @@ export default async function SettingsPage() {
   if (!user) return null;
   const card = await ensureCard(user);
   const origin = await getOrigin();
+  const db = await getDb();
+  const blockedUsers = await db
+    .select({ slug: cards.slug, name: cards.displayName })
+    .from(userBlocks)
+    .innerJoin(cards, eq(userBlocks.blockedUserId, cards.userId))
+    .where(eq(userBlocks.blockerUserId, user.id))
+    .orderBy(asc(cards.displayName));
 
   return (
     <div>
@@ -39,6 +51,15 @@ export default async function SettingsPage() {
 
         <aside className="space-y-3">
           <InstallAppCard />
+          <BlockedMembers initialUsers={blockedUsers} />
+          {isModeratorEmail(user.email) && (
+            <div className="surface p-4">
+              <p className="text-[0.7rem] font-semibold uppercase tracking-[0.08em] text-faint">Trust and safety</p>
+              <Link href="/app/moderation" className="mt-2 inline-block text-[0.78rem] font-medium underline underline-offset-2">
+                Review card reports
+              </Link>
+            </div>
+          )}
           <div className="surface p-4">
             <p className="text-[0.7rem] font-semibold uppercase tracking-[0.08em] text-faint">Your card</p>
             <p className="mt-1 break-all font-mono text-[0.78rem]">{origin.replace(/^https?:\/\//, "")}/c/{card.slug}</p>

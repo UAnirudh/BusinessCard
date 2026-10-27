@@ -149,5 +149,20 @@ export const viewSchema = z.object({
   source: z.enum(["link", "qr", "nfc", "share", "direct"]).optional(),
 });
 
+export const cardReportSchema = z.object({
+  slug: z.string().trim().min(1).max(80),
+  reason: z.enum(["objectionable", "impersonation", "spam", "privacy", "other"]),
+  details: text(1000),
+});
+
+export const userBlockSchema = z.object({
+  slug: z.string().trim().min(1).max(80),
+});
+
+export const moderationDecisionSchema = z.object({
+  reportId: z.string().uuid(),
+  action: z.enum(["dismiss", "hide_card", "suspend_user"]),
+});
+
 export type CardUpdateInput = z.infer<typeof cardUpdateSchema>;
 export type ConnectionCreateInput = z.infer<typeof connectionCreateSchema>;

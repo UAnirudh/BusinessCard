@@ -1,4 +1,4 @@
-import { eq } from "drizzle-orm";
+import { and, eq, isNull } from "drizzle-orm";
 import { getDb } from "@/db";
 import { users } from "@/db/schema";
 import { createSession, verifyPassword } from "@/lib/auth";
@@ -22,7 +22,7 @@ export async function POST(request: Request) {
   const [account] = await db
     .select({ id: users.id, name: users.name, email: users.email, passwordHash: users.passwordHash })
     .from(users)
-    .where(eq(users.email, email))
+    .where(and(eq(users.email, email), isNull(users.suspendedAt)))
     .limit(1);
 
   if (!account || !verifyPassword(password, account.passwordHash)) {

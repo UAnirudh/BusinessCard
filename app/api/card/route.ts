@@ -6,6 +6,7 @@ import { fail, isSameOrigin, ok, parseBody } from "@/lib/api";
 import { ensureCard, isSlugAvailable } from "@/lib/cards";
 import { cardUpdateSchema } from "@/lib/validation";
 import { normalizeUrl } from "@/lib/utils";
+import { publicCardTextIssue } from "@/lib/moderation";
 
 export const runtime = "nodejs";
 
@@ -39,6 +40,20 @@ export async function PATCH(request: Request) {
     .filter((link) => link.url.length > 0)
     .slice(0, 8);
 
+  const isPublic = input.isPublic ?? card.isPublic;
+  if (isPublic) {
+    const issue = publicCardTextIssue([
+      input.displayName,
+      input.headline,
+      input.company,
+      input.bio,
+      input.location,
+      ...(input.tags ?? []),
+      ...links.map((link) => link.label),
+    ]);
+    if (issue) return fail(issue, 422);
+  }
+
   try {
     const [updated] = await db
       .update(cards)
@@ -58,7 +73,7 @@ export async function PATCH(request: Request) {
         accent: input.accent ?? card.accent,
         tags: (input.tags ?? []).slice(0, 12),
         links,
-        isPublic: input.isPublic ?? card.isPublic,
+        isPublic,
         collectLeads: input.collectLeads ?? card.collectLeads,
         slug: input.slug ?? card.slug,
         updatedAt: new Date(),
