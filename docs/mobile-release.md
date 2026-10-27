@@ -9,7 +9,7 @@ Tappd has two clients backed by the same web service:
 
 The Expo app calls the deployed service using `EXPO_PUBLIC_API_URL`. The server issues revocable bearer sessions through `/api/native/auth/login` and `/api/native/auth/signup`; authenticated API routes accept those tokens. Both platforms use the same accounts, cards, and wallet as the web app.
 
-The repository has app configuration and EAS build profiles, but no configured production server, production database, linked EAS project, publisher-owned application identifiers, store credentials, or store submissions. There has not yet been end-to-end testing on physical iOS and Android devices. Expo's JavaScript export and CI checks are not signed native store builds and do not replace device testing.
+The production web service and Postgres database are deployed on Railway at `https://tappd.up.railway.app`; the database migration and public database-backed QR/vCard endpoints have been verified. The EAS preview and production profiles point to this API. The app still needs a linked EAS project, publisher-owned application identifiers, store credentials, and store submissions. There has not yet been end-to-end testing on physical iOS and Android devices. Expo's JavaScript export and CI checks are not signed native store builds and do not replace device testing.
 
 ## Local development and CI
 
@@ -22,7 +22,7 @@ npm run build
 npm run dev
 ```
 
-Without `DATABASE_URL`, local web development uses PGlite. For Railway, configure a production Postgres database, set `DATABASE_URL` and the canonical HTTPS `NEXT_PUBLIC_APP_URL`, then deploy the Next.js app. `railway.json` runs `npm run db:migrate` as the pre-deploy command and starts the app with `npm start`. The proposed public service domain is `https://tappd.up.railway.app`; Railway must assign it to the service before it can be treated as live. No Tappd production host or database is configured in this repository checkout.
+Without `DATABASE_URL`, local web development uses PGlite. Railway production uses Postgres and `NEXT_PUBLIC_APP_URL=https://tappd.up.railway.app`; `railway.json` runs `npm run db:migrate` before starting the Next.js app. Railway's private Postgres endpoint presents a self-signed TLS certificate, so its Web service sets `TAPPD_ALLOW_SELF_SIGNED_DATABASE_CERT=true`. TLS remains enabled; strict certificate validation is the default everywhere else.
 
 Native app:
 
@@ -55,8 +55,7 @@ These builds require an EAS account/project, `EXPO_PUBLIC_API_URL` set in the pr
 
 ### Production service and privacy
 
-- Create the Tappd Railway project and service, configure a production Postgres database, choose its region and backup/retention settings, and generate/verify the proposed `tappd.up.railway.app` service domain. Set `DATABASE_URL`, canonical HTTPS `NEXT_PUBLIC_APP_URL`, `TAPPD_SUPPORT_EMAIL`, and the mobile production `EXPO_PUBLIC_API_URL`; run migrations and verify the live service before building store clients.
-- Set `DATABASE_URL`, canonical HTTPS `NEXT_PUBLIC_APP_URL`, and the mobile production `EXPO_PUBLIC_API_URL`; run migrations and verify the live service before building store clients.
+- Set a monitored `TAPPD_SUPPORT_EMAIL` before publishing. Railway production, its Postgres database, the canonical HTTPS domain, and the Expo preview/production API URL are configured and the database-backed public endpoints respond successfully.
 - Configure `TAPPD_TRUSTED_CLIENT_IP_HEADER` to the single-IP header injected by the production reverse proxy for login, signup, and exchange rate limits. The proxy must remove any incoming client value for that header and set its own. With this setting absent or invalid, requests share an `unattributed` rate-limit bucket; do not trust `X-Forwarded-For` or `X-Real-IP` directly.
 - Review `/privacy` and complete Apple privacy details and Google Play Data safety disclosures against the actual deployed providers and data handling. The privacy page still needs verified operator, service-provider, region, retention, and support details.
 - Publish and verify the public self-service deletion page at `/account-deletion`; add its canonical HTTPS URL to the Google Play listing. The page takes account holders to password-confirmed deletion in web Settings, and is linked from the website footer and privacy page.
