@@ -28,7 +28,7 @@ const sections = [
   },
   {
     title: "Reports and blocks",
-    body: "Anyone can report a public card and optionally add details. If you are signed in, the report is linked to your account; reports are stored for moderator review. Signed-in members can block another member to hide that member’s card from their account and prevent exchanges between those accounts. A moderator may hide a reported card or suspend an account, which makes its cards private and revokes its sessions. Report details and moderation records remain in the active database until the card is deleted or the operator removes the records; backup copies may remain until provider backups rotate out.",
+    body: "Anyone can report a public card and optionally add details. If you are signed in, the report is linked to your account; authorized moderators can see the report, the card owner’s account email, and the reporter’s account identity when it is available. Reports are stored for moderator review. Signed-in members can block another member to hide that member’s card from their account and prevent exchanges between those accounts. A moderator may hide a reported card or suspend an account, which makes its cards private and revokes its sessions. Report details and moderation records remain in the active database until the card is deleted or the operator removes the records; backup copies may remain until provider backups rotate out.",
   },
   {
     title: "How information is used and stored",
