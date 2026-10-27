@@ -66,11 +66,11 @@ These builds require an EAS account/project, `EXPO_PUBLIC_API_URL` set in the pr
 ### Native functionality and quality
 
 - Configure EAS and publisher-owned bundle/package IDs; create development builds for each platform.
-- Review the mobile dependency audit before store upload: the current Expo CLI dependency tree reports high `node-forge` and Zod advisories. The `node-forge` advisory currently has no patched release; recheck the upstream Expo dependency tree and advisories before release. Do not use `npm audit fix --force`, which proposes downgrading Expo to SDK 44.
+- Review the mobile dependency audit before store upload: Expo SDK 58's Expo CLI tooling currently pulls high-severity `node-forge@1.4.0` and `zod@3.25.76` advisories. The `node-forge` advisory has no patched release; the Zod advisory's patched version is 4.6.6, while Expo CLI 58.1.15 declares Zod `^3.25.76`. These are build/developer-tool dependencies rather than the shipped app runtime, but they still affect local and cloud builds. Recheck the upstream Expo dependency tree and advisories before release; do not force a major override without compatibility evidence. `npm audit fix --force` proposes downgrading Expo to SDK 44 and is not a safe fix.
 - Test signup/sign-in, token restore/revocation, public/private card states, QR exchange, wallet refresh, follow-up editing, contact saving, sign-out, and account deletion against the production-like backend.
 - Test camera and Contacts permissions, NFC-capable and NFC-unavailable devices, writable tags, denied permissions, offline/network failure, and small/large screen layouts on physical iPhones and Android devices.
 - Confirm deep-link behavior, accessibility, app icons, splash/safe-area layout, and release versioning on signed builds.
-- Add and verify crash reporting, support and privacy URLs, reviewer access, store screenshots, descriptions, age ratings, and release notes.
+- The public `/support` route is implemented and linked from the landing-page footer. Before submission, verify its production URL, confirm `hello@tappd.app` is monitored, and complete crash reporting, reviewer access, store screenshots, descriptions, age ratings, and release notes.
 
 ### Store submission
 
