@@ -51,6 +51,14 @@ export const accountEmailChangeTokens = pgTable("account_email_change_tokens", {
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
 }, (t) => [uniqueIndex("account_email_change_tokens_user_unique").on(t.userId), index("account_email_change_tokens_expiry_idx").on(t.expiresAt)]);
 
+/** Pending signups; only a digest of the single active email token is stored. */
+export const pendingSignups = pgTable("pending_signups", {
+  email: text("email").primaryKey(),
+  tokenHash: text("token_hash").notNull().unique(),
+  expiresAt: timestamp("expires_at", { withTimezone: true }).notNull(),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+}, (t) => [index("pending_signups_expiry_idx").on(t.expiresAt)]);
+
 /** One public card per account. */
 export const cards = pgTable("cards", {
   id: uuid("id").primaryKey().defaultRandom(),
@@ -73,8 +81,8 @@ export const cards = pgTable("cards", {
   accent: text("accent").notNull().default("lime"),
   tags: jsonb("tags").$type<string[]>().notNull().default([]),
   links: jsonb("links").$type<{ label: string; url: string }[]>().notNull().default([]),
-  isPublic: boolean("is_public").notNull().default(true),
-  collectLeads: boolean("collect_leads").notNull().default(true),
+  isPublic: boolean("is_public").notNull().default(false),
+  collectLeads: boolean("collect_leads").notNull().default(false),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
   updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
 }, (t) => [uniqueIndex("cards_slug_unique").on(t.slug), uniqueIndex("cards_user_unique").on(t.userId)]);

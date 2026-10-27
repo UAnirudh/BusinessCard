@@ -23,6 +23,7 @@ export type BusinessCard = {
   accent: string;
   tags: string[];
   isPublic: boolean;
+  collectLeads: boolean;
 };
 export type WalletContact = {
   id: string;

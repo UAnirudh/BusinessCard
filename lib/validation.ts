@@ -21,6 +21,11 @@ const optionalEmail = z
 export const signupSchema = z.object({
   name: z.string().trim().min(2, "Tell us your name").max(80),
   email: z.string().trim().toLowerCase().email("Enter a valid email address").max(200),
+});
+
+export const emailVerificationSchema = z.object({
+  token: z.string().regex(/^[A-Za-z0-9_-]{43}$/, "This verification link is invalid or expired"),
+  name: z.string().trim().min(2, "Tell us your name").max(80),
   password: z.string().min(8, "Use at least 8 characters").max(200),
 });
 

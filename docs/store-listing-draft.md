@@ -63,10 +63,10 @@ Use terms that describe the app, rather than competitor names or unsupported out
 
 ## Store links and publisher details to complete
 
-- **Marketing URL:** [production website URL]
-- **Support URL:** [public support page or monitored support contact]
-- **Privacy policy URL:** [canonical HTTPS privacy URL, checked on production]
-- **Account deletion URL:** [canonical HTTPS deletion page, checked on production]
+- **Marketing URL:** https://tappd.up.railway.app (verify on production before submission)
+- **Support URL:** https://tappd.up.railway.app/support (add a monitored support email before submission)
+- **Privacy policy URL:** https://tappd.up.railway.app/privacy (verify final operator and provider disclosures before submission)
+- **Account deletion URL:** https://tappd.up.railway.app/account-deletion (verify the complete deletion flow on the signed build)
 - **Seller/developer name:** [legal publisher name shown in the store]
 - **Copyright:** [publisher name and year]
 - **Contact email:** [monitored support address]
@@ -80,7 +80,7 @@ The app has a public support route at `https://tappd.up.railway.app/support` wit
 - App Store Connect: name and subtitle up to 30 characters each; promotional text up to 170; description up to 4,000; keywords up to 100 bytes. Privacy policy URL is required and Support URL must provide contact information. See [App information](https://developer.apple.com/help/app-store-connect/reference/app-information/app-information) and [platform version information](https://developer.apple.com/help/app-store-connect/reference/app-information/platform-version-information).
 - Apple screenshots are required (1–10 per localization). Capture from the final build and confirm the chosen device's current size in [Apple screenshot specifications](https://developer.apple.com/help/app-store-connect/reference/app-information/screenshot-specifications/).
 
-The privacy page describes Tappd's current code-level data handling, but operator identity, production providers, data region, backup/retention details, and a monitored `TAPPD_SUPPORT_EMAIL` must be verified before that page is treated as final store documentation.
+The privacy page describes Tappd's current code-level data handling, but operator identity, production providers, data region, backup/retention details, and a monitored `TAPPD_SUPPORT_EMAIL` must be verified before that page is treated as final store documentation. Use [the internal disclosure worksheet](store-data-disclosure-worksheet.md) to prepare the console declarations; it is a code-based draft, not a final legal or store declaration.
 
 ## Screenshot and preview checklist
 

@@ -69,3 +69,20 @@ export async function sendAccountEmailChangeEmail(to: string, confirmUrl: string
     idempotencyKey,
   );
 }
+
+export async function sendSignupVerificationEmail(to: string, verifyUrl: string, idempotencyKey: string) {
+  await sendTransactionalEmail(
+    to,
+    "Verify your Tappd email",
+    [
+      "We received a request to create a Tappd account with this email address.",
+      "",
+      `Verify your email and finish creating your account: ${verifyUrl}`,
+      "",
+      "This link expires in 24 hours and can only be used once. You will choose your password after opening the link. If you did not request this, you can ignore this email.",
+      "",
+      "Tappd Support",
+    ].join("\n"),
+    idempotencyKey,
+  );
+}

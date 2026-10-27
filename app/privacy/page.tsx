@@ -20,7 +20,7 @@ const sections = [
   },
   {
     title: "What other people can see",
-    body: "Cards are public by default. Anyone with a public card link can see the fields you have added to it, download its contact file and use its QR code. You can make your card private in the card editor. Turning off visitor details stops new accountless submissions; it does not remove contacts already in your wallet. Your wallet and account pages require sign-in.",
+    body: "New cards start private. When you turn on public sharing in the card editor, anyone with the card link can see the fields you have added, download its contact file and use its QR code. You can make the card private again at any time. Visitor details are off until you choose to enable them; turning them off stops new accountless submissions but does not remove contacts already in your wallet. Your wallet and account pages require sign-in.",
   },
   {
     title: "Card views, cookies and this device",
@@ -57,7 +57,7 @@ export default function PrivacyPage() {
             <ShieldCheck className="h-4 w-4" /> Your information, explained
           </div>
           <h1 className="mt-3 text-[2rem] font-semibold tracking-[-0.035em] sm:text-[2.5rem]">Privacy at Tappd</h1>
-          <p className="mt-2 text-[0.82rem] text-faint">Last updated October 26, 2026</p>
+          <p className="mt-2 text-[0.82rem] text-faint">Last updated October 27, 2026</p>
           <p className="mt-5 max-w-2xl text-[0.95rem] leading-relaxed text-muted">
             Tappd helps people share business cards and remember who they meet. This page explains what the app stores and what happens when you exchange details.
           </p>

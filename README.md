@@ -16,7 +16,7 @@ The web service is built with Next.js 16 (App Router), TypeScript, Tailwind CSS 
 - **QR code** generated server-side (SVG, downloadable) and a scannable share sheet.
 - **NFC writing** via Web NFC — write your card link to a cheap NTAG213/215/216 tag once, then tap phones.
 - **QR scanner** in the app (camera + jsQR) to open someone else's card instantly.
-- Privacy switches for public/private cards and visitor lead capture.
+- New cards start private. Members opt into public sharing and visitor lead capture from the card editor or native app.
 - Card views are tracked (owner views excluded) and shown on the dashboard.
 
 ### Your wallet

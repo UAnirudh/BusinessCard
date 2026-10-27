@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { ArrowRight, Eye, EyeOff, Loader2 } from "lucide-react";
+import { ArrowRight, Check, Eye, EyeOff, Loader2, Mail } from "lucide-react";
 
 export function AuthForm({ mode, redirectTo }: { mode: "login" | "signup"; redirectTo: string }) {
   const router = useRouter();
@@ -13,6 +13,7 @@ export function AuthForm({ mode, redirectTo }: { mode: "login" | "signup"; redir
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [pending, setPending] = useState(false);
+  const [verificationSent, setVerificationSent] = useState(false);
 
   const isSignup = mode === "signup";
 
@@ -26,12 +27,18 @@ export function AuthForm({ mode, redirectTo }: { mode: "login" | "signup"; redir
       const response = await fetch(isSignup ? "/api/auth/signup" : "/api/auth/login", {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify(isSignup ? { name, email, password } : { email, password }),
+        body: JSON.stringify(isSignup ? { name, email } : { email, password }),
       });
-      const data = (await response.json().catch(() => ({}))) as { error?: string };
+      const data = (await response.json().catch(() => ({}))) as { error?: string; verificationRequired?: boolean };
 
       if (!response.ok) {
         setError(data.error ?? "Something went wrong. Try again.");
+        setPending(false);
+        return;
+      }
+
+      if (isSignup && data.verificationRequired) {
+        setVerificationSent(true);
         setPending(false);
         return;
       }
@@ -42,6 +49,25 @@ export function AuthForm({ mode, redirectTo }: { mode: "login" | "signup"; redir
       setError("Could not reach the server. Check your connection and try again.");
       setPending(false);
     }
+  }
+
+  if (verificationSent) {
+    return (
+      <section className="surface mt-8 p-5 sm:p-6" aria-live="polite">
+        <div className="grid h-11 w-11 place-items-center rounded-2xl bg-lime/20 text-ink">
+          <Mail className="h-5 w-5" aria-hidden="true" />
+        </div>
+        <h2 className="mt-4 text-lg font-semibold tracking-[-0.02em]">Check your inbox</h2>
+        <p className="mt-2 text-sm leading-relaxed text-muted">
+          If this address can create an account, watch for a verification link at <strong className="break-all text-ink">{email}</strong>. Open it to verify your email and choose your password. The link expires in 24 hours.
+        </p>
+        <p className="mt-3 text-xs leading-relaxed text-faint">If it doesn’t arrive, check your spam folder or try signing up again to request a fresh link.</p>
+        <Link href="/login" className="btn btn-primary mt-6 w-full justify-center">
+          <Check className="h-4 w-4" aria-hidden="true" />
+          Back to sign in
+        </Link>
+      </section>
+    );
   }
 
   return (
@@ -79,7 +105,7 @@ export function AuthForm({ mode, redirectTo }: { mode: "login" | "signup"; redir
         />
       </div>
 
-      <div>
+      {!isSignup ? <div>
         <div className="flex items-baseline justify-between">
           <label htmlFor="password" className="label">Password</label>
           {isSignup ? <span className="hint">8+ characters</span> : <Link href="/forgot-password" className="text-[0.74rem] font-medium text-muted underline underline-offset-2 hover:text-ink">Forgot password?</Link>}
@@ -105,7 +131,7 @@ export function AuthForm({ mode, redirectTo }: { mode: "login" | "signup"; redir
             {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
           </button>
         </div>
-      </div>
+      </div> : <p className="rounded-xl bg-white/70 px-3 py-3 text-[0.8rem] leading-relaxed text-muted">We’ll ask you to choose a password after you verify your email.</p>}
 
       {error && (
         <p className="rounded-xl border border-[#f0d5c7] bg-[#fff7f2] px-3 py-2.5 text-[0.82rem] leading-relaxed text-danger" role="alert">
@@ -117,11 +143,11 @@ export function AuthForm({ mode, redirectTo }: { mode: "login" | "signup"; redir
         {pending ? (
           <>
             <Loader2 className="h-4 w-4 spin" />
-            {isSignup ? "Creating your card…" : "Signing in…"}
+            {isSignup ? "Sending verification link…" : "Signing in…"}
           </>
         ) : (
           <>
-            {isSignup ? "Create my card" : "Log in"}
+            {isSignup ? "Email me a verification link" : "Log in"}
             <ArrowRight className="h-4 w-4" />
           </>
         )}

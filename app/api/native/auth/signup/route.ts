@@ -1,59 +1,34 @@
-import { eq } from "drizzle-orm";
-import { getDb } from "@/db";
-import { cards, sessions, users } from "@/db/schema";
-import { createSessionRecord, hashPassword } from "@/lib/auth";
 import { clientIp, fail, isSameOrigin, ok, parseBody, rateLimit } from "@/lib/api";
-import { generateUniqueSlug } from "@/lib/cards";
+import { emailDeliveryConfigured, EmailNotConfiguredError } from "@/lib/email";
+import { requestSignupVerification } from "@/lib/signup-email";
 import { signupSchema } from "@/lib/validation";
 
 export const runtime = "nodejs";
+export const dynamic = "force-dynamic";
+
+const verificationMessage = "If this email can be used for a new account, we’ll send a verification link shortly.";
 
 export async function POST(request: Request) {
   if (!isSameOrigin(request)) return fail("Cross-origin request blocked", 403);
-  if (!(await rateLimit(`signup:${clientIp(request)}`, 12, 10 * 60 * 1000))) {
+  const parsed = await parseBody(request, signupSchema);
+  if (parsed.error) return parsed.error;
+  const { email } = parsed.data;
+
+  if (!(await rateLimit(`signup:ip:${clientIp(request)}`, 12, 10 * 60 * 1000)) ||
+      !(await rateLimit(`signup:email:${email}`, 4, 60 * 60 * 1000))) {
     return fail("Too many attempts. Try again in a few minutes.", 429);
   }
 
-  const parsed = await parseBody(request, signupSchema);
-  if (parsed.error) return parsed.error;
-  const { name, email, password } = parsed.data;
-
-  const db = await getDb();
-  const [existing] = await db.select({ id: users.id }).from(users).where(eq(users.email, email)).limit(1);
-  if (existing) return fail("An account with that email already exists. Try logging in.", 409, { field: "email" });
-
-  const slug = await generateUniqueSlug(email.split("@")[0].replace(/[._-]+/g, " ") || name);
-  let result;
-  try {
-    result = await db.transaction(async (tx) => {
-      const [account] = await tx
-        .insert(users)
-        .values({ email, name, passwordHash: hashPassword(password) })
-        .returning({ id: users.id, name: users.name, email: users.email });
-      const [card] = await tx
-        .insert(cards)
-        .values({ userId: account.id, slug, displayName: name, email, accent: "lime" })
-        .returning();
-      const session = createSessionRecord(account.id);
-      await tx.insert(sessions).values(session.row);
-      return { account, card, session };
-    });
-  } catch (error) {
-    const [duplicate] = await db.select({ id: users.id }).from(users).where(eq(users.email, email)).limit(1);
-    if (duplicate) return fail("An account with that email already exists. Try logging in.", 409, { field: "email" });
-    throw error;
+  if (!emailDeliveryConfigured()) {
+    return fail("Email verification is temporarily unavailable. Try again later.", 503);
   }
-  const { account, card, session } = result;
 
-  return ok(
-    {
-      ok: true,
-      token: session.token,
-      expiresAt: session.expiresAt.toISOString(),
-      user: { id: account.id, name: account.name, email: account.email },
-      card,
-    },
-    201,
-    { "cache-control": "no-store" },
-  );
+  try {
+    await requestSignupVerification(request, email);
+  } catch (error) {
+    if (!(error instanceof EmailNotConfiguredError)) throw error;
+    return fail("Email verification is temporarily unavailable. Try again later.", 503);
+  }
+
+  return ok({ ok: true, verificationRequired: true, email, message: verificationMessage }, 202, { "cache-control": "no-store" });
 }

@@ -171,6 +171,8 @@ async function main() {
         accent: member.accent,
         tags: member.tags,
         links: member.links ?? [],
+        isPublic: true,
+        collectLeads: true,
       })
       .returning({ id: cards.id });
 
