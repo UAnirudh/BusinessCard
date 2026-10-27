@@ -63,6 +63,10 @@ export function publicCardUrl(card: BusinessCard) {
   return `${API_ORIGIN}/c/${encodeURIComponent(card.slug)}`;
 }
 
+export function walletPassUrl(card: BusinessCard, provider: "apple" | "google") {
+  return `${API_ORIGIN}/api/wallet/${provider}/${encodeURIComponent(card.slug)}`;
+}
+
 export function privacyUrl() {
   return `${API_ORIGIN}/privacy`;
 }
