@@ -39,6 +39,9 @@ jobs:
       - name: Test password reset and session revocation
         run: npm run test:auth
 
+      - name: Test Wallet readiness
+        run: npm run test:wallet
+
       - name: Test mobile card reference validation
         run: npx tsx --test tests/mobile-card-reference.test.ts
 

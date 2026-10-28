@@ -1,4 +1,4 @@
-import { createHash, createSign } from "node:crypto";
+import { createHash, createPrivateKey, createSign, X509Certificate } from "node:crypto";
 import { execFile } from "node:child_process";
 import { mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
@@ -12,9 +12,84 @@ import { getOrigin } from "@/lib/origin";
 const env = (key: string) => process.env[key]?.trim() ?? "";
 const execFileAsync = promisify(execFile);
 
-export function walletAvailability() {
-  const issuerId = env("GOOGLE_WALLET_ISSUER_ID");
-  const classId = env("GOOGLE_WALLET_CLASS_ID");
+type AppleWalletMaterial = {
+  signerCertificate: string;
+  signerPrivateKey: string;
+  wwdrCertificate: string;
+  passTypeIdentifier: string;
+  teamIdentifier: string;
+  passphrase?: string;
+  now?: number;
+};
+
+function decodeBase64(value: string) {
+  if (!value || !/^[A-Za-z0-9+/]+={0,2}$/.test(value) || value.length % 4 !== 0) throw new Error("Invalid base64");
+  const decoded = Buffer.from(value, "base64");
+  if (decoded.length === 0 || decoded.toString("base64") !== value) throw new Error("Invalid base64");
+  return decoded;
+}
+
+function certificateIsCurrent(certificate: X509Certificate, now: number) {
+  const validFrom = Date.parse(certificate.validFrom);
+  const validTo = Date.parse(certificate.validTo);
+  return Number.isFinite(validFrom) && Number.isFinite(validTo) && now >= validFrom && now < validTo;
+}
+
+function certificateSubjectMatches(certificate: X509Certificate, passTypeIdentifier: string, teamIdentifier: string) {
+  const attributes = certificate.subject.split("\n").map((line) => {
+    const separator = line.indexOf("=");
+    return separator < 0 ? null : [line.slice(0, separator), line.slice(separator + 1)] as const;
+  }).filter((attribute): attribute is readonly [string, string] => attribute !== null);
+  const userIds = attributes.filter(([name]) => name === "UID").map(([, value]) => value);
+  const organizationalUnits = attributes.filter(([name]) => name === "OU").map(([, value]) => value);
+  return userIds.length === 1 && userIds[0] === passTypeIdentifier &&
+    organizationalUnits.length === 1 && organizationalUnits[0] === teamIdentifier;
+}
+
+/** Validate locally available Apple pass signing materials without exposing credential details. */
+export function appleWalletSigningMaterialIsValid({
+  signerCertificate,
+  signerPrivateKey,
+  wwdrCertificate,
+  passTypeIdentifier,
+  teamIdentifier,
+  passphrase,
+  now = Date.now(),
+}: AppleWalletMaterial) {
+  try {
+    const signer = new X509Certificate(decodeBase64(signerCertificate));
+    const wwdr = new X509Certificate(decodeBase64(wwdrCertificate));
+    const key = createPrivateKey({ key: decodeBase64(signerPrivateKey), format: "pem", ...(passphrase ? { passphrase } : {}) });
+    return key.type === "private" && signer.checkPrivateKey(key) &&
+      certificateSubjectMatches(signer, passTypeIdentifier, teamIdentifier) &&
+      signer.checkIssued(wwdr) && signer.verify(wwdr.publicKey) &&
+      certificateIsCurrent(signer, now) && certificateIsCurrent(wwdr, now);
+  } catch {
+    return false;
+  }
+}
+
+export async function isOpenSslAvailable(command: string) {
+  if (!command.trim()) return false;
+  try {
+    await execFileAsync(command, ["version"], { windowsHide: true, timeout: 5000, maxBuffer: 64 * 1024 });
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+const opensslChecks = new Map<string, Promise<boolean>>();
+function cachedOpenSslAvailable(command: string) {
+  let check = opensslChecks.get(command);
+  if (!check) {
+    check = isOpenSslAvailable(command);
+    opensslChecks.set(command, check);
+  }
+  return check;
+}
+
+function googleWalletIsConfigured(issuerId: string, classId: string) {
   let validGoogleAccount = false;
   try {
     const raw = Buffer.from(env("GOOGLE_WALLET_SERVICE_ACCOUNT_JSON_BASE64"), "base64").toString("utf8");
@@ -23,13 +98,35 @@ export function walletAvailability() {
   } catch {
     validGoogleAccount = false;
   }
+  return Boolean(issuerId && classId.startsWith(`${issuerId}.`) && /^[A-Za-z0-9._-]+$/.test(classId) && validGoogleAccount);
+}
+
+export async function walletAvailability() {
+  const issuerId = env("GOOGLE_WALLET_ISSUER_ID");
+  const classId = env("GOOGLE_WALLET_CLASS_ID");
+  const signerCertificate = env("APPLE_WALLET_SIGNER_CERT_BASE64");
+  const signerPrivateKey = env("APPLE_WALLET_SIGNER_KEY_BASE64");
+  const wwdrCertificate = env("APPLE_WALLET_WWDR_CERT_BASE64");
+  const passTypeIdentifier = env("APPLE_WALLET_PASS_TYPE_ID");
+  const teamIdentifier = env("APPLE_WALLET_TEAM_ID");
+  const appleMaterialReady = Boolean(
+    passTypeIdentifier && teamIdentifier &&
+    appleWalletSigningMaterialIsValid({
+      signerCertificate,
+      signerPrivateKey,
+      wwdrCertificate,
+      passTypeIdentifier,
+      teamIdentifier,
+      passphrase: env("APPLE_WALLET_SIGNER_KEY_PASSPHRASE") || undefined,
+    }),
+  );
+  const [apple, google] = await Promise.all([
+    appleMaterialReady ? cachedOpenSslAvailable(env("OPENSSL_BIN") || "openssl") : false,
+    Promise.resolve(googleWalletIsConfigured(issuerId, classId)),
+  ]);
   return {
-    apple: Boolean(
-      env("APPLE_WALLET_PASS_TYPE_ID") && env("APPLE_WALLET_TEAM_ID") &&
-      env("APPLE_WALLET_SIGNER_CERT_BASE64") && env("APPLE_WALLET_SIGNER_KEY_BASE64") &&
-      env("APPLE_WALLET_WWDR_CERT_BASE64"),
-    ),
-    google: Boolean(issuerId && classId.startsWith(`${issuerId}.`) && /^[A-Za-z0-9._-]+$/.test(classId) && validGoogleAccount),
+    apple,
+    google,
   };
 }
 

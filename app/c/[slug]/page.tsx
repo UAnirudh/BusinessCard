@@ -123,7 +123,7 @@ export default async function PublicCardPage({
   }
 
   const [photo, origin] = await Promise.all([hasAvatar(card.id), getOrigin()]);
-  const wallets = walletAvailability();
+  const wallets = await walletAvailability();
   const accent = getAccent(card.accent);
   const rawSource = firstParam(query.src);
   const source = ["qr", "nfc", "share", "link"].includes(rawSource) ? rawSource : "link";
