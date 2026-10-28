@@ -1,4 +1,4 @@
-import { createHash, createPrivateKey, createSign, X509Certificate } from "node:crypto";
+import { createHash, createPrivateKey, createPublicKey, createSign, createVerify, X509Certificate } from "node:crypto";
 import { execFile } from "node:child_process";
 import { mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
@@ -89,16 +89,41 @@ function cachedOpenSslAvailable(command: string) {
   return check;
 }
 
-function googleWalletIsConfigured(issuerId: string, classId: string) {
-  let validGoogleAccount = false;
+export function googleWalletServiceAccountIsValid(encodedCredentials: string) {
   try {
-    const raw = Buffer.from(env("GOOGLE_WALLET_SERVICE_ACCOUNT_JSON_BASE64"), "base64").toString("utf8");
-    const credentials = JSON.parse(raw) as { client_email?: string; private_key?: string };
-    validGoogleAccount = Boolean(credentials.client_email && credentials.private_key);
+    const rawBytes = decodeBase64(encodedCredentials);
+    const credentials = JSON.parse(rawBytes.toString("utf8")) as {
+      type?: string;
+      project_id?: string;
+      private_key_id?: string;
+      client_email?: string;
+      private_key?: string;
+    };
+    if (credentials.type !== "service_account" ||
+      !credentials.project_id || !/^[a-z][a-z0-9-]{4,28}[a-z0-9]$/.test(credentials.project_id) ||
+      !credentials.private_key_id || !/^[A-Za-z0-9_-]+$/.test(credentials.private_key_id) ||
+      !credentials.client_email || !/^[^\s@]+@(?:[a-z0-9-]+\.)+gserviceaccount\.com$/i.test(credentials.client_email) ||
+      !credentials.private_key) return false;
+
+    const key = createPrivateKey(credentials.private_key);
+    if (key.type !== "private" || key.asymmetricKeyType !== "rsa" || (key.asymmetricKeyDetails?.modulusLength ?? 0) < 2048) return false;
+    const message = Buffer.from("tappd-google-wallet-readiness");
+    const signer = createSign("RSA-SHA256");
+    signer.update(message);
+    signer.end();
+    const signature = signer.sign(key);
+    const verifier = createVerify("RSA-SHA256");
+    verifier.update(message);
+    verifier.end();
+    return verifier.verify(createPublicKey(key), signature);
   } catch {
-    validGoogleAccount = false;
+    return false;
   }
-  return Boolean(issuerId && classId.startsWith(`${issuerId}.`) && /^[A-Za-z0-9._-]+$/.test(classId) && validGoogleAccount);
+}
+
+function googleWalletIsConfigured(issuerId: string, classId: string) {
+  return Boolean(issuerId && classId.startsWith(`${issuerId}.`) && /^[A-Za-z0-9._-]+$/.test(classId) &&
+    googleWalletServiceAccountIsValid(env("GOOGLE_WALLET_SERVICE_ACCOUNT_JSON_BASE64")));
 }
 
 export async function walletAvailability() {

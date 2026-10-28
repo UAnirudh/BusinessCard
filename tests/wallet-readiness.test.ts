@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
+import { generateKeyPairSync } from "node:crypto";
 import test from "node:test";
-import { appleWalletSigningMaterialIsValid, isOpenSslAvailable, walletAvailability } from "@/lib/wallet";
+import { appleWalletSigningMaterialIsValid, googleWalletServiceAccountIsValid, isOpenSslAvailable, walletAvailability } from "@/lib/wallet";
 
 // These are public self-signed fixtures and test-only private keys, not Apple credentials.
 const VALID_CERT = "LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUJ6ekNDQVhhZ0F3SUJBZ0lVUkpuR1huREF1R2dRT282VlB4QUROT0xNMVVJd0NnWUlLb1pJemowRUF3SXcKWHpFbk1DVUdBMVVFQXd3ZVZHRndjR1FnZDJGc2JHVjBJSEpsWVdScGJtVnpjeUJtYVhoMGRYSmxNUkV3RHdZRApWUVFMREFoVVJVRk5WRVZUVkRFaE1COEdDZ21TSm9tVDhpeGtBUUVNRVhCaGMzTXVaWGhoYlhCc1pTNTBaWE4wCk1CNFhEVEl3TURFd01UQXdNREF3TUZvWERUUXdNREV3TVRBd01EQXdNRm93WHpFbk1DVUdBMVVFQXd3ZVZHRncKY0dRZ2QyRnNiR1YwSUhKbFlXUnBibVZ6Y3lCbWFYaDBkWEpsTVJFd0R3WURWUVFMREFoVVJVRk5WRVZUVkRFaApNQjhHQ2dtU0pvbVQ4aXhrQVFFTUVYQmhjM011WlhoaGJYQnNaUzUwWlhOME1Ga3dFd1lIS29aSXpqMENBUVlJCktvWkl6ajBEQVFjRFFnQUVaajFUUDUxUklEK1NjYUEwWlhZZ3BZQjNYemNSd1JSRWdYN2dNeUtucXJ2MlV5Tm8KR2tVZnVTa29yLzNBYm9ndXF6cUYrMWZlVjR4OHg5dWxJSUhPRktNUU1BNHdEQVlEVlIwVEFRSC9CQUl3QURBSwpCZ2dxaGtqT1BRUURBZ05IQURCRUFpQlp6ZVRKSjBoRUVBcUhUd3ppZDN6dllhTGEwQnZjT2ZwM1RreXFmNUdyClhnSWdUNVdKWmZDL2RpOGFNSHNQM0FJNE1FSlBhb0FGQnlUR0xBWlNPaTdvNVlZPQotLS0tLUVORCBDRVJUSUZJQ0FURS0tLS0tCg==";
@@ -11,6 +12,15 @@ const VALID_KEY = "LS0tLS1CRUdJTiBQUklWQVRFIEtFWS0tLS0tCk1JR0hBZ0VBTUJNR0J5cUdTT
 const OTHER_KEY = "LS0tLS1CRUdJTiBQUklWQVRFIEtFWS0tLS0tCk1JR0hBZ0VBTUJNR0J5cUdTTTQ5QWdFR0NDcUdTTTQ5QXdFSEJHMHdhd0lCQVFRZ3dUZWgxZnh2TjRlRHVwSGYKOGxuL1I2RWdoNENzVnNGeDVMeU9DNjRCYTN1aFJBTkNBQVRrOUlPY3N0VHZCZFZmd0Q4Y2pMOGFFc0NMQ3IxYwpuNndTOHl5MjdhZlRhNExVUkMxSDA4Sm54bitMN09HUitzTFJrVEFLMzRSYlRmQTFpL3AyVUhkYQotLS0tLUVORCBQUklWQVRFIEtFWS0tLS0tCg==";
 const UNRELATED_WWDR_CERT = "LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUJ3akNDQVdtZ0F3SUJBZ0lVREFxVFk0TGo4NjI2RnROL3RMNVZVQTZQQ08wd0NnWUlLb1pJemowRUF3SXcKVnpFZk1CMEdBMVVFQXd3V1ZXNXlaV3hoZEdWa0lGZFhSRklnWm1sNGRIVnlaVEVSTUE4R0ExVUVDd3dJVkVWQgpUVlJGVTFReElUQWZCZ29Ka2lhSmsvSXNaQUVCREJGd1lYTnpMbVY0WVcxd2JHVXVkR1Z6ZERBZUZ3MHlNREF4Ck1ERXdNREF3TURCYUZ3MDBNREF4TURFd01EQXdNREJhTUZjeEh6QWRCZ05WQkFNTUZsVnVjbVZzWVhSbFpDQlgKVjBSU0lHWnBlSFIxY21VeEVUQVBCZ05WQkFzTUNGUkZRVTFVUlZOVU1TRXdId1lLQ1pJbWlaUHlMR1FCQVF3UgpjR0Z6Y3k1bGVHRnRjR3hsTG5SbGMzUXdXVEFUQmdjcWhrak9QUUlCQmdncWhrak9QUU1CQndOQ0FBVGs5SU9jCnN0VHZCZFZmd0Q4Y2pMOGFFc0NMQ3IxY242d1M4eXkyN2FmVGE0TFVSQzFIMDhKbnhuK0w3T0dSK3NMUmtUQUsKMzRSYlRmQTFpL3AyVUhkYW94TXdFVEFQQmdOVkhSTUJBZjhFQlRBREFRSC9NQW9HQ0NxR1NNNDlCQU1DQTBjQQpNRVFDSUNCWHFMRWZrUlJ6TU5BVmczK054UktGOWpYOHJUemhQYndQWnZGTVBMQy9BaUFnRXNTNlNVdEt1UUZyCjBySTJYdUN3UzhVeWJNZmp1WTlBa1dtVEQ0RnM1Zz09Ci0tLS0tRU5EIENFUlRJRklDQVRFLS0tLS0K";
 const NOW = Date.UTC(2026, 10, 27);
+const googleRsaKey = generateKeyPairSync("rsa", { modulusLength: 2048 }).privateKey;
+const GOOGLE_SERVICE_ACCOUNT = {
+  type: "service_account",
+  project_id: "tappd-wallet-test",
+  private_key_id: "0123456789abcdef0123456789abcdef01234567",
+  private_key: googleRsaKey.export({ format: "pem", type: "pkcs8" }).toString(),
+  client_email: "wallet-test@tappd-wallet-test.iam.gserviceaccount.com",
+};
+const encodeGoogleCredentials = (value: unknown) => Buffer.from(JSON.stringify(value)).toString("base64");
 
 const material = (overrides: Partial<Parameters<typeof appleWalletSigningMaterialIsValid>[0]> = {}) => ({
   signerCertificate: VALID_CERT,
@@ -55,6 +65,47 @@ test("Apple readiness rejects expired signer and WWDR certificates", () => {
 
 test("Apple readiness rejects a missing or non-runnable OpenSSL binary", async () => {
   assert.equal(await isOpenSslAvailable("tappd-openssl-binary-that-does-not-exist"), false);
+});
+
+test("Google readiness accepts a structurally valid service account with an RSA signing key", () => {
+  assert.equal(googleWalletServiceAccountIsValid(encodeGoogleCredentials(GOOGLE_SERVICE_ACCOUNT)), true);
+});
+
+test("Google readiness rejects malformed JSON and malformed private keys", () => {
+  assert.equal(googleWalletServiceAccountIsValid(Buffer.from("not-json").toString("base64")), false);
+  assert.equal(googleWalletServiceAccountIsValid(encodeGoogleCredentials({ ...GOOGLE_SERVICE_ACCOUNT, private_key: "not-a-key" })), false);
+});
+
+test("Google readiness rejects non-RSA keys and incomplete identity fields", () => {
+  const ecKey = Buffer.from(VALID_KEY, "base64").toString("utf8");
+  assert.equal(googleWalletServiceAccountIsValid(encodeGoogleCredentials({ ...GOOGLE_SERVICE_ACCOUNT, private_key: ecKey })), false);
+  assert.equal(googleWalletServiceAccountIsValid(encodeGoogleCredentials({ ...GOOGLE_SERVICE_ACCOUNT, client_email: "not-an-email" })), false);
+  assert.equal(googleWalletServiceAccountIsValid(encodeGoogleCredentials({ ...GOOGLE_SERVICE_ACCOUNT, private_key_id: "" })), false);
+});
+
+test("wallet availability reflects locally valid Google credentials using boolean flags only", async () => {
+  const names = ["GOOGLE_WALLET_ISSUER_ID", "GOOGLE_WALLET_CLASS_ID", "GOOGLE_WALLET_SERVICE_ACCOUNT_JSON_BASE64", "APPLE_WALLET_PASS_TYPE_ID", "APPLE_WALLET_TEAM_ID"] as const;
+  const previous = Object.fromEntries(names.map((name) => [name, process.env[name]]));
+  Object.assign(process.env, {
+    GOOGLE_WALLET_ISSUER_ID: "123456789",
+    GOOGLE_WALLET_CLASS_ID: "123456789.tappd",
+    GOOGLE_WALLET_SERVICE_ACCOUNT_JSON_BASE64: encodeGoogleCredentials(GOOGLE_SERVICE_ACCOUNT),
+  });
+  delete process.env.APPLE_WALLET_PASS_TYPE_ID;
+  delete process.env.APPLE_WALLET_TEAM_ID;
+  try {
+    const valid = await walletAvailability();
+    assert.deepEqual(valid, { apple: false, google: true });
+    process.env.GOOGLE_WALLET_SERVICE_ACCOUNT_JSON_BASE64 = Buffer.from("not-json").toString("base64");
+    const malformed = await walletAvailability();
+    assert.deepEqual(malformed, { apple: false, google: false });
+    assert.equal(Object.values(malformed).every((value) => typeof value === "boolean"), true);
+  } finally {
+    for (const name of names) {
+      if (previous[name] === undefined) delete process.env[name];
+      else process.env[name] = previous[name];
+    }
+  }
 });
 
 test("wallet availability exposes only boolean flags and fails Apple closed when OpenSSL is missing", async () => {
