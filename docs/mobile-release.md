@@ -71,7 +71,7 @@ After downloading the Android App Bundle, inspect the manifest from the signed r
 ### Native functionality and quality
 
 - Configure EAS and publisher-owned bundle/package IDs; create development builds for each platform.
-- Dependency audit checked October 27, 2026: the root production dependency audit reports no advisories. The mobile audit reports high-severity Zod advisory GHSA-mrhx-c7xc-m3w5 through `expo@58.0.20` → `@expo/cli@58.1.16` → `zod@3.25.76` (<4.6.6), plus low-severity `deepmerge` advisory GHSA-gcqx-w48m-w2h4 in Expo tooling; the current audit reports no high-severity `node-forge` advisory. These vulnerable packages resolve through Expo/ESLint tooling and are not imported by Tappd application source; they remain installed for CI and EAS build workflows. Do not force dependency overrides without verifying Expo CLI compatibility; recheck the dependency tree and available upstream fixes before store upload.
+- Dependency audit checked October 28, 2026: the mobile package overrides Zod to `4.6.6` to resolve high-severity advisory GHSA-mrhx-c7xc-m3w5. Expo CLI `58.1.16` declares Zod `^3.25.76`, so this major-version override needs ongoing compatibility checks; mobile typecheck, lint, Expo Doctor (20/20), and Android/iOS JavaScript exports passed with it. Seven low-severity findings remain through Expo tooling, including `deepmerge@4.3.1`; the reviewed advisory currently lists no patched version. These packages are not imported by Tappd application source, but remain in build and lint tooling. Recheck the dependency tree and run a signed build before store upload.
 - Test signup/sign-in, token restore/revocation, public/private card states, QR exchange, wallet refresh, follow-up editing, contact saving, sign-out, and account deletion against the production-like backend.
 - Test camera and Contacts permissions, NFC-capable and NFC-unavailable devices, writable tags, denied permissions, offline/network failure, and small/large screen layouts on physical iPhones and Android devices.
 - Confirm deep-link behavior, accessibility, app icons, splash/safe-area layout, and release versioning on signed builds.
@@ -97,6 +97,7 @@ After downloading the Android App Bundle, inspect the manifest from the signed r
 - [Google Play testing requirements for new personal accounts](https://support.google.com/googleplay/android-developer/answer/14151465?hl=en)
 - [Apple upcoming submission requirements](https://developer.apple.com/news/upcoming-requirements/)
 - [Zod advisory GHSA-mrhx-c7xc-m3w5](https://github.com/advisories/GHSA-mrhx-c7xc-m3w5)
+- [deepmerge advisory GHSA-gcqx-w48m-w2h4](https://github.com/advisories/GHSA-gcqx-w48m-w2h4)
 - [Apple Wallet pass certificates](https://developer.apple.com/help/account/capabilities/create-wallet-identifiers-and-certificates)
 - [Google Wallet issuer onboarding](https://developers.google.com/wallet/generic/getting-started/issuer-onboarding)
 - [Apple Core NFC](https://developer.apple.com/documentation/corenfc/)
