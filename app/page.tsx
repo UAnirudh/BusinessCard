@@ -9,7 +9,6 @@ import {
   Search,
   Smartphone,
   Tags,
-  Users,
 } from "lucide-react";
 import { Logo } from "@/components/logo";
 import { SUPPORT_EMAIL } from "@/lib/support";
@@ -157,7 +156,7 @@ export default function LandingPage() {
           {[
             { title: "Link", text: "Send it in a message or email" },
             { title: "QR code", text: "Show it on your phone" },
-            { title: "NFC tag", text: "Share with a tap" },
+            { title: "NFC tag", text: "Open your card from a tag" },
           ].map((item) => (
             <div key={item.title} className="flex items-center gap-3 sm:justify-center">
               <span className="grid h-9 w-9 place-items-center rounded-xl border border-line bg-white text-muted">
@@ -247,7 +246,7 @@ export default function LandingPage() {
         <div className="wrap flex flex-col items-start justify-between gap-5 sm:flex-row sm:items-center">
           <div>
             <p className="text-sm font-medium text-muted">Free to start</p>
-            <h2 className="mt-1 text-2xl font-semibold tracking-tight sm:text-3xl">Make your card in a few minutes.</h2>
+            <h2 className="mt-1 text-2xl font-semibold tracking-tight sm:text-3xl">Create a card you can share anywhere.</h2>
           </div>
           <Link href="/signup" className="btn btn-primary btn-lg">
             Create your card <ArrowRight aria-hidden="true" className="h-4 w-4" />
