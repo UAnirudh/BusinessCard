@@ -96,7 +96,6 @@ export default async function DashboardPage() {
     { done: hasPhoto, label: "Add a profile photo", href: "/app/card" },
     { done: Boolean(card.headline && card.company), label: "Add your role and company", href: "/app/card" },
     { done: Boolean(card.email || card.phone), label: "Add contact details", href: "/app/card" },
-    { done: card.tags.length >= 2, label: "Tag what you do (2+)", href: "/app/card" },
     { done: totalConnections > 0, label: "Save your first contact", href: "/app/connections?new=1" },
   ];
   const completed = checklist.filter((item) => item.done).length;
@@ -117,13 +116,15 @@ export default async function DashboardPage() {
           </h1>
           <p className="mt-1 text-[0.9rem] text-muted">
             {weekConnections > 0
-              ? `${weekConnections} new ${weekConnections === 1 ? "person" : "people"} joined your wallet this week.`
-              : "Your card is live and ready for the next introduction."}
+              ? `${weekConnections} new ${weekConnections === 1 ? "contact" : "contacts"} this week.`
+              : card.isPublic
+                ? "Your public card is ready to share."
+                : "Your card is private. Only you can see it."}
           </p>
         </div>
         <div className="flex gap-2">
           <Link href={cardPath(card.slug)} target="_blank" className="btn btn-outline btn-sm">
-            View public card
+            {card.isPublic ? "View public card" : "Preview card"}
             <ArrowUpRight className="h-3.5 w-3.5" />
           </Link>
           <Link href="/app/tap" className="btn btn-primary btn-sm">
@@ -136,7 +137,7 @@ export default async function DashboardPage() {
       <section className="grid gap-3 sm:grid-cols-3">
         <div className="surface p-5">
           <div className="flex items-center justify-between">
-            <p className="text-[0.72rem] font-semibold uppercase tracking-[0.08em] text-faint">In your wallet</p>
+            <p className="text-[0.78rem] font-medium text-muted">In your wallet</p>
             <Users className="h-4 w-4 text-faint" />
           </div>
           <p className="mt-3 text-[2rem] font-semibold leading-none tracking-tight">{totalConnections}</p>
@@ -148,7 +149,7 @@ export default async function DashboardPage() {
 
         <div className="surface p-5">
           <div className="flex items-center justify-between">
-            <p className="text-[0.72rem] font-semibold uppercase tracking-[0.08em] text-faint">Card views</p>
+            <p className="text-[0.78rem] font-medium text-muted">Card views</p>
             <Eye className="h-4 w-4 text-faint" />
           </div>
           <div className="mt-3 flex items-end justify-between gap-3">
@@ -176,7 +177,7 @@ export default async function DashboardPage() {
 
         <div className="surface flex flex-col justify-between p-5">
           <div className="flex items-center justify-between">
-            <p className="text-[0.72rem] font-semibold uppercase tracking-[0.08em] text-faint">Your live link</p>
+            <p className="text-[0.78rem] font-medium text-muted">Card link</p>
             <QrCode className="h-4 w-4 text-faint" />
           </div>
           <div className="mt-3">
@@ -219,11 +220,11 @@ export default async function DashboardPage() {
             />
             <div className="space-y-3">
               <div className="rounded-xl border border-line-soft bg-[#fbfaf7] p-3">
-                <p className="text-[0.68rem] font-semibold uppercase tracking-[0.08em] text-faint">Public link</p>
+                <p className="text-[0.74rem] font-medium text-muted">Card URL</p>
                 <p className="mt-1 break-all font-mono text-[0.75rem] text-ink">{publicUrl}</p>
               </div>
               <div className="rounded-xl border border-line-soft p-3">
-                <p className="text-[0.68rem] font-semibold uppercase tracking-[0.08em] text-faint">Visibility</p>
+                <p className="text-[0.74rem] font-medium text-muted">Visibility</p>
                 <p className="mt-1 text-[0.82rem]">
                   {card.isPublic ? "Public — anyone with the link can open it" : "Private — only you can see it"}
                 </p>
@@ -237,7 +238,7 @@ export default async function DashboardPage() {
                     <span key={tag} className="tag">{tag}</span>
                   ))
                 ) : (
-                  <span className="hint">No tags yet — they power search later.</span>
+                  <span className="hint">Add tags to make contacts easier to find.</span>
                 )}
               </div>
             </div>
@@ -301,8 +302,8 @@ export default async function DashboardPage() {
       <section className="surface overflow-hidden">
         <div className="flex items-center justify-between border-b border-line-soft px-5 py-4">
           <div>
-            <h2 className="text-[0.95rem] font-semibold">Recent introductions</h2>
-            <p className="text-[0.78rem] text-muted">The last five people who landed in your wallet.</p>
+            <h2 className="text-[0.95rem] font-semibold">Recent contacts</h2>
+            <p className="text-[0.78rem] text-muted">Your five most recent contacts.</p>
           </div>
           <Link href="/app/connections" className="btn btn-ghost btn-sm">
             View all
@@ -315,10 +316,9 @@ export default async function DashboardPage() {
             <span className="grid h-11 w-11 place-items-center rounded-2xl bg-[#f3f1e8]">
               <Users className="h-5 w-5 text-muted" />
             </span>
-            <p className="mt-3 text-[0.95rem] font-medium">Your wallet is empty — for now.</p>
+            <p className="mt-3 text-[0.95rem] font-medium">No contacts yet.</p>
             <p className="mt-1 max-w-sm text-[0.82rem] text-muted">
-              Share your card with the next person you meet. When they send their details back,
-              they show up here automatically.
+              Share your card, or add someone after a conversation.
             </p>
             <div className="mt-4 flex gap-2">
               <Link href="/app/tap" className="btn btn-primary btn-sm">Share my card</Link>

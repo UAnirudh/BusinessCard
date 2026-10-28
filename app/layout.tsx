@@ -10,7 +10,7 @@ const baseUrl = process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000";
 export const metadata: Metadata = {
   metadataBase: new URL(baseUrl),
   title: {
-    default: `${SITE.name} — digital business cards that stay organized`,
+    default: `${SITE.name} — ${SITE.tagline}`,
     template: `%s · ${SITE.name}`,
   },
   description: SITE.description,

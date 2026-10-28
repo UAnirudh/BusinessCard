@@ -187,7 +187,7 @@ export default async function PublicCardPage({
 
       <div className="mx-auto w-full max-w-[480px] px-4 pt-7 sm:pt-10">
         {isOwner && (
-          <p className="mb-3 text-center text-[0.78rem] text-muted">This is how your public card looks.</p>
+          <p className="mb-3 text-center text-[0.78rem] text-muted">Preview</p>
         )}
 
         <section className="surface relative overflow-hidden rounded-3xl p-5 shadow-[0_16px_40px_-32px_rgba(11,11,13,0.35)] sm:p-7">
@@ -199,9 +199,11 @@ export default async function PublicCardPage({
               <h1 className="break-words text-[1.65rem] font-semibold leading-[1.1] tracking-[-0.035em]">
                 {card.displayName}
               </h1>
-              <p className="mt-1 text-[0.86rem] text-muted">
-                {[card.headline, card.company].filter(Boolean).join(" · ") || "Tappd member"}
-              </p>
+              {(card.headline || card.company) && (
+                <p className="mt-1 text-[0.86rem] text-muted">
+                  {[card.headline, card.company].filter(Boolean).join(" · ")}
+                </p>
+              )}
               {card.location && (
                 <p className="mt-1 flex items-center gap-1 text-[0.75rem] text-muted">
                   <MapPin className="h-3 w-3" /> {card.location}
@@ -323,7 +325,7 @@ export default async function PublicCardPage({
         {!isOwner && <CardSafetyActions slug={card.slug} signedIn={Boolean(user)} />}
 
         <footer className="mt-10 flex items-center justify-between border-t border-line pt-5 text-[0.7rem] text-faint">
-          <span>Share a card. Keep in touch.</span>
+          <span>Keep your contacts and follow-ups together.</span>
           <Link href="/" className="hover:text-ink">Tappd</Link>
         </footer>
       </div>

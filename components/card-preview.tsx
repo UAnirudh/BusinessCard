@@ -1,4 +1,4 @@
-import { Nfc, QrCode } from "lucide-react";
+import { QrCode } from "lucide-react";
 import { Avatar } from "@/components/avatar";
 import { getAccent } from "@/lib/site";
 import { cx } from "@/lib/utils";
@@ -32,11 +32,9 @@ export function CardPreview({
       style={{ background: accent.base, color: accent.ink }}
     >
       <div className={cx("px-6", compact ? "pb-5 pt-5" : "pb-7 pt-6")}>
-        <div className="flex items-center justify-between text-[0.6rem] font-semibold uppercase tracking-[0.16em] opacity-55">
-          <span>tappd / card</span>
-          <span className="flex items-center gap-1">
-            <Nfc className="h-3 w-3" /> live
-          </span>
+        <div className="flex items-center justify-between text-[0.68rem] font-medium opacity-65">
+          <span>Tappd card</span>
+          <span>Preview</span>
         </div>
 
         <div className={cx("flex items-center gap-3.5", compact ? "mt-5" : "mt-8")}>

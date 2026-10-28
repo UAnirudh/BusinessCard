@@ -28,7 +28,7 @@ const steps = [
   },
   {
     number: "03",
-    title: "Keep in touch",
+    title: "Add a contact",
     body: "Save the people you meet, add a note and find them when you need them.",
     icon: Search,
   },
@@ -42,8 +42,8 @@ const features = [
   },
   {
     icon: Tags,
-    title: "Remember the context",
-    body: "Add a note about where you met or what you wanted to follow up on.",
+    title: "Keep the context",
+    body: "Add a meeting note and a follow-up date to each contact.",
   },
   {
     icon: Download,
@@ -125,7 +125,7 @@ export default function LandingPage() {
           <div className="mx-auto w-full max-w-[400px] rounded-3xl border border-line bg-[#f7f6f2] p-3 sm:p-4">
             <div className="rounded-2xl border border-line bg-white p-5 shadow-[0_12px_32px_-28px_rgba(11,11,13,0.4)] sm:p-6">
               <div className="flex items-center justify-between border-b border-line-soft pb-4">
-                <span className="text-xs font-semibold uppercase tracking-[0.12em] text-muted">Card preview</span>
+                <span className="text-xs font-semibold text-muted">Example card</span>
                 <span className="rounded-full bg-[#f2f5e9] px-2.5 py-1 text-xs font-medium text-[#526b13]">Public</span>
               </div>
               <div className="flex items-center gap-4 py-6">
@@ -137,15 +137,12 @@ export default function LandingPage() {
                 </div>
               </div>
               <p className="text-sm leading-6 text-[#484842]">
-                A simple card with the details you choose to share.
+                Choose which details to share.
               </p>
-              <div className="mt-5 flex gap-2 border-t border-line-soft pt-5">
-                <span className="flex-1 rounded-xl bg-ink px-4 py-3 text-center text-sm font-medium text-white">Save contact</span>
-                <span aria-label="QR code preview" className="grid h-11 w-11 place-items-center rounded-xl border border-line text-ink">
-                  <QrCode aria-hidden="true" className="h-5 w-5" />
-                </span>
+              <div className="mt-5 flex items-center justify-between gap-3 border-t border-line-soft pt-4 text-xs text-muted">
+                <span>Opens in any browser</span>
+                <span className="flex items-center gap-1.5"><QrCode aria-hidden="true" className="h-4 w-4" /> Link, QR or NFC</span>
               </div>
-              <p className="mt-4 text-center text-xs text-muted">Opens in a browser. No account needed.</p>
             </div>
           </div>
         </div>
@@ -172,7 +169,7 @@ export default function LandingPage() {
         <div className="wrap">
           <div className="max-w-2xl">
             <p className="eyebrow">How it works</p>
-            <h2 className="mt-3 text-3xl font-semibold leading-tight tracking-tight sm:text-4xl">From first hello to easy follow-up.</h2>
+            <h2 className="mt-3 text-3xl font-semibold leading-tight tracking-tight sm:text-4xl">Keep the details that make a follow-up personal.</h2>
           </div>
           <div className="mt-9 grid gap-3 md:grid-cols-3 md:gap-4">
             {steps.map((step) => (
@@ -195,9 +192,9 @@ export default function LandingPage() {
         <div className="wrap grid gap-10 lg:grid-cols-[0.8fr_1.2fr] lg:gap-16">
           <div className="max-w-md">
             <p className="eyebrow">Your contact wallet</p>
-            <h2 className="mt-3 text-3xl font-semibold leading-tight tracking-tight sm:text-4xl">Keep the people you meet close.</h2>
+            <h2 className="mt-3 text-3xl font-semibold leading-tight tracking-tight sm:text-4xl">Your contacts, with the context you need.</h2>
             <p className="mt-4 text-base leading-7 text-muted">
-              Your card starts the conversation. Tappd helps you remember it and pick it up later.
+              Save who you met, where you met, and when you want to follow up.
             </p>
             <Link href="/signup" className="btn btn-primary mt-6">
               Start your wallet <ArrowRight aria-hidden="true" className="h-4 w-4" />
@@ -258,7 +255,7 @@ export default function LandingPage() {
         <div className="wrap flex flex-wrap items-center justify-between gap-5 text-sm text-muted">
           <div className="flex items-center gap-3">
             <Logo />
-            <span className="hidden text-faint sm:inline">Digital cards. Better follow-ups.</span>
+            <span className="hidden text-faint sm:inline">Your card and contacts in one place.</span>
           </div>
           <nav aria-label="Footer navigation" className="flex flex-wrap gap-x-5 gap-y-2">
             <Link href="/privacy" className="hover:text-ink">Privacy</Link>
