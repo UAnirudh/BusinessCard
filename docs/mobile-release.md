@@ -11,6 +11,8 @@ The Expo app calls the deployed service using `EXPO_PUBLIC_API_URL`. Native sign
 
 The production web service and Postgres database are deployed on Railway at `https://tappd.up.railway.app`; the database migration and public database-backed QR/vCard endpoints have been verified. The EAS preview and production profiles point to this API. The app still needs a linked EAS project, publisher-owned application identifiers, store credentials, and store submissions. There has not yet been end-to-end testing on physical iOS and Android devices. Expo's JavaScript export and CI checks are not signed native store builds and do not replace device testing.
 
+Production page smoke check, 2026-10-27: `/`, `/privacy`, `/support`, and `/account-deletion` returned HTTP 200. The support page does not show an email contact, so production still needs a monitored `TAPPD_SUPPORT_EMAIL`. This check confirms the pages load; it does not verify signup mail, native actions, or store readiness.
+
 ## Local development and CI
 
 Web service:
@@ -69,7 +71,7 @@ After downloading the Android App Bundle, inspect the manifest from the signed r
 ### Native functionality and quality
 
 - Configure EAS and publisher-owned bundle/package IDs; create development builds for each platform.
-- Dependency audit checked October 27, 2026: the root production dependency audit reports no advisories. The mobile audit reports high-severity Zod advisory GHSA-mrhx-c7xc-m3w5 through `expo@58.0.20` → `@expo/cli@58.1.16` → `zod@3.25.76` (<4.6.6); the current audit reports no high-severity `node-forge` advisory. Zod is in Expo build tooling, not the shipped app runtime. Do not force a Zod 4 override without verifying Expo CLI compatibility; recheck the dependency tree before store upload.
+- Dependency audit checked October 27, 2026: the root production dependency audit reports no advisories. The mobile audit reports high-severity Zod advisory GHSA-mrhx-c7xc-m3w5 through `expo@58.0.20` → `@expo/cli@58.1.16` → `zod@3.25.76` (<4.6.6), plus low-severity `deepmerge` advisory GHSA-gcqx-w48m-w2h4 in Expo tooling; the current audit reports no high-severity `node-forge` advisory. These vulnerable packages resolve through Expo/ESLint tooling and are not imported by Tappd application source; they remain installed for CI and EAS build workflows. Do not force dependency overrides without verifying Expo CLI compatibility; recheck the dependency tree and available upstream fixes before store upload.
 - Test signup/sign-in, token restore/revocation, public/private card states, QR exchange, wallet refresh, follow-up editing, contact saving, sign-out, and account deletion against the production-like backend.
 - Test camera and Contacts permissions, NFC-capable and NFC-unavailable devices, writable tags, denied permissions, offline/network failure, and small/large screen layouts on physical iPhones and Android devices.
 - Confirm deep-link behavior, accessibility, app icons, splash/safe-area layout, and release versioning on signed builds.
