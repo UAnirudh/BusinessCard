@@ -42,7 +42,7 @@ const features = [
   },
   {
     icon: Tags,
-    title: "Keep the context",
+    title: "Notes and reminders",
     body: "Add a meeting note and a follow-up date to each contact.",
   },
   {
