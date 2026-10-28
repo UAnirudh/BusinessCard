@@ -70,38 +70,38 @@ export function CardSafetyActions({
   }
 
   return (
-    <section aria-label="Card safety" className="mt-3 rounded-2xl border border-white/10 bg-white/[0.04] p-4 text-white/75">
-      <p className="text-[0.78rem] font-medium text-white/85">Help keep Tappd respectful</p>
-      <p className="mt-1 text-[0.72rem] leading-relaxed text-white/50">Report content that looks unsafe or misleading. Reports are saved in Tappd’s moderation queue.</p>
+    <section aria-label="Card safety" className="mt-3 rounded-2xl border border-line bg-white p-4 text-muted">
+      <p className="text-[0.78rem] font-medium text-ink">Card safety</p>
+      <p className="mt-1 text-[0.72rem] leading-relaxed">Report a card that looks unsafe or misleading.</p>
       <div className="mt-3 flex flex-wrap gap-2">
-        <button type="button" className="rounded-lg border border-white/15 px-3 py-2 text-[0.72rem] hover:bg-white/10" onClick={() => setOpen(!open)}>
+        <button type="button" className="rounded-lg border border-line px-3 py-2 text-[0.72rem] text-ink transition hover:bg-[#f7f5ee]" onClick={() => setOpen(!open)} aria-expanded={open} aria-controls="card-report-form">
           {open ? "Cancel report" : "Report this card"}
         </button>
         {signedIn && (
-          <button type="button" className="rounded-lg border border-white/15 px-3 py-2 text-[0.72rem] hover:bg-white/10" onClick={() => void toggleBlock()} disabled={busy}>
+          <button type="button" className="rounded-lg border border-line px-3 py-2 text-[0.72rem] text-ink transition hover:bg-[#f7f5ee]" onClick={() => void toggleBlock()} disabled={busy}>
             {blocked ? "Unblock member" : "Block member"}
           </button>
         )}
       </div>
       {open && (
-        <div className="mt-3 grid gap-2">
-          <label className="grid gap-1 text-[0.72rem] text-white/65">
+        <div id="card-report-form" className="mt-3 grid gap-2">
+          <label className="grid gap-1 text-[0.72rem] text-muted">
             Reason
-            <select className="rounded-lg border border-white/15 bg-[#17171c] px-3 py-2 text-sm text-white" value={reason} onChange={(event) => setReason(event.target.value as typeof reason)}>
+            <select className="rounded-lg border border-line bg-white px-3 py-2 text-sm text-ink" value={reason} onChange={(event) => setReason(event.target.value as typeof reason)}>
               {reasons.map(([value, label]) => <option key={value} value={value}>{label}</option>)}
             </select>
           </label>
-          <label className="grid gap-1 text-[0.72rem] text-white/65">
+          <label className="grid gap-1 text-[0.72rem] text-muted">
             Details (optional)
-            <textarea className="min-h-20 rounded-lg border border-white/15 bg-[#17171c] px-3 py-2 text-sm text-white" maxLength={1000} value={details} onChange={(event) => setDetails(event.target.value)} />
+            <textarea className="min-h-20 rounded-lg border border-line bg-white px-3 py-2 text-sm text-ink" maxLength={1000} value={details} onChange={(event) => setDetails(event.target.value)} />
           </label>
           <button type="button" className="btn btn-lime btn-sm justify-center" onClick={() => void submitReport()} disabled={busy}>
             {busy ? "Sending…" : "Send report"}
           </button>
         </div>
       )}
-      {message && <p role="status" className="mt-3 text-[0.72rem] text-lime">{message}</p>}
-      {!signedIn && <p className="mt-2 text-[0.68rem] text-white/40">Sign in to block this member from your card view and exchanges.</p>}
+      {message && <p role="status" className="mt-3 text-[0.72rem] text-ok">{message}</p>}
+      {!signedIn && <p className="mt-2 text-[0.68rem]">Sign in to block this member from your card view and exchanges.</p>}
     </section>
   );
 }
