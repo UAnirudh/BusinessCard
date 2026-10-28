@@ -109,7 +109,8 @@ The production Railway project is already deployed at `https://tappd.up.railway.
    - `NEXT_PUBLIC_APP_URL` — the assigned production HTTPS Railway origin (used for QR codes, card links and metadata)
    - `TAPPD_SUPPORT_EMAIL` — monitored support and privacy inbox controlled by the operator
    - `TAPPD_TRUSTED_CLIENT_IP_HEADER=X-Real-IP` — Railway's public HTTP edge overwrites this header with the remote client IP. This trust applies to requests through the Railway HTTP edge; don't reuse it on direct or differently proxied deployments. [Railway request-header docs](https://docs.railway.com/networking/public-networking/specs-and-limits) and [Railway's edge-header clarification](https://station.railway.com/questions/security-clarification-x-forwarded-for-fb0bba28).
-   - Add Resend and Wallet secrets only after their respective provider accounts and credentials are configured.
+   - `RESEND_API_KEY` and `TAPPD_EMAIL_FROM` — required for signup verification, password recovery, and email changes; use a verified sending domain before enabling public signup.
+   - Add Wallet secrets only after their respective provider accounts and credentials are configured.
 5. **Deploy and verify** the health of the service, then set the HTTPS origin in `mobile/.env` as `EXPO_PUBLIC_API_URL`. EAS preview and production profiles already point to the production origin. Do not seed the hosted database: `npm run db:seed` is restricted to local development databases and refuses production mode or remote database hosts.
 
 `.env.example` documents the variables. Never commit real credentials. Railway production uses a self-signed Postgres TLS certificate, so its Web service explicitly sets `TAPPD_ALLOW_SELF_SIGNED_DATABASE_CERT=true`; certificate validation remains strict by default on other hosts.
@@ -168,7 +169,7 @@ Both drivers share the same Drizzle schema and query API, so behaviour is identi
 
 - **NFC:** Web NFC writing requires Chrome on Android over HTTPS (localhost works). iPhones read NFC tags natively but cannot write them from a browser, so the UI falls back to QR. There is no peer-to-peer "bump" API on modern phones — the tag/QR link is the tap.
 - **App stores:** An Expo / React Native iOS and Android client now exists in `mobile/`; it is not yet a signed, device-verified, or published store build. Store release still needs a production backend, publisher-owned application identifiers, EAS project/build configuration, Apple and Google signing credentials, listing assets and disclosures, physical-device testing, and store review. See [`docs/mobile-release.md`](docs/mobile-release.md) for the current checklist.
-- **No email sending:** there is no password-reset or verification email yet; accounts are created instantly. Add a transactional email provider before opening signups publicly.
+- **Email verification and recovery:** new accounts are created only after the mailbox owner opens a single-use signup link and chooses their password. Signup verification, password recovery, and sign-in email changes require `RESEND_API_KEY` and `TAPPD_EMAIL_FROM` from a verified sending domain.
 - **Rate limiting** uses shared database-backed counters, so app instances connected to the same Postgres database share rate limits. Review capacity and retention as production traffic and abuse patterns become clear.
 - **One card per account.** Team cards, multiple identities per user, and CRM integrations (HubSpot, Notion, Google Contacts sync) are natural next steps.
 - **Images** are stored in Postgres for zero extra infrastructure. At scale, move avatars to object storage (S3/R2/Blob) — the serving route is isolated at `/api/avatar/[cardId]`.

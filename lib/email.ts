@@ -86,3 +86,23 @@ export async function sendSignupVerificationEmail(to: string, verifyUrl: string,
     idempotencyKey,
   );
 }
+
+/** Neutral account-access note used when signup is requested for an existing account. */
+export async function sendSignupAccountAccessEmail(to: string, loginUrl: string, resetUrl: string, idempotencyKey: string) {
+  await sendTransactionalEmail(
+    to,
+    "Your Tappd account access",
+    [
+      "We received a request to create or access a Tappd account using this email address.",
+      "",
+      `If you already have a Tappd account, sign in here: ${loginUrl}`,
+      `If you need to recover your password, use this page: ${resetUrl}`,
+      "",
+      "If you are new to Tappd, return to the signup page to request a verification link. This message does not change your account or password.",
+      "If you did not make this request, you can ignore this email.",
+      "",
+      "Tappd Support",
+    ].join("\n"),
+    idempotencyKey,
+  );
+}

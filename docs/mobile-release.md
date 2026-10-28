@@ -22,7 +22,7 @@ npm run build
 npm run dev
 ```
 
-Without `DATABASE_URL`, local web development uses PGlite. Railway production uses Postgres and `NEXT_PUBLIC_APP_URL=https://tappd.up.railway.app`; `railway.json` runs `npm run db:migrate` before starting the Next.js app. Railway's private Postgres endpoint presents a self-signed TLS certificate, so its Web service sets `TAPPD_ALLOW_SELF_SIGNED_DATABASE_CERT=true`. TLS remains enabled; strict certificate validation is the default everywhere else.
+Without `DATABASE_URL`, local web development uses PGlite. Railway production uses Postgres and `NEXT_PUBLIC_APP_URL=https://tappd.up.railway.app`. Configure the Railway Web service's pre-deploy command as `npm run db:migrate` so schema changes finish before the new app version starts; this repository has no checked-in Railway deployment config. Railway's private Postgres endpoint presents a self-signed TLS certificate, so its Web service sets `TAPPD_ALLOW_SELF_SIGNED_DATABASE_CERT=true`. TLS remains enabled; strict certificate validation is the default everywhere else.
 
 Native app:
 
