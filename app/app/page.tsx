@@ -10,7 +10,6 @@ import {
   Plus,
   QrCode,
   Search,
-  Sparkles,
   Users,
 } from "lucide-react";
 import { getDb } from "@/db";
@@ -282,7 +281,7 @@ export default async function DashboardPage() {
               {[
                 { href: "/app/connections?new=1", label: "Add a contact", icon: Plus },
                 { href: "/app/find", label: "Find someone", icon: Search },
-                { href: "/app/tap", label: "Tap & share", icon: Sparkles },
+                { href: "/app/tap", label: "Tap & share", icon: Nfc },
                 { href: "/api/export", label: "Export CSV", icon: Download },
               ].map((action) => (
                 <Link

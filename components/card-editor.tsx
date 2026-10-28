@@ -231,7 +231,7 @@ export function CardEditor({
           </p>
           <h1 className="mt-2 text-[1.8rem] font-semibold tracking-[-0.035em]">My card</h1>
           <p className="mt-1 text-[0.9rem] text-muted">
-            Everything here updates your live card instantly after you save.
+            Edit the details people see on your public card.
           </p>
         </div>
         <div className="flex items-center gap-2">

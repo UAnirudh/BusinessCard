@@ -8,7 +8,6 @@ export function AuthAside() {
     <aside className="relative hidden overflow-hidden bg-ink p-10 text-white lg:flex lg:flex-col lg:justify-between">
       <div className="grid-bg absolute inset-0 opacity-60" />
       <div className="glow -right-24 top-10 h-80 w-80 bg-lime/20" />
-      <div className="glow -left-20 bottom-0 h-72 w-72 bg-[#6d4df5]/20" />
 
       <div className="relative">
         <Logo tone="light" />
@@ -16,11 +15,10 @@ export function AuthAside() {
 
       <div className="relative">
         <h2 className="display max-w-sm text-[2.5rem]">
-          The last business card you’ll ever print.
+          Share your details. Keep your contacts.
         </h2>
         <p className="mt-4 max-w-sm text-[0.95rem] leading-relaxed text-white/55">
-          One profile for every room you walk into — and a wallet that remembers who you met and why
-          they mattered.
+          Share your card by link, QR code or NFC. Save the people you meet in one searchable wallet.
         </p>
 
         <div className="mt-9 max-w-xs rounded-2xl border border-white/10 bg-white/[0.04] p-4 backdrop-blur">

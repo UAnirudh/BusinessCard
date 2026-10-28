@@ -9,7 +9,6 @@ import {
   QrCode,
   Search,
   Smartphone,
-  Sparkles,
   Tags,
   Users,
 } from "lucide-react";
@@ -26,14 +25,14 @@ const steps = [
   },
   {
     number: "02",
-    title: "Share in one move",
+    title: "Share your card",
     body: "Hold your phone to an NFC tag, show your QR, or send the link. The other person never installs anything.",
     icon: Nfc,
   },
   {
     number: "03",
     title: "Find them later",
-    body: "Everyone you meet lands in your wallet with tags and notes. Ask “designer in Berlin” and get the person.",
+    body: "Save contacts with tags and notes, then find them by name, role, company or location.",
     icon: Search,
   },
 ];
@@ -41,14 +40,14 @@ const steps = [
 const features = [
   {
     icon: Search,
-    title: "Ask for people, not file names",
-    body: "“Who did growth for a fintech?” Tappd ranks your contacts by role, company, tags and notes — and shows why each match surfaced.",
+    title: "Search your contacts",
+    body: "Find people by name, role, company, tags and notes. Results show the details that matched.",
     wide: true,
   },
   {
     icon: Tags,
-    title: "Organized on arrival",
-    body: "Every exchange is filed with source, date and tags. Add notes before you forget the coffee shop.",
+    title: "Keep useful details",
+    body: "Add tags and notes to a contact, including where you met and what to follow up on.",
   },
   {
     icon: Download,
@@ -57,13 +56,13 @@ const features = [
   },
   {
     icon: Users,
-    title: "Two-way by default",
-    body: "When a Tappd member taps you back, you both get each other’s details. No typing, no typos.",
+    title: "Swap details",
+    body: "Tappd members can send their card back when they receive yours.",
   },
   {
     icon: BarChart3,
-    title: "See what lands",
-    body: "Views, exchanges and recent activity, so you know which room your card actually worked in.",
+    title: "Track card activity",
+    body: "See card views, exchanges and recent introductions.",
   },
   {
     icon: Lock,
@@ -116,10 +115,8 @@ export default function LandingPage() {
       </header>
 
       {/* hero */}
-      <section className="grain relative isolate overflow-hidden">
-        <div className="grid-bg absolute inset-0 opacity-70" />
+      <section className="relative isolate overflow-hidden">
         <div className="glow -left-32 top-[-10rem] h-[26rem] w-[26rem] bg-[#d4ff3f]/25" />
-        <div className="glow right-[-6rem] top-24 h-[22rem] w-[22rem] bg-[#6d4df5]/25" />
         <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-ink to-transparent" />
 
         <div className="wrap relative grid items-center gap-14 pb-24 pt-16 lg:grid-cols-[1.05fr_0.95fr] lg:pb-32 lg:pt-24">
@@ -140,8 +137,8 @@ export default function LandingPage() {
               later.
             </h1>
             <p className="mt-6 max-w-md text-[1.02rem] leading-relaxed text-white/60">
-              Tappd turns your phone into a business card that shares in one tap — then files
-              everyone you meet into a wallet you can actually search.
+              Share your contact details by NFC, QR code or link. Save the people you meet and find
+              them later by name, role, company, tags or notes.
             </p>
             <div className="mt-8 flex flex-wrap items-center gap-3">
               <Link href="/signup" className="btn btn-lime btn-lg">
@@ -219,27 +216,6 @@ export default function LandingPage() {
               </div>
             </div>
 
-            <div className="absolute -left-6 top-16 hidden rounded-2xl border border-white/10 bg-[#1b1b21]/95 px-3.5 py-2.5 shadow-xl backdrop-blur sm:block">
-              <p className="text-[0.62rem] font-medium uppercase tracking-[0.14em] text-white/40">Tag read</p>
-              <p className="mt-1 flex items-center gap-1.5 text-[0.78rem] font-medium">
-                <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-lime" />
-                Maya’s public card
-              </p>
-            </div>
-
-            <div className="absolute -right-4 bottom-10 hidden w-[13.5rem] rounded-2xl border border-white/10 bg-[#1b1b21]/95 p-3.5 shadow-xl backdrop-blur sm:block">
-              <p className="text-[0.62rem] font-medium uppercase tracking-[0.14em] text-white/40">Find</p>
-              <p className="mt-1.5 rounded-lg bg-white/5 px-2 py-1.5 font-mono text-[0.68rem] text-white/80">
-                “designer in berlin”
-              </p>
-              <div className="mt-2 flex items-center gap-2 rounded-lg bg-lime/10 px-2 py-1.5">
-                <Avatar name="Maya Chen" size={22} />
-                <div className="min-w-0">
-                  <p className="truncate text-[0.72rem] font-medium">Maya Chen</p>
-                  <p className="truncate text-[0.6rem] text-lime/80">role + tag + city</p>
-                </div>
-              </div>
-            </div>
           </div>
         </div>
       </section>
@@ -248,9 +224,9 @@ export default function LandingPage() {
       <section className="border-y border-white/8 bg-ink-2">
         <div className="wrap grid gap-6 py-7 text-center sm:grid-cols-3 sm:text-left">
           {[
-            ["1 tap", "to share everything"],
-            ["0 paper", "cards left in a drawer"],
-            ["100% yours", "export or delete anytime"],
+            ["NFC", "share from a tag"],
+            ["QR code", "scan with a camera"],
+            ["Direct link", "opens in a browser"],
           ].map(([big, small]) => (
             <div key={big} className="flex items-baseline justify-center gap-2 sm:justify-start">
               <span className="text-xl font-semibold tracking-tight text-lime">{big}</span>
@@ -266,7 +242,7 @@ export default function LandingPage() {
           <div className="max-w-2xl">
             <span className="eyebrow !text-white/40">How it works</span>
             <h2 className="display mt-4 text-[clamp(2rem,4vw,3rem)]">
-              From handshake to saved contact in about four seconds.
+              Share your card. Save the details. Find people later.
             </h2>
           </div>
           <div className="mt-12 grid gap-4 md:grid-cols-3">
@@ -297,8 +273,7 @@ export default function LandingPage() {
               </h2>
             </div>
             <p className="max-w-sm text-sm leading-relaxed text-white/45">
-              Most digital cards stop at a pretty link. Tappd keeps the relationship: capture, tags,
-              notes, reminders and search that understands what you meant.
+              Keep contacts, notes and follow-ups together, then search by the details you saved.
             </p>
           </div>
           <div className="mt-12 grid gap-4 md:grid-cols-3">
@@ -322,20 +297,17 @@ export default function LandingPage() {
           <div>
             <span className="eyebrow !text-white/40">The wallet</span>
             <h2 className="display mt-4 text-[clamp(2rem,4vw,3rem)]">
-              Ask like a human.
-              <br />
-              Get a person back.
+              Find the right contact.
             </h2>
             <p className="mt-5 max-w-lg text-[0.98rem] leading-relaxed text-white/55">
-              Tappd ranks every contact against your words — role, company, city, tags and the notes
-              you wrote at the event. It explains each match, so you can trust the result instead of
-              scrolling a list of 400 names.
+              Search names, roles, companies, locations, tags and notes from one place. Matching
+              contacts appear first, with the matched details shown beside each result.
             </p>
             <ul className="mt-7 space-y-3 text-sm text-white/60">
               {[
-                "Understands synonyms: designer ↔ design, VC ↔ investor",
-                "Ranks name and tags above bio noise",
-                "Favorites float to the top on tie",
+                "Search by name, role, company or location",
+                "Include tags and notes in your search",
+                "Filter to your favorite contacts",
               ].map((item) => (
                 <li key={item} className="flex items-start gap-2.5">
                   <Check className="mt-0.5 h-4 w-4 shrink-0 text-lime" />
@@ -350,17 +322,16 @@ export default function LandingPage() {
           </div>
 
           <div className="rounded-3xl border border-white/10 bg-ink p-5 shadow-2xl">
-            <div className="flex items-center gap-2 rounded-xl border border-white/10 bg-white/[0.04] px-3 py-2.5">
+            <div className="flex items-center gap-2 rounded-xl border border-white/10 bg-white/[0.04] px-3 py-2.5" aria-label="Example contact search">
               <Search className="h-4 w-4 text-white/40" />
               <span className="font-mono text-[0.78rem] text-white/80">investor in new york</span>
-              <span className="ml-auto rounded-md bg-lime px-1.5 py-0.5 text-[0.6rem] font-semibold text-ink">↵</span>
             </div>
-            <p className="mt-3 px-1 text-[0.68rem] uppercase tracking-[0.14em] text-white/30">4 matches ranked</p>
+            <p className="mt-3 px-1 text-[0.68rem] uppercase tracking-[0.14em] text-white/30">Example matches</p>
             <div className="mt-2 space-y-2">
               {[
-                { name: "Daniel Roth", role: "Partner · Meridian Capital", meta: "name + tag “investor” + city", score: 96 },
-                { name: "Priya Anand", role: "Angel · ex-Stripe", meta: "tag “investor” + note “NYC”", score: 74 },
-                { name: "Marcus Webb", role: "VC Associate · Fjord", meta: "company + location", score: 51 },
+                { name: "Daniel Roth", role: "Partner · Meridian Capital", meta: "Investor · New York" },
+                { name: "Priya Anand", role: "Angel · ex-Stripe", meta: "Investor · New York" },
+                { name: "Marcus Webb", role: "VC Associate · Fjord", meta: "New York" },
               ].map((row, index) => (
                 <div
                   key={row.name}
@@ -374,9 +345,6 @@ export default function LandingPage() {
                     <p className="truncate text-[0.72rem] text-white/45">{row.role}</p>
                     <p className="mt-0.5 truncate text-[0.66rem] text-white/30">{row.meta}</p>
                   </div>
-                  <span className={`text-[0.7rem] font-mono ${index === 0 ? "text-lime" : "text-white/30"}`}>
-                    {row.score}
-                  </span>
                 </div>
               ))}
             </div>
@@ -422,10 +390,10 @@ export default function LandingPage() {
             <div className="relative flex flex-wrap items-center justify-between gap-8">
               <div className="max-w-xl">
                 <p className="flex items-center gap-2 text-[0.72rem] font-semibold uppercase tracking-[0.14em] opacity-60">
-                  <Sparkles className="h-3.5 w-3.5" /> Free to start
+                  Free to start
                 </p>
                 <h2 className="display mt-3 text-[clamp(1.9rem,4vw,2.8rem)]">
-                  Your next great contact deserves better than a paper card.
+                  Create a card you can share anywhere.
                 </h2>
               </div>
               <Link href="/signup" className="btn btn-primary btn-lg">
@@ -442,7 +410,7 @@ export default function LandingPage() {
           <div className="flex items-center gap-3">
             <Logo tone="light" />
             <span className="hidden text-white/25 sm:inline">·</span>
-            <span className="hidden sm:inline">Digital cards that remember.</span>
+            <span className="hidden sm:inline">Share a card. Keep in touch.</span>
           </div>
           <div className="flex flex-wrap gap-5">
             <Link href="/login" className="hover:text-white">Log in</Link>

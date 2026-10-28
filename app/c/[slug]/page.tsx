@@ -382,7 +382,7 @@ export default async function PublicCardPage({
           )}
 
           <footer className="mt-10 flex items-center justify-between border-t border-white/10 pt-5 text-[0.7rem] text-white/30">
-            <span>Tappd — digital cards that remember.</span>
+            <span>Share a card. Keep in touch.</span>
             <Link href="/" className="hover:text-white/60">Tappd</Link>
           </footer>
         </div>
