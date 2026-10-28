@@ -1,6 +1,6 @@
 import { clientIp, fail, isSameOrigin, ok, parseBody, rateLimit } from "@/lib/api";
-import { emailDeliveryConfigured, EmailNotConfiguredError } from "@/lib/email";
-import { requestSignupVerification, SignupVerificationDeliveryError } from "@/lib/signup-email";
+import { emailDeliveryConfigured } from "@/lib/email";
+import { requestSignupVerification } from "@/lib/signup-email";
 import { signupSchema } from "@/lib/validation";
 
 export const runtime = "nodejs";
@@ -26,10 +26,8 @@ export async function POST(request: Request) {
   try {
     await requestSignupVerification(request, email);
   } catch (error) {
-    if (error instanceof EmailNotConfiguredError || error instanceof SignupVerificationDeliveryError) {
-      return fail("Email verification is temporarily unavailable. Try again later.", 503);
-    }
-    throw error;
+    console.error("Signup request could not be completed", error instanceof Error ? error.message : "unknown error");
+    return fail("Email verification is temporarily unavailable. Try again later.", 503);
   }
 
   return ok({ ok: true, verificationRequired: true, email, message: verificationMessage }, 202, { "cache-control": "no-store" });
