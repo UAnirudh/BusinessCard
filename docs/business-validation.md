@@ -4,13 +4,13 @@
 
 Start with individuals who meet prospective clients or collaborators often. Keep creating, opening, and saving a public card free. Test whether a reliable follow-up workflow—capturing who someone is, where you met, notes, reminders, and export—is valuable enough to pay for. Do not treat a price survey or competitor price as proof of demand.
 
-**Competitor snapshot checked 2026-10-26 (three vendor pages, not an exhaustive market count or proof of demand):** Blinq offers a free individual tier and Premium at $9.99 monthly or $7.33/month billed annually; its team plan is $6.99/user/month monthly or $4.99/user/month billed annually. HiHello lists Personal free, Professional at $6/month ($72 billed yearly), and Business at $5/user/month ($60 per user/year, five-seat minimum). Wave's individual page describes a free card with QR and Apple/Google Wallet sharing; it does not establish that NFC sharing is part of that free tier. These pages show that basic card creation and sharing are already available free from multiple competitors, so they are weak paid differentiators. Recheck the live pages before setting Tappd pricing:
+**Competitor snapshot checked 2026-10-28 (three vendor pages; not an exhaustive market count or proof of demand):** Blinq Free includes two cards, unlimited sharing/contact creation, and Apple/Google Wallet; Premium is $9.99 monthly or $7.33/month billed annually. Its help page also lists a free AI notetaker, so “notes” or “AI notes” alone are not defensible differentiators. HiHello Personal is free with four cards, five scans per month, and Apple/Google Wallet; Professional is $6/month or $72 billed yearly. Wave Connect describes a free individual card with QR, NFC, Apple/Google Wallet, unlimited sharing/contact saving, and no-app recipient access; Pro is $7/month billed yearly. Vendor claims and prices are snapshots that can change. Taken together, card creation, Wallet passes, QR/NFC, and no-app recipient access are already table stakes among these vendors. Recheck the live pages before setting Tappd pricing:
 
 - [Blinq pricing](https://blinq.me/pricing)
 - [HiHello pricing](https://www.hihello.com/pricing)
 - [Wave individual plans](https://wavecnct.com/individuals)
 
-The prices above are competitor list prices observed on 2026-10-26, not Tappd prices or evidence of willingness to pay.
+The prices above are competitor list prices observed on 2026-10-28, not Tappd prices or evidence of willingness to pay. **Product implication:** keep card creation, sharing, recipient access, and the vCard save path simple and free while validating whether people repeatedly use a personal relationship workflow: interaction history, useful context, follow-up dates/actions, and a reliable way to return to a connection. This is a hypothesis to test against real use, not a claim of competitor absence or proven demand. Do not charge for AI as a category or promise a paid tier until repeated use and compliant store billing are demonstrated.
 
 ## First 10 interviews
 
