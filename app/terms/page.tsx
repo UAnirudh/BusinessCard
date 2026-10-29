@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowLeft, FileText } from "lucide-react";
 import { Logo } from "@/components/logo";
+import { CURRENT_TERMS_VERSION } from "@/lib/terms";
 
 export const metadata: Metadata = {
   title: "Terms of Use",
@@ -38,6 +39,12 @@ const sections = [
     body: "For help or to report a concern, visit the Tappd support page.",
   },
 ];
+const updatedDate = new Date(`${CURRENT_TERMS_VERSION}T12:00:00Z`).toLocaleDateString("en-US", {
+  day: "numeric",
+  month: "long",
+  timeZone: "UTC",
+  year: "numeric",
+});
 
 export default function TermsPage() {
   return (
@@ -54,7 +61,7 @@ export default function TermsPage() {
             <FileText className="h-4 w-4" /> Using Tappd
           </div>
           <h1 className="mt-3 text-[2rem] font-semibold tracking-[-0.035em] sm:text-[2.5rem]">Terms of Use</h1>
-          <p className="mt-2 text-[0.82rem] text-faint">Version 2026-10-28 · Updated October 28, 2026</p>
+          <p className="mt-2 text-[0.82rem] text-faint">Version {CURRENT_TERMS_VERSION} · Updated {updatedDate}</p>
           <p className="mt-5 max-w-2xl text-[0.95rem] leading-relaxed text-muted">
             These terms explain the basic rules for using Tappd and sharing card content. You must accept them before creating an account or adding card content.
           </p>

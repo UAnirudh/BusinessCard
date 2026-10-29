@@ -2,6 +2,8 @@ import assert from "node:assert/strict";
 import test from "node:test";
 import type { Card } from "@/db/schema";
 import type { CardUpdateInput } from "@/lib/validation";
+import { cardUpdateSchema } from "@/lib/validation";
+import { buildCardUpdatePatch } from "@/lib/card-updates";
 import { cardChangeRequiresTerms, CURRENT_TERMS_VERSION } from "@/lib/terms";
 
 function card(isPublic: boolean): Card {
@@ -68,6 +70,31 @@ test("new and existing members need explicit consent before adding or publishing
 test("an existing unaccepted member can make a public card private without accepting new terms", () => {
   const publicCard = { ...card(true), collectLeads: true };
   assert.equal(cardChangeRequiresTerms(null, null, publicCard, { ...unchangedCardInput(publicCard), isPublic: false, collectLeads: false }), false);
+  const nativePrivacyInput = cardUpdateSchema.parse({ displayName: publicCard.displayName, isPublic: false, collectLeads: false });
+  assert.equal(nativePrivacyInput.headline, undefined);
+  assert.equal(nativePrivacyInput.website, undefined);
+  assert.equal(nativePrivacyInput.tags, undefined);
+  assert.equal(nativePrivacyInput.links, undefined);
+  const nativePrivacyPatch = buildCardUpdatePatch(publicCard, nativePrivacyInput);
+  assert.equal(nativePrivacyPatch.headline, undefined);
+  assert.equal(nativePrivacyPatch.website, undefined);
+  assert.equal(nativePrivacyPatch.tags, undefined);
+  assert.equal(nativePrivacyPatch.links, undefined);
+  assert.equal(nativePrivacyPatch.isPublic, false);
+  assert.equal(nativePrivacyPatch.collectLeads, false);
+  assert.equal(cardChangeRequiresTerms(null, null, publicCard, nativePrivacyInput), false);
   assert.equal(cardChangeRequiresTerms(null, null, publicCard, { ...unchangedCardInput(publicCard), isPublic: false, collectLeads: false, bio: "New content" }), true);
   assert.equal(cardChangeRequiresTerms(null, null, publicCard, { ...unchangedCardInput(publicCard), isPublic: false, bio: "New content" }), true);
+});
+
+test("explicitly cleared card fields remain null while omitted fields stay untouched", () => {
+  const existing = card(false);
+  const input = cardUpdateSchema.parse({ displayName: existing.displayName, headline: "", website: "", tags: [], links: [] });
+  const patch = buildCardUpdatePatch(existing, input);
+  assert.equal(patch.headline, null);
+  assert.equal(patch.website, null);
+  assert.deepEqual(patch.tags, []);
+  assert.deepEqual(patch.links, []);
+  assert.equal(patch.email, undefined);
+  assert.equal(patch.phone, undefined);
 });

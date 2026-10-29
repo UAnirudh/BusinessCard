@@ -15,19 +15,22 @@ export function cardChangeRequiresTerms(
 ): boolean {
   if (acceptedAt && acceptedVersion === CURRENT_TERMS_VERSION) return false;
 
+  const unchangedWhenProvided = <T,>(inputValue: T | undefined, currentValue: T | null) =>
+    inputValue === undefined || inputValue === currentValue;
+
   const cardContentUnchanged =
     input.displayName === card.displayName &&
-    (input.headline ?? null) === card.headline &&
-    (input.company ?? null) === card.company &&
-    (input.bio ?? null) === card.bio &&
-    (input.location ?? null) === card.location &&
-    (input.email ?? null) === card.email &&
-    (input.phone ?? null) === card.phone &&
-    (input.website ?? null) === card.website &&
-    (input.linkedin ?? null) === card.linkedin &&
-    (input.twitter ?? null) === card.twitter &&
-    (input.github ?? null) === card.github &&
-    (input.instagram ?? null) === card.instagram &&
+    unchangedWhenProvided(input.headline, card.headline) &&
+    unchangedWhenProvided(input.company, card.company) &&
+    unchangedWhenProvided(input.bio, card.bio) &&
+    unchangedWhenProvided(input.location, card.location) &&
+    unchangedWhenProvided(input.email, card.email) &&
+    unchangedWhenProvided(input.phone, card.phone) &&
+    unchangedWhenProvided(input.website, card.website) &&
+    unchangedWhenProvided(input.linkedin, card.linkedin) &&
+    unchangedWhenProvided(input.twitter, card.twitter) &&
+    unchangedWhenProvided(input.github, card.github) &&
+    unchangedWhenProvided(input.instagram, card.instagram) &&
     (input.accent ?? card.accent) === card.accent &&
     JSON.stringify(input.tags ?? card.tags) === JSON.stringify(card.tags) &&
     JSON.stringify(input.links ?? card.links) === JSON.stringify(card.links) &&
