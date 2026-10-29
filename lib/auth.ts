@@ -82,7 +82,7 @@ export async function destroySession(request?: Request): Promise<void> {
   store.delete(SESSION_COOKIE);
 }
 
-export type SessionUser = Pick<User, "id" | "email" | "name" | "createdAt">;
+export type SessionUser = Pick<User, "id" | "email" | "name" | "createdAt" | "termsAcceptedAt" | "termsVersion">;
 
 /** Resolves the signed-in user once per request. */
 export const getCurrentUser = cache(async (request?: Request): Promise<SessionUser | null> => {
@@ -96,6 +96,8 @@ export const getCurrentUser = cache(async (request?: Request): Promise<SessionUs
       email: users.email,
       name: users.name,
       createdAt: users.createdAt,
+      termsAcceptedAt: users.termsAcceptedAt,
+      termsVersion: users.termsVersion,
     })
     .from(sessions)
     .innerJoin(users, eq(sessions.userId, users.id))

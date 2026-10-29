@@ -12,6 +12,8 @@ import { cards, pendingSignups, sessions, users } from "@/db/schema";
 import { hashPassword, verifyPassword } from "@/lib/auth";
 import { completeSignupVerification, hashVerificationToken, replacePendingSignup } from "@/lib/signup-verification";
 import { requestSignupVerification, SignupVerificationDeliveryError } from "@/lib/signup-email";
+import { CURRENT_TERMS_VERSION } from "@/lib/terms";
+import { emailVerificationSchema } from "@/lib/validation";
 
 async function testDatabase() {
   const client = new PGlite();
@@ -31,19 +33,21 @@ test("verification rotates tokens and creates the account with the mailbox owner
     const [pending] = await db.select().from(pendingSignups).where(eq(pendingSignups.email, "person@example.test"));
     assert.equal(pending.tokenHash, hashVerificationToken(secondToken));
     assert.notEqual(pending.tokenHash, secondToken);
-    assert.equal(await completeSignupVerification(db, { token: firstToken, name: "Wrong Name", password: "attacker-password" }).then((r) => r.status), "invalid");
+    assert.equal(await completeSignupVerification(db, { token: firstToken, name: "Wrong Name", password: "attacker-password", acceptedTerms: true }).then((r) => r.status), "invalid");
 
-    const result = await completeSignupVerification(db, { token: secondToken, name: "Mailbox Owner", password: "owner-chosen-password" });
+    const result = await completeSignupVerification(db, { token: secondToken, name: "Mailbox Owner", password: "owner-chosen-password", acceptedTerms: true });
     assert.equal(result.status, "created");
     if (result.status !== "created") return;
     assert.equal(result.account.name, "Mailbox Owner");
+    assert.ok(result.account.termsAcceptedAt instanceof Date);
+    assert.equal((await db.select({ termsVersion: users.termsVersion }).from(users).where(eq(users.id, result.account.id)))[0].termsVersion, CURRENT_TERMS_VERSION);
     assert.equal(verifyPassword("owner-chosen-password", (await db.select({ passwordHash: users.passwordHash }).from(users).where(eq(users.id, result.account.id)))[0].passwordHash), true);
     assert.equal(verifyPassword("attacker-password", (await db.select({ passwordHash: users.passwordHash }).from(users).where(eq(users.id, result.account.id)))[0].passwordHash), false);
     assert.equal(result.card.isPublic, false);
     assert.equal(result.card.collectLeads, false);
     assert.equal(await db.select({ id: pendingSignups.email }).from(pendingSignups).where(eq(pendingSignups.email, "person@example.test")).then((rows) => rows.length), 0);
     assert.equal(await db.select({ id: sessions.id }).from(sessions).where(eq(sessions.userId, result.account.id)).then((rows) => rows.length), 1);
-    assert.equal(await completeSignupVerification(db, { token: secondToken, name: "Mailbox Owner", password: "another-password" }).then((r) => r.status), "invalid");
+    assert.equal(await completeSignupVerification(db, { token: secondToken, name: "Mailbox Owner", password: "another-password", acceptedTerms: true }).then((r) => r.status), "invalid");
   } finally {
     await client.close();
   }
@@ -58,12 +62,19 @@ test("expired verification tokens cannot create accounts", async () => {
       tokenHash: hashVerificationToken(token),
       expiresAt: new Date(Date.now() - 60_000),
     });
-    assert.equal(await completeSignupVerification(db, { token, name: "Expired Person", password: "safe-password" }).then((r) => r.status), "invalid");
+    assert.equal(await completeSignupVerification(db, { token, name: "Expired Person", password: "safe-password", acceptedTerms: true }).then((r) => r.status), "invalid");
     assert.equal(await db.select({ id: users.id }).from(users).where(eq(users.email, "expired@example.test")).then((rows) => rows.length), 0);
     assert.equal(await db.select({ id: cards.id }).from(cards).then((rows) => rows.length), 0);
   } finally {
     await client.close();
   }
+});
+
+test("email verification requires affirmative Terms of Use acceptance", () => {
+  const base = { token: "a".repeat(43), name: "Verified Person", password: "owner-chosen-password" };
+  assert.equal(emailVerificationSchema.safeParse(base).success, false);
+  assert.equal(emailVerificationSchema.safeParse({ ...base, acceptedTerms: false }).success, false);
+  assert.equal(emailVerificationSchema.safeParse({ ...base, acceptedTerms: true }).success, true);
 });
 
 test("failed verification email delivery removes the pending token and returns a generic delivery error", async () => {

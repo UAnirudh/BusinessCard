@@ -10,6 +10,7 @@ export default function VerifyEmailPage() {
   const [token, setToken] = useState("");
   const [name, setName] = useState("");
   const [password, setPassword] = useState("");
+  const [acceptedTerms, setAcceptedTerms] = useState(false);
   const [state, setState] = useState<"loading" | "ready" | "confirming" | "complete" | "error">("loading");
   const [message, setMessage] = useState("");
   const [returnToApp, setReturnToApp] = useState(false);
@@ -35,7 +36,7 @@ export default function VerifyEmailPage() {
       const response = await fetch("/api/auth/verify-email", {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify({ token, name, password }),
+        body: JSON.stringify({ token, name, password, acceptedTerms }),
       });
       const data = (await response.json().catch(() => ({}))) as { error?: string };
       if (!response.ok) {
@@ -81,6 +82,16 @@ export default function VerifyEmailPage() {
               <label htmlFor="verified-password" className="label">Create a password</label>
               <input id="verified-password" name="new-password" type="password" autoComplete="new-password" required minLength={8} maxLength={200} value={password} onChange={(event) => setPassword(event.target.value)} className="input" placeholder="At least 8 characters" />
             </div>
+            <label className="flex items-start gap-2.5 text-[0.78rem] leading-relaxed text-muted">
+              <input
+                type="checkbox"
+                checked={acceptedTerms}
+                onChange={(event) => setAcceptedTerms(event.target.checked)}
+                required
+                className="mt-0.5 h-4 w-4 shrink-0 accent-[#18211b]"
+              />
+              <span>I agree to the <Link href="/terms" target="_blank" className="font-medium underline underline-offset-2">Terms of Use</Link> and the rules for sharing card content.</span>
+            </label>
             <p className="text-xs leading-relaxed text-faint">Your password is set only after your email verification link is accepted.</p>
             <button type="submit" className="btn btn-primary w-full justify-center" disabled={state === "confirming"}>
               {state === "confirming" ? <Loader2 className="h-4 w-4 spin" aria-hidden="true" /> : <ArrowRight className="h-4 w-4" aria-hidden="true" />}

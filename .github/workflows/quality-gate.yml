@@ -106,6 +106,20 @@ jobs:
         working-directory: mobile/android
         run: ./gradlew assembleDebug --no-daemon
 
+      - name: Compile Android QA release APK (debug-signed, not for Play)
+        working-directory: mobile/android
+        run: ./gradlew assembleRelease --no-daemon
+        env:
+          EXPO_PUBLIC_API_URL: https://tappd.up.railway.app
+
+      - name: Upload Android QA APK (debug-signed, not for Play)
+        uses: actions/upload-artifact@v4
+        with:
+          name: tappd-android-qa-debug-signed
+          path: mobile/android/app/build/outputs/apk/release/app-release.apk
+          if-no-files-found: error
+          retention-days: 14
+
   ios-simulator:
     name: iOS simulator build
     runs-on: macos-26

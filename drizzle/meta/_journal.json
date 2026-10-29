@@ -57,6 +57,13 @@
       "when": 1793143941480,
       "tag": "0007_reopen_reviewed_card_reports",
       "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1793232057644,
+      "tag": "0008_fat_penance",
+      "breakpoints": true
     }
   ]
 }

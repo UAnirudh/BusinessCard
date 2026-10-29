@@ -95,6 +95,24 @@ Capture the final signed production build on real supported device sizes. Use a 
 
 Before exporting screenshots, remove localhost URLs, developer menus, test credentials, unapproved Wallet claims, personal data, loading/offline screens, and platform UI that obscures the product. Check the current store-specific screenshot sizes and device requirements when preparing the final image set.
 
+## Store asset handoff checklist
+
+These are production assets, not mockups. Capture them from the final signed build with synthetic profiles; do not add feature claims or promotional text that the build does not show.
+
+### Google Play
+
+- [ ] Upload the launcher icon as a 512 × 512 PNG with alpha, no larger than 1 MB. The icon must follow Play's icon rules; do not add ranking, price, or category badges.
+- [ ] Upload at least two screenshots across different device types. Use JPEG or 24-bit PNG without alpha; each image must be 320–3840 px, with its longest side no more than twice its shortest. Use actual app captures, and make sure any added captions stay accurate to the shipped experience.
+- [ ] If using a feature graphic, prepare a 1024 × 500 JPEG or 24-bit PNG without alpha. Keep it distinct from the app icon and avoid small detail that will not read on a phone.
+- [ ] For tablet/large-screen distribution, capture and review the large-screen experience separately. Play recommends four screenshots at 1080 × 1920 (portrait) or 1920 × 1080 (landscape) for recommendation eligibility; treat this as a quality target, not a basic listing minimum.
+
+### Apple App Store
+
+- [ ] Upload 1–10 screenshots for each required device family and localization. The app supports iPad, so verify and capture the iPad layout as well as iPhone before submission.
+- [ ] App previews are optional. If added, capture the real app experience and verify Apple's current device-size and video specifications before export.
+
+See Google's [preview asset requirements](https://support.google.com/googleplay/android-developer/answer/9866151?hl=en) and Apple's [screenshot and app preview upload requirements](https://developer.apple.com/help/app-store-connect/manage-app-information/upload-app-previews-and-screenshots/). Recheck those pages when exporting because allowed sizes and device categories can change.
+
 ## Claims that require release verification
 
 - Wallet passes are deliberately not mentioned. The Apple/Google pass buttons appear only when the corresponding provider is configured; these credentials and publishing approvals are not yet configured in the release environment.

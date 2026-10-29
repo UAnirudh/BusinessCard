@@ -6,7 +6,7 @@ import { CameraView, useCameraPermissions } from 'expo-camera';
 import { Contact } from 'expo-contacts';
 import QRCode from 'react-native-qrcode-svg';
 import NfcManager, { Ndef, NfcTech } from 'react-native-nfc-manager';
-import { ApiError, apiConfigured, apiRequest, BusinessCard, clearToken, deleteAccount, loadToken, NativeSession, NativeUser, passwordResetUrl, privacyUrl, publicCardUrl, saveToken, supportUrl, WalletContact, walletPassUrl } from './src/api';
+import { ApiError, apiConfigured, apiRequest, BusinessCard, clearToken, deleteAccount, loadToken, NativeSession, NativeUser, passwordResetUrl, privacyUrl, publicCardUrl, saveToken, supportUrl, termsUrl, WalletContact, walletPassUrl } from './src/api';
 import { parseCardReference } from './src/card-reference';
 
 type Tab = 'card' | 'wallet' | 'scan' | 'settings';
@@ -158,7 +158,19 @@ export default function App() {
       await saveToken(result.token);
       setToken(result.token); setUser(result.user); setCard(result.card); setPassword('');
       await loadWalletAvailability(result.token);
-      await loadContacts(result.token);
+      try {
+        await loadContacts(result.token);
+      } catch (contactsError) {
+        if (contactsError instanceof ApiError && contactsError.status === 401) {
+          try { await clearToken(); }
+          finally {
+            setToken(null); setUser(null); setCard(null);
+            setWalletAvailability({ apple: false, google: false }); setContacts([]);
+          }
+          throw contactsError;
+        }
+        Alert.alert('Wallet could not sync', 'Your sign-in is safe, but your connections could not load. Check your connection and refresh your wallet.');
+      }
     } catch (e) { setError(e instanceof Error ? e.message : 'Could not sign in. Try again.'); }
     finally { setBusy(false); }
   };
@@ -171,6 +183,24 @@ export default function App() {
       await loadWalletAvailability(token);
       await loadContacts(token);
     } catch (e) { Alert.alert('Could not refresh', e instanceof Error ? e.message : 'Try again.'); }
+  };
+
+  const acceptTerms = async () => {
+    if (!token || busy) return;
+    setBusy(true);
+    try {
+      const result = await apiRequest<{ termsAcceptedAt: string | null; termsVersion: string | null }>('/api/account', {
+        method: 'PATCH',
+        token,
+        body: { acceptTerms: true },
+      });
+      setUser((current) => current ? { ...current, termsAcceptedAt: result.termsAcceptedAt, termsVersion: result.termsVersion } : current);
+      Alert.alert('Terms accepted', 'You can now add or share card content.');
+    } catch (e) {
+      Alert.alert('Could not save your agreement', e instanceof Error ? e.message : 'Check your connection and try again.');
+    } finally {
+      setBusy(false);
+    }
   };
 
   const signOut = async () => {
@@ -251,6 +281,13 @@ export default function App() {
   const confirmCardVisibility = () => {
     if (!card || busy) return;
     const makePublic = !card.isPublic;
+    if (makePublic && (!user?.termsAcceptedAt || user.termsVersion !== user.currentTermsVersion)) {
+      Alert.alert('Review the Terms of Use', 'You need to accept the Terms of Use before sharing card content.', [
+        { text: 'Not now', style: 'cancel' },
+        { text: 'Open Settings', onPress: () => setTab('settings') },
+      ]);
+      return;
+    }
     Alert.alert(
       makePublic ? 'Make your card public?' : 'Make your card private?',
       makePublic
@@ -298,18 +335,34 @@ export default function App() {
     finally { try { await NfcManager.cancelTechnologyRequest(); } catch { /* session may already be closed */ } }
   };
 
+  const confirmExchange = async (slug: string) => {
+    if (!token) {
+      setScanHandled(false);
+      return;
+    }
+    try {
+      await apiRequest('/api/exchange', { method: 'POST', token, body: { slug, name: card?.displayName, email: card?.email, phone: card?.phone, company: card?.company, headline: card?.headline, note: 'Met in person' } });
+      await loadContacts(token); Alert.alert('You’re connected', 'The contact is now in your wallet.', [{ text: 'Open wallet', onPress: () => setTab('wallet') }]);
+    } catch (e) { Alert.alert('Could not exchange cards', e instanceof Error ? e.message : 'Try again.'); }
+    finally { setScanHandled(false); }
+  };
+
   const exchange = async (value: string) => {
     if (scanHandled || !card || !token) return;
     setScanHandled(true);
     const serviceOrigin = publicCardUrl(card).replace(/\/c\/[^/]+$/, '');
     const slug = parseCardReference(value, serviceOrigin);
-    if (!slug) { Alert.alert('Not a Tappd card', 'Enter a Tappd card link from this service or its card slug.'); setTimeout(() => setScanHandled(false), 1500); return; }
-    if (slug === card.slug) { Alert.alert('That is your card', 'Share your own QR from the Card tab.'); setTimeout(() => setScanHandled(false), 1500); return; }
-    try {
-      await apiRequest('/api/exchange', { method: 'POST', token, body: { slug, name: card.displayName, email: card.email, phone: card.phone, company: card.company, headline: card.headline, note: 'Met in person' } });
-      await loadContacts(token); Alert.alert('You’re connected', 'The contact is now in your wallet.', [{ text: 'Open wallet', onPress: () => setTab('wallet') }]);
-    } catch (e) { Alert.alert('Could not exchange cards', e instanceof Error ? e.message : 'Try again.'); }
-    finally { setTimeout(() => setScanHandled(false), 1800); }
+    if (!slug) { Alert.alert('Not a Tappd card', 'Enter a Tappd card link from this service or its card slug.'); setScanHandled(false); return; }
+    if (slug === card.slug) { Alert.alert('That is your card', 'Share your own QR from the Card tab.'); setScanHandled(false); return; }
+    Alert.alert(
+      'Exchange cards?',
+      'This shares every field on your public card with the other person and saves their public card in your wallet. It also adds “Met in person” to the contact they save.',
+      [
+        { text: 'Cancel', style: 'cancel', onPress: () => setScanHandled(false) },
+        { text: 'Exchange cards', onPress: () => { void confirmExchange(slug); } },
+      ],
+      { cancelable: false },
+    );
   };
 
   const dueCount = useMemo(() => contacts.filter((person) => person.followUpDate && person.followUpDate <= new Date().toISOString().slice(0, 10)).length, [contacts]);
@@ -351,7 +404,8 @@ export default function App() {
 
   const renderScan = () => <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={{ flex: 1 }}><ScrollView style={styles.scanScreen} contentContainerStyle={styles.scanContent} keyboardShouldPersistTaps="handled"><View style={styles.topline}><View><Text style={styles.eyebrow}>Add a connection</Text><Text style={styles.screenTitle}>Scan a card</Text></View><Pressable accessibilityRole="button" accessibilityLabel="Close scanner" onPress={() => setTab(scannerReturnTab)}><Text style={styles.closeScan}>×</Text></Pressable></View><Text style={styles.body}>Scan a Tappd QR code to exchange contact details.</Text>{currentCameraPermission?.granted ? <View style={styles.cameraWrap}><CameraView style={StyleSheet.absoluteFill} facing="back" barcodeScannerSettings={{ barcodeTypes: ['qr'] }} onBarcodeScanned={scanHandled ? undefined : ({ data }) => exchange(data)} /><View pointerEvents="none" style={styles.scanOverlay}><View style={styles.scanCorners}><View style={[styles.corner, styles.topLeft]} /><View style={[styles.corner, styles.topRight]} /><View style={[styles.corner, styles.bottomLeft]} /><View style={[styles.corner, styles.bottomRight]} /></View><Text style={styles.scanHint}>{scanHandled ? 'Connecting…' : 'Fit their card QR in the frame'}</Text></View></View> : <View style={styles.cameraPermission}><Text style={styles.emptyIcon}>▦</Text><Text style={styles.emptyTitle}>{!currentCameraPermission ? 'Checking camera access' : currentCameraPermission.canAskAgain ? 'Your camera is ready when you are' : 'Camera access is off'}</Text><Text style={styles.body}>{!currentCameraPermission ? 'Checking whether Tappd can scan a card.' : currentCameraPermission.canAskAgain ? 'Camera access is only used to scan a Tappd card QR code.' : 'Allow camera access in your device settings to scan QR codes. You can also enter a Tappd card link below.'}</Text>{currentCameraPermission?.canAskAgain && <Button title="Allow camera" onPress={() => { void requestCameraPermission().then(setCameraPermissionOverride).catch(() => undefined); }} />}{currentCameraPermission && !currentCameraPermission.canAskAgain && <Button title="Open camera settings" variant="outline" onPress={() => { void Linking.openSettings().catch(() => Alert.alert('Could not open settings', 'Enable camera access for Tappd in your device settings.')); }} />}</View>}<View style={styles.manualCard}><Text style={styles.manualTitle}>Enter a card link or slug</Text><Text style={styles.manualCopy}>No camera? Paste their Tappd card URL or enter the slug shown on their card.</Text><TextInput accessibilityLabel="Tappd card link or slug" style={styles.input} value={cardReference} onChangeText={setCardReference} placeholder="https://tappd.up.railway.app/c/name" placeholderTextColor="#9AA197" autoCapitalize="none" autoCorrect={false} returnKeyType="go" onSubmitEditing={() => { void exchange(cardReference); }} /><View style={{ height: 10 }} /><Button title={scanHandled ? 'Connecting…' : 'Add this connection'} onPress={() => { void exchange(cardReference); }} disabled={scanHandled || !cardReference.trim()} variant="outline" /></View><Text style={styles.scanPrivacy}>Their card opens only after they choose to share it.</Text></ScrollView></KeyboardAvoidingView>;
 
-  const renderSettings = () => <ScrollView contentContainerStyle={styles.page}><View style={styles.topline}><View><Text style={styles.eyebrow}>Account settings</Text><Text style={styles.screenTitle}>Settings</Text></View></View><View style={styles.profilePanel}><View style={styles.avatarLarge}><Text style={styles.avatarLargeText}>{initials(user?.name ?? card.displayName)}</Text></View><View style={{ flex: 1 }}><Text style={styles.profileName}>{user?.name ?? card.displayName}</Text><Text style={styles.personMeta}>{user?.email}</Text></View><View style={styles.accountTag}><Text style={styles.accountTagText}>Account</Text></View></View><Text style={styles.sectionTitle}>Your sharing tools</Text><SettingRow icon={card.isPublic ? '◌' : '◉'} title={card.isPublic ? 'Make my card private' : 'Make my card public'} subtitle={card.isPublic ? 'Hide your card link and QR code' : 'Let anyone with your link view your card'} onPress={confirmCardVisibility} /><SettingRow icon="↗" title="Share your card" subtitle="Send your link with any app" onPress={shareCard} /><SettingRow icon="◉" title="Write an NFC tag" subtitle="Make a tap-to-share card" onPress={writeNfc} /><SettingRow icon="▦" title="Scan a Tappd card" subtitle="Exchange details in person" onPress={openScanner} /><Text style={[styles.sectionTitle, { marginTop: 28 }]}>Your account</Text><SettingRow icon="↻" title="Refresh your card and wallet" subtitle="Sync the latest from Tappd" onPress={refresh} /><SettingRow icon="✉" title="Contact support" subtitle="Open the support page" onPress={contactSupport} /><SettingRow icon="⌑" title="Privacy policy" subtitle="How your information is used" onPress={() => Linking.openURL(privacyUrl()).catch(() => Alert.alert('Could not open privacy policy', 'Check your connection and try again.'))} /><Pressable accessibilityRole="button" accessibilityLabel="Sign out" onPress={signOut} style={styles.signOut}><Text style={styles.signOutText}>Sign out</Text><Text style={styles.chevron}>↗</Text></Pressable><View style={styles.deleteSection}><Text style={styles.deleteTitle}>Delete account</Text><Text style={styles.deleteCopy}>Permanently remove your Tappd account, card, and wallet.</Text>{deleteAccountOpen ? <><Field label="Current password" placeholder="Enter your password" value={deletePassword} onChangeText={(value) => { setDeletePassword(value); setDeleteError(''); }} secureTextEntry autoCapitalize="none" editable={!busy} returnKeyType="done" onSubmitEditing={requestAccountDeletion} />{!!deleteError && <Text accessibilityRole="alert" style={styles.error}>{deleteError}</Text>}<Button title={busy ? 'Deleting…' : 'Continue to delete'} onPress={requestAccountDeletion} disabled={busy} /><Pressable accessibilityRole="button" onPress={() => { setDeleteAccountOpen(false); setDeletePassword(''); setDeleteError(''); }} style={styles.deleteCancel} disabled={busy}><Text style={styles.deleteCancelText}>Cancel</Text></Pressable></> : <Pressable accessibilityRole="button" onPress={() => setDeleteAccountOpen(true)} style={styles.deleteOpen}><Text style={styles.deleteOpenText}>Delete account</Text></Pressable>}</View><Text style={styles.version}>Tappd · iOS and Android</Text></ScrollView>;
+  const renderTermsAcceptance = () => (!user?.termsAcceptedAt || user.termsVersion !== user.currentTermsVersion) ? <View style={{ backgroundColor: C.white, borderColor: C.line, borderWidth: 1, borderRadius: 14, padding: 14, marginTop: 18 }}><Text style={styles.sectionTitle}>Before sharing your card</Text><Text style={[styles.body, { marginTop: 5 }]}>Review and accept the current Terms of Use before you add or publish card content.</Text><Pressable accessibilityRole="link" onPress={() => Linking.openURL(termsUrl()).catch(() => Alert.alert('Could not open Terms of Use', 'Check your connection and try again.'))} style={{ paddingVertical: 8 }}><Text style={{ color: C.ink, fontSize: 12, fontWeight: '700', textDecorationLine: 'underline' }}>Read the Terms of Use</Text></Pressable><Button title={busy ? 'Saving…' : 'I agree to the Terms of Use'} onPress={acceptTerms} disabled={busy} /></View> : null;
+  const renderSettings = () => <ScrollView contentContainerStyle={styles.page}>{renderTermsAcceptance()}<View style={styles.topline}><View><Text style={styles.eyebrow}>Account settings</Text><Text style={styles.screenTitle}>Settings</Text></View></View><View style={styles.profilePanel}><View style={styles.avatarLarge}><Text style={styles.avatarLargeText}>{initials(user?.name ?? card.displayName)}</Text></View><View style={{ flex: 1 }}><Text style={styles.profileName}>{user?.name ?? card.displayName}</Text><Text style={styles.personMeta}>{user?.email}</Text></View><View style={styles.accountTag}><Text style={styles.accountTagText}>Account</Text></View></View><Text style={styles.sectionTitle}>Your sharing tools</Text><SettingRow icon={card.isPublic ? '◌' : '◉'} title={card.isPublic ? 'Make my card private' : 'Make my card public'} subtitle={card.isPublic ? 'Hide your card link and QR code' : 'Let anyone with your link view your card'} onPress={confirmCardVisibility} /><SettingRow icon="↗" title="Share your card" subtitle="Send your link with any app" onPress={shareCard} /><SettingRow icon="◉" title="Write an NFC tag" subtitle="Make a tap-to-share card" onPress={writeNfc} /><SettingRow icon="▦" title="Scan a Tappd card" subtitle="Exchange details in person" onPress={openScanner} /><Text style={[styles.sectionTitle, { marginTop: 28 }]}>Your account</Text><SettingRow icon="↻" title="Refresh your card and wallet" subtitle="Sync the latest from Tappd" onPress={refresh} /><SettingRow icon="✉" title="Contact support" subtitle="Open the support page" onPress={contactSupport} /><SettingRow icon="⌑" title="Privacy policy" subtitle="How your information is used" onPress={() => Linking.openURL(privacyUrl()).catch(() => Alert.alert('Could not open privacy policy', 'Check your connection and try again.'))} /><Pressable accessibilityRole="button" accessibilityLabel="Sign out" onPress={signOut} style={styles.signOut}><Text style={styles.signOutText}>Sign out</Text><Text style={styles.chevron}>↗</Text></Pressable><View style={styles.deleteSection}><Text style={styles.deleteTitle}>Delete account</Text><Text style={styles.deleteCopy}>Permanently remove your Tappd account, card, and wallet.</Text>{deleteAccountOpen ? <><Field label="Current password" placeholder="Enter your password" value={deletePassword} onChangeText={(value) => { setDeletePassword(value); setDeleteError(''); }} secureTextEntry autoCapitalize="none" editable={!busy} returnKeyType="done" onSubmitEditing={requestAccountDeletion} />{!!deleteError && <Text accessibilityRole="alert" style={styles.error}>{deleteError}</Text>}<Button title={busy ? 'Deleting…' : 'Continue to delete'} onPress={requestAccountDeletion} disabled={busy} /><Pressable accessibilityRole="button" onPress={() => { setDeleteAccountOpen(false); setDeletePassword(''); setDeleteError(''); }} style={styles.deleteCancel} disabled={busy}><Text style={styles.deleteCancelText}>Cancel</Text></Pressable></> : <Pressable accessibilityRole="button" onPress={() => setDeleteAccountOpen(true)} style={styles.deleteOpen}><Text style={styles.deleteOpenText}>Delete account</Text></Pressable>}</View><Text style={styles.version}>Tappd · iOS and Android</Text></ScrollView>;
 
   return <SafeAreaView style={styles.safe}><StatusBar style="dark" />{tab === 'card' && renderCard()}{tab === 'wallet' && renderWallet()}{tab === 'scan' && renderScan()}{tab === 'settings' && renderSettings()}<View accessibilityRole="tabbar" style={styles.tabBar}>{([['card', 'Card', '▣'], ['wallet', 'Wallet', '◷'], ['scan', 'Scan', '⌗'], ['settings', 'Settings', '⚙']] as [Tab, string, string][]).map(([key, label, glyph]) => <Pressable key={key} accessibilityRole="tab" accessibilityLabel={key === 'wallet' && dueCount > 0 ? `Wallet, ${dueCount} follow-ups due` : label} accessibilityState={{ selected: tab === key }} onPress={() => key === 'scan' ? openScanner() : setTab(key)} style={styles.tabItem}><Text style={[styles.tabGlyph, tab === key && styles.tabActive]}>{glyph}</Text><Text style={[styles.tabLabel, tab === key && styles.tabLabelActive]}>{label}</Text>{key === 'wallet' && dueCount > 0 ? <View style={styles.tabDot} /> : null}</Pressable>)}</View>
     {!!selected && <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.modalShade}><View style={styles.detailSheet}><View style={styles.sheetHandle} /><Pressable accessibilityRole="button" accessibilityLabel="Close contact details" style={styles.sheetClose} onPress={() => setSelected(null)}><Text style={styles.sheetCloseText}>×</Text></Pressable><ScrollView style={styles.detailScroll} contentContainerStyle={styles.detailScrollContent} keyboardShouldPersistTaps="handled"><View style={styles.detailIdentity}><View style={styles.personAvatarLarge}><Text style={styles.personInitialLarge}>{initials(selected.name)}</Text></View><Text style={styles.detailName}>{selected.name}</Text><Text style={styles.detailMeta}>{[selected.headline, selected.company].filter(Boolean).join(' · ')}</Text></View>{selected.email && <Text style={styles.detailInfo}>{selected.email}</Text>}{selected.phone && <Text style={styles.detailInfo}>{selected.phone}</Text>}{selected.location && <Text style={styles.detailInfo}>{selected.location}</Text>}<View style={styles.divider} /><Text style={styles.sectionTitle}>Follow-up</Text><Text style={styles.fieldLabel}>Follow-up date (YYYY-MM-DD)</Text><TextInput style={styles.input} value={followUp} onChangeText={setFollowUp} placeholder="2026-11-04" placeholderTextColor="#9AA197" keyboardType="numbers-and-punctuation" maxLength={10} /><Text style={styles.sheetSub}>Current: {friendlyDate(selected.followUpDate)}</Text><Button title={busy ? 'Saving…' : 'Save follow-up'} onPress={saveFollowUp} disabled={busy} /><View style={{ height: 10 }} /><Button title="Save to phone contacts" variant="outline" onPress={() => saveContact(selected)} /></ScrollView></View></KeyboardAvoidingView>}

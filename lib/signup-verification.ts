@@ -4,6 +4,7 @@ import type { Database } from "@/db";
 import { cards, pendingSignups, sessions, users } from "@/db/schema";
 import { createSessionRecord, hashPassword } from "@/lib/auth";
 import { slugify } from "@/lib/utils";
+import { CURRENT_TERMS_VERSION } from "@/lib/terms";
 
 const VERIFICATION_TTL_MS = 24 * 60 * 60 * 1000;
 
@@ -18,7 +19,7 @@ export function makeVerificationToken() {
 /** Consume a pending signup and atomically create its account, private card, and browser session. */
 export async function completeSignupVerification(
   db: Database,
-  input: { token: string; name: string; password: string },
+  input: { token: string; name: string; password: string; acceptedTerms: true },
 ) {
   const tokenHash = hashVerificationToken(input.token);
   const now = new Date();
@@ -35,8 +36,20 @@ export async function completeSignupVerification(
 
     const [account] = await tx
       .insert(users)
-      .values({ email: pending.email, name: input.name, passwordHash: hashPassword(input.password) })
-      .returning({ id: users.id, name: users.name, email: users.email });
+      .values({
+        email: pending.email,
+        name: input.name,
+        passwordHash: hashPassword(input.password),
+        termsAcceptedAt: now,
+        termsVersion: CURRENT_TERMS_VERSION,
+      })
+      .returning({
+        id: users.id,
+        name: users.name,
+        email: users.email,
+        termsAcceptedAt: users.termsAcceptedAt,
+        termsVersion: users.termsVersion,
+      });
 
     const slug = await uniquePrivateSlug(tx, pending.email, input.name);
     const [card] = await tx

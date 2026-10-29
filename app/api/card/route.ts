@@ -7,6 +7,7 @@ import { ensureCard, isSlugAvailable } from "@/lib/cards";
 import { cardUpdateSchema } from "@/lib/validation";
 import { normalizeUrl } from "@/lib/utils";
 import { publicCardTextIssue } from "@/lib/moderation";
+import { cardChangeRequiresTerms } from "@/lib/terms";
 
 export const runtime = "nodejs";
 
@@ -28,6 +29,10 @@ export async function PATCH(request: Request) {
 
   const card = await ensureCard(user);
   const db = await getDb();
+
+  if (cardChangeRequiresTerms(user.termsAcceptedAt, user.termsVersion, card, input)) {
+    return fail("Accept the Terms of Use before creating or updating card content.", 403, { code: "terms_required" });
+  }
 
   if (input.slug && input.slug !== card.slug) {
     if (!(await isSlugAvailable(input.slug, user.id))) {

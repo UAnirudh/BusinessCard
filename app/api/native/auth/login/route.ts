@@ -5,6 +5,7 @@ import { createSession, verifyPassword } from "@/lib/auth";
 import { ensureCard } from "@/lib/cards";
 import { clientIp, fail, isSameOrigin, ok, parseBody, rateLimit } from "@/lib/api";
 import { loginSchema } from "@/lib/validation";
+import { CURRENT_TERMS_VERSION } from "@/lib/terms";
 
 export const runtime = "nodejs";
 
@@ -20,7 +21,14 @@ export async function POST(request: Request) {
 
   const db = await getDb();
   const [account] = await db
-    .select({ id: users.id, name: users.name, email: users.email, passwordHash: users.passwordHash })
+    .select({
+      id: users.id,
+      name: users.name,
+      email: users.email,
+      passwordHash: users.passwordHash,
+      termsAcceptedAt: users.termsAcceptedAt,
+      termsVersion: users.termsVersion,
+    })
     .from(users)
     .where(and(eq(users.email, email), isNull(users.suspendedAt)))
     .limit(1);
@@ -36,7 +44,14 @@ export async function POST(request: Request) {
       ok: true,
       token: session.token,
       expiresAt: session.expiresAt.toISOString(),
-      user: { id: account.id, name: account.name, email: account.email },
+      user: {
+        id: account.id,
+        name: account.name,
+        email: account.email,
+        termsAcceptedAt: account.termsAcceptedAt,
+        termsVersion: account.termsVersion,
+        currentTermsVersion: CURRENT_TERMS_VERSION,
+      },
       card,
     },
     200,

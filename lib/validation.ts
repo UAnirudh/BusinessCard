@@ -27,6 +27,7 @@ export const emailVerificationSchema = z.object({
   token: z.string().regex(/^[A-Za-z0-9_-]{43}$/, "This verification link is invalid or expired"),
   name: z.string().trim().min(2, "Tell us your name").max(80),
   password: z.string().min(8, "Use at least 8 characters").max(200),
+  acceptedTerms: z.literal(true, "Accept the Terms of Use to create your account."),
 });
 
 export const loginSchema = z.object({
@@ -132,6 +133,7 @@ export const accountUpdateSchema = z.object({
   name: z.string().trim().min(2).max(80).optional(),
   currentPassword: z.string().max(200).optional(),
   newPassword: z.string().min(8, "Use at least 8 characters").max(200).optional(),
+  acceptTerms: z.literal(true).optional(),
   agreedToDelete: z.literal(true).optional(),
 });
 
