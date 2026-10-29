@@ -71,29 +71,42 @@ export default function App() {
     setTab('scan');
   };
 
-  const loadContacts = useCallback(async (auth: string) => {
-    const result = await apiRequest<{ connections: WalletContact[] }>('/api/connections', { token: auth });
+  const loadContacts = useCallback(async (auth: string, expectedGeneration = sessionGenerationRef.current) => {
+    let result: { connections: WalletContact[] };
+    try {
+      result = await apiRequest<{ connections: WalletContact[] }>('/api/connections', { token: auth });
+    } catch (error) {
+      if (sessionGenerationRef.current !== expectedGeneration) return false;
+      throw error;
+    }
+    if (sessionGenerationRef.current !== expectedGeneration) return false;
     setContacts(result.connections ?? []);
+    return true;
   }, []);
 
-  const loadWalletAvailability = useCallback(async (auth: string) => {
+  const loadWalletAvailability = useCallback(async (auth: string, expectedGeneration = sessionGenerationRef.current) => {
     try {
       const result = await apiRequest<{ walletAvailability: { apple: boolean; google: boolean } }>('/api/native/wallet-availability', { token: auth });
+      if (sessionGenerationRef.current !== expectedGeneration) return;
       setWalletAvailability({ apple: result.walletAvailability.apple === true, google: result.walletAvailability.google === true });
     } catch {
+      if (sessionGenerationRef.current !== expectedGeneration) return;
       // Fail closed: don't show a Wallet action unless the server confirms it is configured.
       setWalletAvailability({ apple: false, google: false });
     }
   }, []);
 
   const restore = useCallback(async () => {
+    const sessionGeneration = sessionGenerationRef.current;
     setRestoreError('');
     const stored = await loadToken();
+    if (sessionGenerationRef.current !== sessionGeneration) return;
     if (!stored) return;
     let data: { user: NativeUser; card: BusinessCard };
     try {
       data = await apiRequest<{ user: NativeUser; card: BusinessCard }>('/api/native/bootstrap', { token: stored });
     } catch (e) {
+      if (sessionGenerationRef.current !== sessionGeneration) return;
       if (e instanceof ApiError && e.status === 401) {
         await clearToken();
         setWalletAvailability({ apple: false, google: false });
@@ -102,14 +115,18 @@ export default function App() {
       }
       return;
     }
+    if (sessionGenerationRef.current !== sessionGeneration) return;
     setToken(stored); setUser(data.user); setCard(data.card);
-    await loadWalletAvailability(stored);
+    await loadWalletAvailability(stored, sessionGeneration);
     try {
-      await loadContacts(stored);
+      await loadContacts(stored, sessionGeneration);
     } catch (e) {
+      if (sessionGenerationRef.current !== sessionGeneration) return;
       if (e instanceof ApiError && e.status === 401) {
         try { await clearToken(); }
-        finally { setToken(null); setUser(null); setCard(null); setWalletAvailability({ apple: false, google: false }); setContacts([]); }
+        finally {
+          if (sessionGenerationRef.current === sessionGeneration) clearAccountPrivateState();
+        }
         return;
       }
       Alert.alert('Wallet could not sync', 'Your session is restored, but your connections could not load. Check your connection and refresh your wallet.');
@@ -154,42 +171,47 @@ export default function App() {
   }, [handleVerificationReturn]);
 
   const signIn = async () => {
+    const sessionGeneration = sessionGenerationRef.current;
     setBusy(true); setError(''); setVerificationNotice('');
     try {
       const result = await apiRequest<NativeSession | NativeSignupVerification>(`/api/native/auth/${authMode}`, { method: 'POST', body: authMode === 'signup' ? { name: name.trim(), email: email.trim() } : { email: email.trim(), password } });
+      if (sessionGenerationRef.current !== sessionGeneration) return;
       if (!('token' in result)) {
         setVerificationEmail(result.email);
         setPassword('');
         return;
       }
       await saveToken(result.token);
+      if (sessionGenerationRef.current !== sessionGeneration) return;
       setToken(result.token); setUser(result.user); setCard(result.card); setPassword('');
-      await loadWalletAvailability(result.token);
+      await loadWalletAvailability(result.token, sessionGeneration);
       try {
-        await loadContacts(result.token);
+        await loadContacts(result.token, sessionGeneration);
       } catch (contactsError) {
+        if (sessionGenerationRef.current !== sessionGeneration) return;
         if (contactsError instanceof ApiError && contactsError.status === 401) {
           try { await clearToken(); }
           finally {
-            setToken(null); setUser(null); setCard(null);
-            setWalletAvailability({ apple: false, google: false }); setContacts([]);
+            if (sessionGenerationRef.current === sessionGeneration) clearAccountPrivateState();
           }
           throw contactsError;
         }
         Alert.alert('Wallet could not sync', 'Your sign-in is safe, but your connections could not load. Check your connection and refresh your wallet.');
       }
-    } catch (e) { setError(e instanceof Error ? e.message : 'Could not sign in. Try again.'); }
-    finally { setBusy(false); }
+    } catch (e) { if (sessionGenerationRef.current === sessionGeneration) setError(e instanceof Error ? e.message : 'Could not sign in. Try again.'); }
+    finally { if (sessionGenerationRef.current === sessionGeneration) setBusy(false); }
   };
 
   const refresh = async () => {
     if (!token) return;
+    const sessionGeneration = sessionGenerationRef.current;
     try {
       const data = await apiRequest<{ user: NativeUser; card: BusinessCard }>('/api/native/bootstrap', { token });
+      if (sessionGenerationRef.current !== sessionGeneration) return;
       setUser(data.user); setCard(data.card);
-      await loadWalletAvailability(token);
-      await loadContacts(token);
-    } catch (e) { Alert.alert('Could not refresh', e instanceof Error ? e.message : 'Try again.'); }
+      await loadWalletAvailability(token, sessionGeneration);
+      await loadContacts(token, sessionGeneration);
+    } catch (e) { if (sessionGenerationRef.current === sessionGeneration) Alert.alert('Could not refresh', e instanceof Error ? e.message : 'Try again.'); }
   };
 
   const startEditingCard = () => {
@@ -205,19 +227,24 @@ export default function App() {
 
   const saveCardProfile = async (profile: CardProfileDraft) => {
     if (!token || !card) throw new Error('Sign in again before saving your card.');
+    const sessionGeneration = sessionGenerationRef.current;
     setBusy(true);
     try {
       const patch = cardProfilePatch(profile);
       await apiRequest('/api/card', { method: 'PATCH', token, body: patch });
+      if (sessionGenerationRef.current !== sessionGeneration) return;
       setCard((current) => current ? { ...current, ...patch } : current);
       setEditingCard(false);
+    } catch (error) {
+      if (sessionGenerationRef.current === sessionGeneration) throw error;
     } finally {
-      setBusy(false);
+      if (sessionGenerationRef.current === sessionGeneration) setBusy(false);
     }
   };
 
   const acceptTerms = async () => {
     if (!token || busy) return;
+    const sessionGeneration = sessionGenerationRef.current;
     setBusy(true);
     try {
       const result = await apiRequest<{ termsAcceptedAt: string | null; termsVersion: string | null }>('/api/account', {
@@ -225,22 +252,35 @@ export default function App() {
         token,
         body: { acceptTerms: true },
       });
+      if (sessionGenerationRef.current !== sessionGeneration) return;
       setUser((current) => current ? { ...current, termsAcceptedAt: result.termsAcceptedAt, termsVersion: result.termsVersion } : current);
       Alert.alert('Terms accepted', 'You can now add or share card content.');
     } catch (e) {
-      Alert.alert('Could not save your agreement', e instanceof Error ? e.message : 'Check your connection and try again.');
+      if (sessionGenerationRef.current === sessionGeneration) Alert.alert('Could not save your agreement', e instanceof Error ? e.message : 'Check your connection and try again.');
     } finally {
-      setBusy(false);
+      if (sessionGenerationRef.current === sessionGeneration) setBusy(false);
     }
   };
 
-  const signOut = async () => {
+  const clearAccountPrivateState = () => {
     sessionGenerationRef.current += 1;
+    setBusy(false);
+    selectedConnectionIdRef.current = null;
+    setToken(null); setUser(null); setCard(null); setWalletAvailability({ apple: false, google: false }); setContacts([]); setSelected(null);
+    setEditingCard(false); setFollowUp(''); setConnectionNotes(''); setDeleteAccountOpen(false); setDeletePassword(''); setDeleteError('');
+    setPassword(''); setName(''); setVerificationEmail(''); setVerificationNotice(''); setError(''); setRestoreError('');
+    setScanHandled(false); setCardReference(''); setTab('card'); setScannerReturnTab('card'); setAuthMode('login');
+  };
+
+  const signOut = async () => {
+    const signingOutGeneration = ++sessionGenerationRef.current;
     selectedConnectionIdRef.current = null;
     if (token) { try { await apiRequest('/api/auth/logout', { method: 'POST', token }); } catch { /* local credentials still need clearing */ } }
-    await clearToken();
-    sessionGenerationRef.current += 1;
-    setToken(null); setUser(null); setCard(null); setWalletAvailability({ apple: false, google: false }); setContacts([]); setSelected(null); setTab('card');
+    let savedTokenClearFailed = false;
+    try { await clearToken(); } catch { savedTokenClearFailed = true; }
+    if (sessionGenerationRef.current !== signingOutGeneration) return;
+    clearAccountPrivateState();
+    if (savedTokenClearFailed) Alert.alert('Signed out', 'Saved sign-in could not be cleared from this device.');
   };
 
   const requestAccountDeletion = () => {
@@ -260,22 +300,22 @@ export default function App() {
 
   const confirmAccountDeletion = async () => {
     if (!token) return;
+    const sessionGeneration = sessionGenerationRef.current;
     setBusy(true);
     setDeleteError('');
     try {
       await deleteAccount(token, deletePassword);
+      if (sessionGenerationRef.current !== sessionGeneration) return;
       const deletedEmail = user?.email ?? email;
       try { await clearToken(); } catch { /* the deleted account has already revoked this token */ }
-      sessionGenerationRef.current += 1;
-      selectedConnectionIdRef.current = null;
-      setToken(null); setUser(null); setCard(null); setWalletAvailability({ apple: false, google: false }); setContacts([]); setSelected(null); setTab('card');
-      setAuthMode('login'); setEmail(deletedEmail); setPassword('');
-      setDeletePassword(''); setDeleteAccountOpen(false);
+      if (sessionGenerationRef.current !== sessionGeneration) return;
+      clearAccountPrivateState();
+      setEmail(deletedEmail);
       Alert.alert('Account deleted', 'Your Tappd account and wallet have been deleted.');
     } catch (e) {
-      setDeleteError(e instanceof Error ? e.message : 'Could not delete your account. Check your connection and try again.');
+      if (sessionGenerationRef.current === sessionGeneration) setDeleteError(e instanceof Error ? e.message : 'Could not delete your account. Check your connection and try again.');
     } finally {
-      setBusy(false);
+      if (sessionGenerationRef.current === sessionGeneration) setBusy(false);
     }
   };
 
@@ -299,7 +339,7 @@ export default function App() {
         Alert.alert('Could not save', e instanceof Error ? e.message : 'Try again.');
       }
     }
-    finally { setBusy(false); }
+    finally { if (sessionGenerationRef.current === sessionGeneration) setBusy(false); }
   };
 
   const saveConnectionNotes = async () => {
@@ -323,7 +363,7 @@ export default function App() {
         Alert.alert('Could not save notes', e instanceof Error ? e.message : 'Try again.');
       }
     }
-    finally { setBusy(false); }
+    finally { if (sessionGenerationRef.current === sessionGeneration) setBusy(false); }
   };
 
   const shareCard = async () => {
@@ -334,6 +374,7 @@ export default function App() {
 
   const updateCardVisibility = async (isPublic: boolean) => {
     if (!token || !card || busy) return;
+    const sessionGeneration = sessionGenerationRef.current;
     setBusy(true);
     try {
       await apiRequest<{ ok: true; slug: string }>('/api/card', {
@@ -341,11 +382,12 @@ export default function App() {
         token,
         body: { displayName: card.displayName, isPublic, collectLeads: isPublic ? card.collectLeads : false },
       });
+      if (sessionGenerationRef.current !== sessionGeneration) return;
       setCard({ ...card, isPublic, collectLeads: isPublic ? card.collectLeads : false });
     } catch (e) {
-      Alert.alert('Could not update sharing', e instanceof Error ? e.message : 'Check your connection and try again.');
+      if (sessionGenerationRef.current === sessionGeneration) Alert.alert('Could not update sharing', e instanceof Error ? e.message : 'Check your connection and try again.');
     } finally {
-      setBusy(false);
+      if (sessionGenerationRef.current === sessionGeneration) setBusy(false);
     }
   };
 
@@ -411,11 +453,16 @@ export default function App() {
       setScanHandled(false);
       return;
     }
+    const sessionGeneration = sessionGenerationRef.current;
     try {
       await apiRequest('/api/exchange', { method: 'POST', token, body: { slug, name: card?.displayName, email: card?.email, phone: card?.phone, company: card?.company, headline: card?.headline, note: 'Met in person' } });
-      await loadContacts(token); Alert.alert('You’re connected', 'The contact is now in your wallet.', [{ text: 'Open wallet', onPress: () => setTab('wallet') }]);
-    } catch (e) { Alert.alert('Could not exchange cards', e instanceof Error ? e.message : 'Try again.'); }
-    finally { setScanHandled(false); }
+      if (sessionGenerationRef.current !== sessionGeneration) return;
+      await loadContacts(token, sessionGeneration);
+      if (sessionGenerationRef.current === sessionGeneration) Alert.alert('You’re connected', 'The contact is now in your wallet.', [{ text: 'Open wallet', onPress: () => setTab('wallet') }]);
+    } catch (e) {
+      if (sessionGenerationRef.current === sessionGeneration) Alert.alert('Could not exchange cards', e instanceof Error ? e.message : 'Try again.');
+    }
+    finally { if (sessionGenerationRef.current === sessionGeneration) setScanHandled(false); }
   };
 
   const exchange = async (value: string) => {
