@@ -88,7 +88,7 @@ Capture the final signed production build on real supported device sizes. Use a 
 
 1. **Your card:** a polished card with its share link and QR action.
 2. **Share flow:** QR/link sharing, with the recipient's browser card shown without requiring Tappd.
-3. **Contact save:** the public card's contact-save action and clear vCard wording.
+3. **Contact download:** the public card's “Download contact” action and the instruction for opening the `.vcf` file on a phone.
 4. **Your wallet:** a saved introduction with note, tags, and follow-up date.
 5. **Find someone:** search and useful results from a realistic contact set.
 6. **Native actions:** show QR scanning, contact save, and NFC only on devices where those actions were tested.

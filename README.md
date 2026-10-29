@@ -12,7 +12,7 @@ The web service is built with Next.js 16 (App Router), TypeScript, Tailwind CSS 
 
 ### Your card
 - Public card at `/c/your-handle` with a live accent theme, photo, bio, tags, contact rows, social links and custom links.
-- **Save contact** downloads a real `.vcf` that works in iOS, Android and Google Contacts.
+- **Download contact** downloads a `.vcf` file you can open to add the contact in iOS, Android or Google Contacts.
 - **QR code** generated server-side (SVG, downloadable) and a scannable share sheet.
 - **NFC writing** via Web NFC — write your card link to a cheap NTAG213/215/216 tag once, then tap phones.
 - **QR scanner** in the app (camera + jsQR) to open someone else's card instantly.
