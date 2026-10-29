@@ -274,13 +274,16 @@ export default function App() {
 
   const signOut = async () => {
     const signingOutGeneration = ++sessionGenerationRef.current;
+    const tokenToRevoke = token;
     selectedConnectionIdRef.current = null;
-    if (token) { try { await apiRequest('/api/auth/logout', { method: 'POST', token }); } catch { /* local credentials still need clearing */ } }
     let savedTokenClearFailed = false;
     try { await clearToken(); } catch { savedTokenClearFailed = true; }
     if (sessionGenerationRef.current !== signingOutGeneration) return;
     clearAccountPrivateState();
     if (savedTokenClearFailed) Alert.alert('Signed out', 'Saved sign-in could not be cleared from this device.');
+    if (tokenToRevoke) {
+      void apiRequest('/api/auth/logout', { method: 'POST', token: tokenToRevoke }).catch(() => undefined);
+    }
   };
 
   const requestAccountDeletion = () => {

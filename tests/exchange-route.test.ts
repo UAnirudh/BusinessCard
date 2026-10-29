@@ -129,6 +129,27 @@ test("exchange creates owned wallet copies, gates visitor leads, and keeps vCard
     assert.equal(memberWalletCopy.connectionUserId, cardOwner.id);
     assert.equal(memberWalletCopy.name, "Card Owner");
     assert.equal(memberWalletCopy.source, "exchange");
+
+    await db.update(connections).set({ notes: "Private note saved by the card owner" }).where(eq(connections.id, ownerWalletCopy.id));
+    await db.update(connections).set({ notes: "Private note saved by the member" }).where(eq(connections.id, memberWalletCopy.id));
+    const repeatedExchange = await POST(publicRequest("/api/exchange", {
+      slug: ownerCard.slug,
+      name: "Exchange Member",
+      note: "A different exchange note must not erase existing notes",
+    }, token));
+    assert.equal(repeatedExchange.status, 200);
+    const repeatedOwnerCopy = (await db.select().from(connections).where(and(
+      eq(connections.ownerId, cardOwner.id),
+      eq(connections.cardId, memberCard.id),
+    )))[0];
+    const repeatedMemberCopy = (await db.select().from(connections).where(and(
+      eq(connections.ownerId, member.id),
+      eq(connections.cardId, ownerCard.id),
+    )))[0];
+    assert.equal(repeatedOwnerCopy.id, ownerWalletCopy.id, "repeating a member exchange reuses the owner's existing connection");
+    assert.equal(repeatedMemberCopy.id, memberWalletCopy.id, "repeating a member exchange reuses the member's existing connection");
+    assert.equal(repeatedOwnerCopy.notes, "Private note saved by the card owner");
+    assert.equal(repeatedMemberCopy.notes, "Private note saved by the member");
     assert.equal(await db.select().from(connections).then((rows) => rows.length), 2);
 
     const visitorPayload = {
@@ -151,6 +172,29 @@ test("exchange creates owned wallet copies, gates visitor leads, and keeps vCard
     assert.deepEqual(lead.tags, ["conference"]);
     assert.equal(lead.source, "lead");
     assert.equal(lead.connectionUserId, null);
+
+    const repeatedVisitorExchange = await POST(publicRequest("/api/exchange", {
+      ...visitorPayload,
+      name: "Visitor Contact Updated",
+      company: "Updated Company",
+      note: "Updated follow-up context",
+      tags: ["updated"],
+    }));
+    assert.equal(repeatedVisitorExchange.status, 200);
+    const [updatedLead] = await db.select().from(connections).where(and(
+      eq(connections.ownerId, leadOwner.id),
+      isNull(connections.cardId),
+      eq(connections.email, "visitor@example.test"),
+    ));
+    assert.equal(updatedLead.id, lead.id, "a repeated visitor lead reuses its email-matched connection");
+    assert.equal(updatedLead.name, "Visitor Contact Updated");
+    assert.equal(updatedLead.company, "Updated Company");
+    assert.equal(updatedLead.notes, "Updated follow-up context");
+    assert.deepEqual(updatedLead.tags, ["updated"]);
+    assert.equal(await db.select().from(connections).where(and(
+      eq(connections.ownerId, leadOwner.id),
+      isNull(connections.cardId),
+    )).then((rows) => rows.length), 1);
 
     const deniedVisitorExchange = await POST(publicRequest("/api/exchange", {
       ...visitorPayload,
