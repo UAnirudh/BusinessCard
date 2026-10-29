@@ -43,6 +43,21 @@ Use the existing qualitative gates as stop / continue signals, not statistical c
 
 Ask about the specific $5.99/month and $49.99/year hypotheses only after observed use, and record objections verbatim. This is still not willingness-to-pay evidence. Do not charge for premium functionality until compliant store billing exists and users actually complete a paid transaction.
 
+## Next stage: one-niche repeat-use and paid-conversion test
+
+Choose the single role-based niche with the clearest repeated, recent follow-up problem from the discovery interviews. Recruit 10 eligible people in that niche who expect at least two new professional introductions per month, then observe each for the same 14-day window. Before onboarding, define the cohort as `N0`: every consenting eligible participant who starts the pilot. Keep dropouts in `N0`; exclude only test accounts identified before the cohort begins. Track counts and rates, not just anecdotes:
+
+- **Share activation (by day 3):** participants who publish and share a card with a real person ÷ `N0`.
+- **First real use (by day 7):** participants who save a real introduction to their wallet ÷ `N0`.
+- **Useful context (by day 14):** participants who attach a note or follow-up date to a real saved contact ÷ `N0`.
+- **Repeat real use (by day 14):** participants who save a second, distinct real introduction on a different calendar day, with a note or follow-up date on at least one of the two contacts ÷ `N0`.
+
+Use a dated, manually maintained cohort sheet until product analytics are available; do not enter interview recordings or sensitive personal details. **Proposed internal continue threshold:** at least 5 of 10 participants reach repeat real use. This is a founder-set learning gate, not an industry benchmark, proof of product-market fit, or evidence that a larger market behaves the same way. If the threshold is missed, review observed friction and interview evidence before choosing another niche or changing the product.
+
+Only after repeat use, test one specific paid offer with people who reached that behavior. Before accepting money for digital features, configure and verify the applicable Apple/Google-compliant billing path, purchase terms, cancellation/refund handling, and price in the intended market. Then present the actual offer to at least 20 eligible repeat users and record the denominator who saw it, successful paid transactions, refunds, and first renewal; stated intent, clicks, and price-survey answers are not paid conversions. A completed transaction is early evidence from that cohort only, not proof of broad demand. If compliant billing is not ready, do not take payment or claim willingness-to-pay; keep the offer as a clearly labeled hypothesis.
+
+Do not describe the business as profitable from interviews or the first charges. Calculate cohort contribution using collected revenue after actual store/payment fees, taxes, refunds, and variable service/support costs; include acquisition time and spend by channel. Observe renewal or churn across paid billing cycles and compare contribution with actual fixed costs before making a profitability claim or scaling acquisition.
+
 ### Unit-economics worksheet (unknowns stay unknown)
 
 For a store subscription, estimate monthly contribution per paying subscriber as `collected subscription revenue − store fee − taxes/refunds − variable infrastructure/support`. At the illustrative $5.99/month and 15% store-fee assumption above, only about $5.09 remains before those other costs. Annual pricing must be converted to monthly equivalent when comparing contribution and retention. Do not call this gross margin or profit until actual costs are measured.

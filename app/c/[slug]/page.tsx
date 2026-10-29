@@ -227,14 +227,27 @@ export default async function PublicCardPage({
           )}
 
           <div className="mt-6 border-t border-line-soft pt-5">
-            <CardActions
-              slug={card.slug}
-              name={card.displayName}
-              url={publicUrl}
-              vcardUrl={`/api/vcard/${card.slug}`}
-              walletApple={card.isPublic && wallets.apple}
-              walletGoogle={card.isPublic && wallets.google}
-            />
+            {card.isPublic ? (
+              <CardActions
+                slug={card.slug}
+                name={card.displayName}
+                url={publicUrl}
+                vcardUrl={`/api/vcard/${card.slug}`}
+                walletApple={wallets.apple}
+                walletGoogle={wallets.google}
+              />
+            ) : (
+              <div className="rounded-xl border border-line bg-[#fbfaf6] p-4" aria-label="Private card preview">
+                <p className="text-sm font-semibold">Only you can see this card.</p>
+                <p className="mt-1 text-xs leading-relaxed text-muted">
+                  Make it public in your card settings before sharing or downloading contact details.
+                </p>
+                <Link href="/app/card" className="btn btn-outline btn-sm mt-3">
+                  <Pencil className="h-3.5 w-3.5" />
+                  Edit card
+                </Link>
+              </div>
+            )}
           </div>
         </section>
 
@@ -302,7 +315,9 @@ export default async function PublicCardPage({
               )}
 
             <p className="border-t border-[#f0eee7] bg-[#fbfaf6] px-5 py-2.5 text-center text-[0.72rem] text-muted">
-              Works in any browser. No app needed to save this contact.
+              {card.isPublic
+                ? "Works in any browser. No Tappd account needed to view or download this contact."
+                : "Private preview. Only you can view these contact details."}
             </p>
           </section>
         )}
