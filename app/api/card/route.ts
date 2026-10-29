@@ -5,7 +5,9 @@ import { getCurrentUser } from "@/lib/auth";
 import { fail, isSameOrigin, ok, parseBody } from "@/lib/api";
 import { ensureCard, isSlugAvailable } from "@/lib/cards";
 import { cardUpdateSchema } from "@/lib/validation";
-import { normalizeUrl } from "@/lib/utils";
+import { publicCardTextIssue } from "@/lib/moderation";
+import { cardChangeRequiresTerms } from "@/lib/terms";
+import { buildCardUpdatePatch } from "@/lib/card-updates";
 
 export const runtime = "nodejs";
 
@@ -28,41 +30,36 @@ export async function PATCH(request: Request) {
   const card = await ensureCard(user);
   const db = await getDb();
 
+  if (cardChangeRequiresTerms(user.termsAcceptedAt, user.termsVersion, card, input)) {
+    return fail("Accept the Terms of Use before creating or updating card content.", 403, { code: "terms_required" });
+  }
+
   if (input.slug && input.slug !== card.slug) {
     if (!(await isSlugAvailable(input.slug, user.id))) {
       return fail("That card address is already taken. Try another.", 409, { field: "slug" });
     }
   }
 
-  const links = (input.links ?? [])
-    .map((link) => ({ label: link.label.trim(), url: normalizeUrl(link.url) ?? "" }))
-    .filter((link) => link.url.length > 0)
-    .slice(0, 8);
+  const patch = buildCardUpdatePatch(card, input);
+
+  const isPublic = patch.isPublic ?? card.isPublic;
+  if (isPublic) {
+    const issue = publicCardTextIssue([
+      patch.displayName,
+      patch.headline === undefined ? card.headline : patch.headline,
+      patch.company === undefined ? card.company : patch.company,
+      patch.bio === undefined ? card.bio : patch.bio,
+      patch.location === undefined ? card.location : patch.location,
+      ...(patch.tags ?? card.tags),
+      ...(patch.links ?? card.links).map((link) => link.label),
+    ]);
+    if (issue) return fail(issue, 422);
+  }
 
   try {
     const [updated] = await db
       .update(cards)
-      .set({
-        displayName: input.displayName,
-        headline: input.headline,
-        company: input.company,
-        bio: input.bio,
-        location: input.location,
-        email: input.email,
-        phone: input.phone,
-        website: normalizeUrl(input.website),
-        linkedin: normalizeUrl(input.linkedin),
-        twitter: normalizeUrl(input.twitter),
-        github: normalizeUrl(input.github),
-        instagram: normalizeUrl(input.instagram),
-        accent: input.accent ?? card.accent,
-        tags: (input.tags ?? []).slice(0, 12),
-        links,
-        isPublic: input.isPublic ?? card.isPublic,
-        collectLeads: input.collectLeads ?? card.collectLeads,
-        slug: input.slug ?? card.slug,
-        updatedAt: new Date(),
-      })
+      .set(patch)
       .where(eq(cards.id, card.id))
       .returning({ slug: cards.slug });
 

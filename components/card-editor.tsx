@@ -107,10 +107,12 @@ export function CardEditor({
   initial,
   initialAvatar,
   host,
+  hasAcceptedTerms: initiallyAcceptedTerms,
 }: {
   initial: EditorCard;
   initialAvatar: string | null;
   host: string;
+  hasAcceptedTerms: boolean;
 }) {
   const router = useRouter();
   const [draft, setDraft] = useState<EditorCard>(initial);
@@ -120,11 +122,40 @@ export function CardEditor({
   const [error, setError] = useState<string | null>(null);
   const [fieldError, setFieldError] = useState<string | null>(null);
   const [uploading, setUploading] = useState(false);
+  const [hasAcceptedTerms, setHasAcceptedTerms] = useState(initiallyAcceptedTerms);
+  const [termsConsentChecked, setTermsConsentChecked] = useState(false);
+  const [termsError, setTermsError] = useState<string | null>(null);
+  const [acceptingTerms, setAcceptingTerms] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
   const initialSnapshot = useRef(JSON.stringify(initial));
 
   const dirty = useMemo(() => JSON.stringify(draft) !== initialSnapshot.current, [draft]);
   const publicPath = `/c/${draft.slug}`;
+
+  async function acceptTerms() {
+    if (!termsConsentChecked || acceptingTerms) return;
+    setAcceptingTerms(true);
+    setTermsError(null);
+    try {
+      const response = await fetch("/api/account", {
+        method: "PATCH",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ acceptTerms: true }),
+      });
+      const data = (await response.json().catch(() => ({}))) as { error?: string };
+      if (!response.ok) {
+        setTermsError(data.error ?? "Could not save your agreement. Try again.");
+        return;
+      }
+      setHasAcceptedTerms(true);
+      setTermsConsentChecked(false);
+      router.refresh();
+    } catch {
+      setTermsError("Network error — your agreement wasn’t saved.");
+    } finally {
+      setAcceptingTerms(false);
+    }
+  }
 
   function set<K extends keyof EditorCard>(key: K, value: EditorCard[K]) {
     setDraft((current) => ({ ...current, [key]: value }));
@@ -223,6 +254,22 @@ export function CardEditor({
 
   return (
     <div className="pb-24">
+      {!hasAcceptedTerms && (
+        <section className="surface mb-5 border border-line p-5" aria-labelledby="terms-acceptance-title">
+          <h2 id="terms-acceptance-title" className="text-[0.95rem] font-semibold">Review the Terms before editing your card</h2>
+          <p className="mt-1 text-[0.8rem] leading-relaxed text-muted">You need to accept the current Terms of Use before adding or sharing card content.</p>
+          <Link href="/terms" target="_blank" className="mt-2 inline-block text-[0.8rem] font-medium underline underline-offset-2">Read the Terms of Use</Link>
+          <label className="mt-4 flex items-start gap-2.5 text-[0.78rem] leading-relaxed text-muted">
+            <input type="checkbox" checked={termsConsentChecked} onChange={(event) => setTermsConsentChecked(event.target.checked)} className="mt-0.5 h-4 w-4 shrink-0 accent-[#18211b]" />
+            <span>I have read and agree to the Terms of Use.</span>
+          </label>
+          <button type="button" onClick={acceptTerms} disabled={!termsConsentChecked || acceptingTerms} className="btn btn-primary btn-sm mt-4 disabled:cursor-not-allowed disabled:opacity-50">
+            {acceptingTerms ? <Loader2 className="h-3.5 w-3.5 spin" /> : <Check className="h-3.5 w-3.5" />}
+            I agree to the Terms of Use
+          </button>
+          {termsError && <p role="alert" className="mt-2 text-[0.78rem] text-danger">{termsError}</p>}
+        </section>
+      )}
       <header className="mb-6 flex flex-wrap items-end justify-between gap-4">
         <div>
           <p className="eyebrow">
@@ -231,7 +278,7 @@ export function CardEditor({
           </p>
           <h1 className="mt-2 text-[1.8rem] font-semibold tracking-[-0.035em]">My card</h1>
           <p className="mt-1 text-[0.9rem] text-muted">
-            Everything here updates your live card instantly after you save.
+            Edit the details people see on your public card.
           </p>
         </div>
         <div className="flex items-center gap-2">
@@ -296,7 +343,7 @@ export function CardEditor({
                     if (file) handlePhoto(file);
                   }}
                 />
-                <p className="hint mt-2">Square crop, up to 1.5 MB. Photos make a card 3× more memorable.</p>
+                <p className="hint mt-2">Square crop, up to 1.5 MB. Your photo appears on your public card.</p>
               </div>
             </div>
 

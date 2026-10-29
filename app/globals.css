@@ -188,10 +188,9 @@
 /* ---------- form controls ---------- */
 .label {
   display: block;
-  font-size: 0.75rem;
+  font-size: 0.82rem;
   font-weight: 600;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
+  letter-spacing: 0;
   color: var(--color-muted);
   margin-bottom: 0.4rem;
 }
@@ -279,10 +278,9 @@
   display: inline-flex;
   align-items: center;
   gap: 0.4rem;
-  font-size: 0.72rem;
-  font-weight: 600;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
+  font-size: 0.8rem;
+  font-weight: 550;
+  letter-spacing: 0;
   color: var(--color-muted);
 }
 
@@ -292,71 +290,7 @@
   letter-spacing: -0.04em;
 }
 
-.mark-underline {
-  position: relative;
-  white-space: nowrap;
-}
-
-.mark-underline::after {
-  content: "";
-  position: absolute;
-  left: -0.06em;
-  right: -0.06em;
-  bottom: 0.08em;
-  height: 0.32em;
-  background: var(--color-lime);
-  z-index: -1;
-  border-radius: 0.1em;
-  transform: rotate(-0.8deg);
-}
-
-/* ---------- effects ---------- */
-.grid-bg {
-  background-image: linear-gradient(to right, rgba(255, 255, 255, 0.055) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(255, 255, 255, 0.055) 1px, transparent 1px);
-  background-size: 56px 56px;
-}
-
-.glow {
-  position: absolute;
-  border-radius: 999px;
-  filter: blur(90px);
-  pointer-events: none;
-}
-
-.grain::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  opacity: 0.35;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 160 160' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)' opacity='0.28'/%3E%3C/svg%3E");
-  mix-blend-mode: overlay;
-}
-
-.rise {
-  animation: rise 520ms cubic-bezier(0.22, 1, 0.36, 1) both;
-}
-
-.rise-2 {
-  animation: rise 520ms cubic-bezier(0.22, 1, 0.36, 1) 90ms both;
-}
-
-.rise-3 {
-  animation: rise 520ms cubic-bezier(0.22, 1, 0.36, 1) 180ms both;
-}
-
-@keyframes rise {
-  from {
-    opacity: 0;
-    transform: translateY(14px) scale(0.99);
-  }
-  to {
-    opacity: 1;
-    transform: none;
-  }
-}
-
+/* ---------- feedback motion ---------- */
 .spin {
   animation: spin 900ms linear infinite;
 }
@@ -384,9 +318,6 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .rise,
-  .rise-2,
-  .rise-3,
   .spin {
     animation: none;
   }

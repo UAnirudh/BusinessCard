@@ -21,7 +21,13 @@ const optionalEmail = z
 export const signupSchema = z.object({
   name: z.string().trim().min(2, "Tell us your name").max(80),
   email: z.string().trim().toLowerCase().email("Enter a valid email address").max(200),
+});
+
+export const emailVerificationSchema = z.object({
+  token: z.string().regex(/^[A-Za-z0-9_-]{43}$/, "This verification link is invalid or expired"),
+  name: z.string().trim().min(2, "Tell us your name").max(80),
   password: z.string().min(8, "Use at least 8 characters").max(200),
+  acceptedTerms: z.literal(true, "Accept the Terms of Use to create your account."),
 });
 
 export const loginSchema = z.object({
@@ -53,17 +59,17 @@ export const linkSchema = z.object({
 
 export const cardUpdateSchema = z.object({
   displayName: z.string().trim().min(2, "Add your name").max(80),
-  headline: text(120),
-  company: text(120),
-  bio: text(500),
-  location: text(120),
-  email: optionalEmail,
-  phone: text(40),
-  website: text(300),
-  linkedin: text(300),
-  twitter: text(300),
-  github: text(300),
-  instagram: text(300),
+  headline: text(120).optional(),
+  company: text(120).optional(),
+  bio: text(500).optional(),
+  location: text(120).optional(),
+  email: optionalEmail.optional(),
+  phone: text(40).optional(),
+  website: text(300).optional(),
+  linkedin: text(300).optional(),
+  twitter: text(300).optional(),
+  github: text(300).optional(),
+  instagram: text(300).optional(),
   accent: z.string().trim().max(24).optional(),
   tags: z.array(z.string().trim().min(1).max(30)).max(12).optional(),
   links: z.array(linkSchema).max(8).optional(),
@@ -127,6 +133,7 @@ export const accountUpdateSchema = z.object({
   name: z.string().trim().min(2).max(80).optional(),
   currentPassword: z.string().max(200).optional(),
   newPassword: z.string().min(8, "Use at least 8 characters").max(200).optional(),
+  acceptTerms: z.literal(true).optional(),
   agreedToDelete: z.literal(true).optional(),
 });
 
@@ -142,6 +149,21 @@ export const accountEmailChangeConfirmSchema = z.object({
 export const viewSchema = z.object({
   slug: z.string().trim().min(1).max(80),
   source: z.enum(["link", "qr", "nfc", "share", "direct"]).optional(),
+});
+
+export const cardReportSchema = z.object({
+  slug: z.string().trim().min(1).max(80),
+  reason: z.enum(["objectionable", "impersonation", "spam", "privacy", "other"]),
+  details: text(1000),
+});
+
+export const userBlockSchema = z.object({
+  slug: z.string().trim().min(1).max(80),
+});
+
+export const moderationDecisionSchema = z.object({
+  reportId: z.string().uuid(),
+  action: z.enum(["dismiss", "hide_card", "suspend_user"]),
 });
 
 export type CardUpdateInput = z.infer<typeof cardUpdateSchema>;

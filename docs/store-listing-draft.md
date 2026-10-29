@@ -63,10 +63,10 @@ Use terms that describe the app, rather than competitor names or unsupported out
 
 ## Store links and publisher details to complete
 
-- **Marketing URL:** [production website URL]
-- **Support URL:** [public support page or monitored support contact]
-- **Privacy policy URL:** [canonical HTTPS privacy URL, checked on production]
-- **Account deletion URL:** [canonical HTTPS deletion page, checked on production]
+- **Marketing URL:** https://tappd.up.railway.app (verify on production before submission)
+- **Support URL:** https://tappd.up.railway.app/support (add a monitored support email before submission)
+- **Privacy policy URL:** https://tappd.up.railway.app/privacy (verify final operator and provider disclosures before submission)
+- **Account deletion URL:** https://tappd.up.railway.app/account-deletion (verify the complete deletion flow on the signed build)
 - **Seller/developer name:** [legal publisher name shown in the store]
 - **Copyright:** [publisher name and year]
 - **Contact email:** [monitored support address]
@@ -78,9 +78,9 @@ The app has a public support route at `https://tappd.up.railway.app/support` wit
 
 - Google Play: app name up to 30 characters, short description up to 80, and full description up to 4,000. See [Play listing setup](https://support.google.com/googleplay/android-developer/answer/9859152?hl=en-en) and [metadata policy](https://support.google.com/googleplay/android-developer/answer/9898842?hl=en).
 - App Store Connect: name and subtitle up to 30 characters each; promotional text up to 170; description up to 4,000; keywords up to 100 bytes. Privacy policy URL is required and Support URL must provide contact information. See [App information](https://developer.apple.com/help/app-store-connect/reference/app-information/app-information) and [platform version information](https://developer.apple.com/help/app-store-connect/reference/app-information/platform-version-information).
-- Apple screenshots are required (1–10 per localization). Capture from the final build and confirm the chosen device's current size in [Apple screenshot specifications](https://developer.apple.com/help/app-store-connect/reference/app-information/screenshot-specifications/).
+- Apple screenshots are required (1–10 per localization). Tappd targets iPhone and Android phones; iPad support is disabled until a tablet layout is reviewed. Capture an iPhone screenshot for a device with Dynamic Island. Verify current device sizes and requirements in [Apple screenshot specifications](https://developer.apple.com/help/app-store-connect/reference/app-information/screenshot-specifications/), and confirm the layout on the final build before capture.
 
-The privacy page describes Tappd's current code-level data handling, but operator identity, production providers, data region, backup/retention details, and a monitored `TAPPD_SUPPORT_EMAIL` must be verified before that page is treated as final store documentation.
+The privacy page describes Tappd's current code-level data handling, but operator identity, production providers, data region, backup/retention details, and a monitored `TAPPD_SUPPORT_EMAIL` must be verified before that page is treated as final store documentation. Use [the internal disclosure worksheet](store-data-disclosure-worksheet.md) to prepare the console declarations; it is a code-based draft, not a final legal or store declaration.
 
 ## Screenshot and preview checklist
 
@@ -88,12 +88,30 @@ Capture the final signed production build on real supported device sizes. Use a 
 
 1. **Your card:** a polished card with its share link and QR action.
 2. **Share flow:** QR/link sharing, with the recipient's browser card shown without requiring Tappd.
-3. **Contact save:** the public card's contact-save action and clear vCard wording.
+3. **Contact download:** the public card's “Download contact” action and the instruction for opening the `.vcf` file on a phone.
 4. **Your wallet:** a saved introduction with note, tags, and follow-up date.
 5. **Find someone:** search and useful results from a realistic contact set.
 6. **Native actions:** show QR scanning, contact save, and NFC only on devices where those actions were tested.
 
 Before exporting screenshots, remove localhost URLs, developer menus, test credentials, unapproved Wallet claims, personal data, loading/offline screens, and platform UI that obscures the product. Check the current store-specific screenshot sizes and device requirements when preparing the final image set.
+
+## Store asset handoff checklist
+
+These are production assets, not mockups. Capture them from the final signed build with synthetic profiles; do not add feature claims or promotional text that the build does not show.
+
+### Google Play
+
+- [ ] Upload the launcher icon as a 512 × 512 PNG with alpha, no larger than 1 MB. The icon must follow Play's icon rules; do not add ranking, price, or category badges.
+- [ ] Upload at least two screenshots across different device types. Use JPEG or 24-bit PNG without alpha; each image must be 320–3840 px, with its longest side no more than twice its shortest. Use actual app captures, and make sure any added captions stay accurate to the shipped experience.
+- [ ] If using a feature graphic, prepare a 1024 × 500 JPEG or 24-bit PNG without alpha. Keep it distinct from the app icon and avoid small detail that will not read on a phone.
+- [ ] For tablet/large-screen distribution, capture and review the large-screen experience separately. Play recommends four screenshots at 1080 × 1920 (portrait) or 1920 × 1080 (landscape) for recommendation eligibility; treat this as a quality target, not a basic listing minimum.
+
+### Apple App Store
+
+- [ ] Upload 1–10 screenshots for each required device family and localization. Tappd currently targets iPhone; if iPad support is enabled later, review and capture the tablet layout before submission.
+- [ ] App previews are optional. If added, capture the real app experience and verify Apple's current device-size and video specifications before export.
+
+See Google's [preview asset requirements](https://support.google.com/googleplay/android-developer/answer/9866151?hl=en) and Apple's [screenshot and app preview upload requirements](https://developer.apple.com/help/app-store-connect/manage-app-information/upload-app-previews-and-screenshots/). Recheck those pages when exporting because allowed sizes and device categories can change.
 
 ## Claims that require release verification
 

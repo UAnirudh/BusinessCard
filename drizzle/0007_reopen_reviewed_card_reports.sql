@@ -1,0 +1,2 @@
+DROP INDEX "card_reports_reporter_once_idx";--> statement-breakpoint
+CREATE UNIQUE INDEX "card_reports_open_reporter_once_idx" ON "card_reports" USING btree ("card_id","reporter_user_id") WHERE "card_reports"."reporter_user_id" is not null and "card_reports"."status" = 'open';

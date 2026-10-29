@@ -32,10 +32,10 @@ Before store submission, review the public `/privacy` policy against actual oper
 
 ## API contract
 
-- `POST /api/native/auth/login` and `/signup` return `{ ok, token, expiresAt, user, card }`.
+- `POST /api/native/auth/login` returns `{ ok, token, expiresAt, user, card }`. Native signup returns HTTP 202 with `{ ok, verificationRequired, email, message }`; the user verifies email and chooses a password in the browser, then signs in to the app.
 - The token is stored only in `expo-secure-store` and sent as `Authorization: Bearer …` on protected requests. Wallet payloads are held in memory and are not persisted on the device.
 - `GET /api/native/bootstrap` refreshes account/card state; `GET /api/connections` provides the wallet; `PATCH /api/connections/{id}` updates `followUpDate` as `YYYY-MM-DD` or `null`.
-- `GET /api/native/wallet-availability` returns server-confirmed Apple and Google Wallet readiness for the signed-in app. The card screen offers the matching platform action only when its provider is configured; it opens `/api/wallet/{apple|google}/{slug}`. A Wallet pass is separate from saving a contact: people can use **Save contact** on the public card to import its `.vcf` details.
+- `GET /api/native/wallet-availability` returns server-confirmed Apple and Google Wallet readiness for the signed-in app. The card screen offers the matching platform action only when its provider is configured; it opens `/api/wallet/{apple|google}/{slug}`. A Wallet pass is separate from downloading a contact: people can use **Download contact** on the public card, then open its `.vcf` file to add the details to their phone.
 - `POST /api/exchange` accepts `{ slug, name, email, phone, company, headline, note }` for signed-in two-way exchanges.
 - `POST /api/auth/logout` revokes the active bearer token.
 - The card share URL assumes public cards are served at `/c/{slug}`. Privacy settings link to `/privacy`.

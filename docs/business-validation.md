@@ -4,13 +4,14 @@
 
 Start with individuals who meet prospective clients or collaborators often. Keep creating, opening, and saving a public card free. Test whether a reliable follow-up workflow—capturing who someone is, where you met, notes, reminders, and export—is valuable enough to pay for. Do not treat a price survey or competitor price as proof of demand.
 
-**Competitor snapshot checked 2026-10-26 (three vendor pages, not an exhaustive market count or proof of demand):** Blinq offers a free individual tier and Premium at $9.99 monthly or $7.33/month billed annually; its team plan is $6.99/user/month monthly or $4.99/user/month billed annually. HiHello lists Personal free, Professional at $6/month ($72 billed yearly), and Business at $5/user/month ($60 per user/year, five-seat minimum). Wave's individual page describes a free card with QR and Apple/Google Wallet sharing; it does not establish that NFC sharing is part of that free tier. These pages show that basic card creation and sharing are already available free from multiple competitors, so they are weak paid differentiators. Recheck the live pages before setting Tappd pricing:
+**Competitor snapshot checked 2026-10-28 (three vendor pages; not an exhaustive market count or proof of demand):** Blinq Free includes two cards, unlimited sharing/contact creation, and Apple/Google Wallet; Premium is $9.99 monthly or $7.33/month billed annually. Its help page also lists a free AI notetaker, so “notes” or “AI notes” alone are not defensible differentiators. HiHello Personal is free with four cards, five scans per month, and Apple/Google Wallet; Professional is $6/month or $72 billed yearly. Wave Connect describes a free individual card with QR, NFC, Apple/Google Wallet, unlimited sharing/contact saving, and no-app recipient access; Pro is $7/month billed yearly. Vendor claims and prices are snapshots that can change. Taken together, card creation, Wallet passes, QR/NFC, and no-app recipient access are already table stakes among these vendors. Recheck the live pages before setting Tappd pricing:
 
 - [Blinq pricing](https://blinq.me/pricing)
+- [Blinq Free and Premium feature details](https://support.blinq.me/en/articles/76397-free-vs-premium-what-s-included)
 - [HiHello pricing](https://www.hihello.com/pricing)
 - [Wave individual plans](https://wavecnct.com/individuals)
 
-The prices above are competitor list prices observed on 2026-10-26, not Tappd prices or evidence of willingness to pay.
+The prices above are competitor list prices observed on 2026-10-28, not Tappd prices or evidence of willingness to pay. **Product implication:** keep card creation, sharing, recipient access, and the vCard save path simple and free while validating whether people repeatedly use a personal relationship workflow: interaction history, useful context, follow-up dates/actions, and a reliable way to return to a connection. This is a hypothesis to test against real use, not a claim of competitor absence or proven demand. Do not charge for AI as a category or promise a paid tier until repeated use and compliant store billing are demonstrated.
 
 ## First 10 interviews
 
@@ -27,10 +28,56 @@ Use these directional gates to decide which cohort to test next:
 
 These are **pricing hypotheses**, not validated offers or a profit forecast. At a hypothetical $5.99 monthly price, a 15% platform-fee assumption leaves about $5.09; at $49.99 annually it leaves about $42.49 per year. Both figures are before taxes, refunds, support, infrastructure, and acquisition costs. The 15% assumption is illustrative: Apple lists a 15% rate for accepted App Store Small Business Program members, while Google Play's current service-fee page lists auto-renewing subscriptions as 10% service fee plus 5% billing fee in its specified markets, and 15% subscription service fees in remaining markets until its updates roll out. Google fees for other transactions and some regions differ. Do not use one global rate in a forecast; verify the platform, user's market, transaction type, and program eligibility before launch.
 
-Platform policy and fee pages checked 2026-10-26:
+## A practical 14-day validation sprint
 
-- [Apple App Store Small Business Program](https://developer.apple.com/help/account/membership/programs-overview) — 15% on paid apps and in-app purchases for eligible program members.
-- [Google Play service fees](https://support.google.com/googleplay/android-developer/answer/112622?hl=en) — for the listed US, EEA, UK, Japan, and Australia markets, the updated table specifies 10% service fee plus 5% billing fee for auto-renewing subscriptions; the rollout dates are June 30, 2026 for US/EEA/UK and September 30, 2026 for Australia/Japan. Other purchase types have different rates. The page lists 15% subscription service fees for remaining markets until the updated fees roll out there.
+This is a learning sprint, not a claim that ten interviews can establish product-market fit or profitability. The first cohort should stay small enough for the founder to observe real usage.
+
+| Days | Action | Evidence to record |
+| --- | --- | --- |
+| 1–2 | Send 20 personalized, opt-in interview invitations through at least three public community routes. Keep the 4 consultant / 3 recruiter / 3 real-estate interview quotas visible. | Invites sent, replies, booked calls, role, and referral channel. Do not treat community connectors as prospects who have agreed to participate. |
+| 3–6 | Complete the ten 15-minute interviews. Ask for recent examples before showing Tappd. Invite the earliest four suitable participants into a free, observed pilot. | Concrete recent failures, existing workaround and spend, introductions per month, and whether the problem repeats within each role. |
+| 4–13 | Have pilot participants use Tappd for real introductions. Keep the browser card and vCard path available to recipients who do not have Tappd. Follow up once after the first use and near the end; do not coach them through the product. | Activation (card published and shared), real introductions captured, notes or follow-up dates added, second use after setup, and abandonment points. Count observed actions, not stated intent. |
+| 14 | Review results by role and recruitment channel. Choose one segment for the next cohort only if the same problem and repeated behavior appear in that segment. | Interview-to-pilot conversion, first real use, repeat use, and unresolved trust or setup barriers. Preserve negative and mixed results. |
+
+Use the existing qualitative gates as stop / continue signals, not statistical claims: at least 6/10 describe a recent concrete follow-up failure or costly workaround; at least 4/10 accept the pilot; and at least 3 pilot users capture a real introduction. For the first cohort, a second real use on a different day is a stronger signal than a completed profile. If people share cards but do not use the follow-up workflow, test a card-sharing wedge instead of assuming the paid follow-up product is validated. If interviews do not reveal one repeated problem in a segment, do not pick a winner from compliments or tiny differences in counts.
+
+Ask about the specific $5.99/month and $49.99/year hypotheses only after observed use, and record objections verbatim. This is still not willingness-to-pay evidence. Do not charge for premium functionality until compliant store billing exists and users actually complete a paid transaction.
+
+## Next stage: one-niche repeat-use and paid-conversion test
+
+Choose the single role-based niche with the clearest repeated, recent follow-up problem from the discovery interviews. Recruit 10 eligible people in that niche who expect at least two new professional introductions per month, then observe each for the same 14-day window. Before onboarding, define the cohort as `N0`: every consenting eligible participant who starts the pilot. Keep dropouts in `N0`; exclude only test accounts identified before the cohort begins. Track counts and rates, not just anecdotes:
+
+- **Share activation (by day 3):** participants who publish and share a card with a real person ÷ `N0`.
+- **First real use (by day 7):** participants who save a real introduction to their wallet ÷ `N0`.
+- **Useful context (by day 14):** participants who attach a note or follow-up date to a real saved contact ÷ `N0`.
+- **Repeat real use (by day 14):** participants who save a second, distinct real introduction on a different calendar day, with a note or follow-up date on at least one of the two contacts ÷ `N0`.
+
+Use a dated, manually maintained cohort sheet until product analytics are available; do not enter interview recordings or sensitive personal details. **Proposed internal continue threshold:** at least 5 of 10 participants reach repeat real use. This is a founder-set learning gate, not an industry benchmark, proof of product-market fit, or evidence that a larger market behaves the same way. If the threshold is missed, review observed friction and interview evidence before choosing another niche or changing the product.
+
+Only after repeat use, test one specific paid offer with people who reached that behavior. Before accepting money for digital features, configure and verify the applicable Apple/Google-compliant billing path, purchase terms, cancellation/refund handling, and price in the intended market. Then present the actual offer to at least 20 eligible repeat users and record the denominator who saw it, successful paid transactions, refunds, and first renewal; stated intent, clicks, and price-survey answers are not paid conversions. A completed transaction is early evidence from that cohort only, not proof of broad demand. If compliant billing is not ready, do not take payment or claim willingness-to-pay; keep the offer as a clearly labeled hypothesis.
+
+Do not describe the business as profitable from interviews or the first charges. Calculate cohort contribution using collected revenue after actual store/payment fees, taxes, refunds, and variable service/support costs; include acquisition time and spend by channel. Observe renewal or churn across paid billing cycles and compare contribution with actual fixed costs before making a profitability claim or scaling acquisition.
+
+### Unit-economics worksheet (unknowns stay unknown)
+
+For a store subscription, estimate monthly contribution per paying subscriber as `collected subscription revenue − store fee − taxes/refunds − variable infrastructure/support`. At the illustrative $5.99/month and 15% store-fee assumption above, only about $5.09 remains before those other costs. Annual pricing must be converted to monthly equivalent when comparing contribution and retention. Do not call this gross margin or profit until actual costs are measured.
+
+Once a paid cohort exists, calculate `monthly contribution per payer × retained paid subscribers − fixed monthly operating costs`. Track acquisition cost by channel as `(cash spent + founder outreach hours × agreed hourly value) ÷ new paying subscribers attributable to that channel`. Do not scale paid acquisition until a real cohort's contribution margin, renewal/churn, refund rate, and acquisition payback are measured. Until then, keep acquisition low-cost and founder-led, and describe revenue projections as scenarios rather than forecasts.
+
+**Fixed-cost sensitivity (illustration only):** using the $5.99 monthly hypothesis and 15% fee assumption gives at most about $5.09 per monthly payer before taxes, refunds, variable hosting/support, and acquisition. Using $49.99/year gives about $3.54 per active annual subscriber per month after the same assumed fee. The table shows the minimum subscriber count to cover example fixed costs *before* those other expenses; actual break-even would be higher.
+
+| Example fixed costs per month | $5.99 monthly plan | $49.99 annual plan, monthly equivalent |
+| ---: | ---: | ---: |
+| $100 | 20 active payers | 29 active subscribers |
+| $500 | 99 active payers | 142 active subscribers |
+| $1,000 | 197 active payers | 283 active subscribers |
+
+Treat these as arithmetic scenarios, not a forecast. Measure actual service/support cost and renewal behavior before choosing the plan mix; annual discounts reduce monthly contribution and need to earn their place through better retention or lower billing churn.
+
+Platform policy and fee pages checked 2026-10-28:
+
+- [Apple's auto-renewable subscription terms](https://developer.apple.com/app-store/subscriptions/) — accepted App Store Small Business Program members receive 85% of subscription price at each billing cycle, less applicable taxes. Other subscriptions generally start at 70% proceeds during the first paid year and then rise to 85%, less applicable taxes.
+- [Google Play service fees](https://support.google.com/googleplay/android-developer/answer/112622?hl=en) — after the regional rollout (US/EEA/UK from June 30, 2026; Australia/Japan from September 30, 2026), auto-renewing subscriptions carry a 10% service fee plus a 5% billing fee in those markets. Fees for non-subscription purchases depend on new-vs-existing install status and developer programs; remaining markets continue to follow their stated rates until rollout. Verify the applicable market, install cohort, transaction, and program before forecasting.
 - [Apple App Review Guidelines](https://developer.apple.com/app-store/review/guidelines/) and [Google Play payments policy](https://support.google.com/googleplay/android-developer/answer/10281818?hl=en) — check current purchase requirements before implementing premium feature sales.
 
 ## Copy to send

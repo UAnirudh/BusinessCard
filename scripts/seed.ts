@@ -42,7 +42,7 @@ const MEMBERS: Member[] = [
     headline: "Product Designer",
     company: "Northwind Studio",
     location: "Berlin, Germany",
-    bio: "I design products people actually finish using. Currently building design systems at Northwind. Ask me about onboarding flows.",
+    bio: "Product designer at Northwind Studio. I work on design systems and onboarding.",
     tags: ["design", "design-systems", "ux", "saaS"],
     accent: "lime",
     phone: "+49 151 2244 8890",
@@ -171,6 +171,8 @@ async function main() {
         accent: member.accent,
         tags: member.tags,
         links: member.links ?? [],
+        isPublic: true,
+        collectLeads: true,
       })
       .returning({ id: cards.id });
 

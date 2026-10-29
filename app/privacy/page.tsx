@@ -12,7 +12,7 @@ export const metadata: Metadata = {
 const sections = [
   {
     title: "Information you add",
-    body: "When you create an account, Tappd stores your name, email address and a password hash. Your card can include your photo, role, company, bio, location, contact details, social links and tags. Your wallet stores contacts you add or exchange, along with notes, tags, favorites, how you met and when.",
+    body: "When you create an account, Tappd stores your name, email address, password hash, and the date and version of the Terms of Use you accepted. Your card can include your photo, role, company, bio, location, contact details, social links and tags. Your wallet stores contacts you add or exchange, along with notes, tags, favorites, how you met and when.",
   },
   {
     title: "When someone sends you their details",
@@ -20,11 +20,15 @@ const sections = [
   },
   {
     title: "What other people can see",
-    body: "Cards are public by default. Anyone with a public card link can see the fields you have added to it, download its contact file and use its QR code. You can make your card private in the card editor. Turning off visitor details stops new accountless submissions; it does not remove contacts already in your wallet. Your wallet and account pages require sign-in.",
+    body: "New cards start private. When you turn on public sharing in the card editor, anyone with the card link can see the fields you have added, download its contact file and use its QR code. You can make the card private again at any time to stop access through its public link; this does not remove details already saved in another member's Tappd wallet. Visitor details are off until you choose to enable them; turning them off stops new accountless submissions but does not remove contacts already in your wallet. Your wallet and account pages require sign-in.",
   },
   {
     title: "Card views, cookies and this device",
     body: "Tappd records the card viewed, the link source (such as QR or NFC) and the time, then shows aggregate view counts to the card owner. A short-lived session-storage entry prevents repeat counting in the same browser tab session. Sign-in uses an HttpOnly session cookie. The service worker saves only the offline help page; it does not cache signed-in pages, wallet data or API responses. Hosting providers may process connection and diagnostic data in their own server logs.",
+  },
+  {
+    title: "Reports and blocks",
+    body: "Anyone can report a public card and optionally add details. If you are signed in, the report is linked to your account; authorized moderators can see the report, the card owner’s account email, and the reporter’s account identity when it is available. Reports are stored for moderator review. Signed-in members can block another member to hide that member’s card from their account and prevent exchanges between those accounts. A moderator may hide a reported card or suspend an account, which makes its cards private and revokes its sessions. Report details and moderation records remain in the active database until the card is deleted or the operator removes the records; backup copies may remain until provider backups rotate out.",
   },
   {
     title: "How information is used and stored",
@@ -32,7 +36,7 @@ const sections = [
   },
   {
     title: "Your choices and deletion",
-    body: "You can edit or remove card details, export your wallet as CSV, and delete individual contacts in the app. You can delete your account from Settings after entering your password. Account deletion removes the account, card, avatar, sessions and wallet records from the active Tappd database. Other people may keep contact details they already received in their own wallet. Copies held in provider backups may remain until those backups rotate out. A visitor who sent details can ask the card owner to remove them or contact Tappd for help.",
+    body: "You can edit or remove card details, export your wallet as CSV, and delete individual contacts in the app. You can delete your account from Settings after entering your password. Account deletion removes the account, card, avatar, sessions, owned wallet records, and Tappd wallet copies linked to your card from the active database. Copies previously exported as vCards or CSVs, saved to phone contacts or external Wallet apps, or shared through other services may remain outside Tappd. Copies held in provider backups may remain until those backups rotate out. A visitor who sent details can ask the card owner to remove them or contact Tappd for help.",
   },
   {
     title: "Security and contact",
@@ -57,7 +61,7 @@ export default function PrivacyPage() {
             <ShieldCheck className="h-4 w-4" /> Your information, explained
           </div>
           <h1 className="mt-3 text-[2rem] font-semibold tracking-[-0.035em] sm:text-[2.5rem]">Privacy at Tappd</h1>
-          <p className="mt-2 text-[0.82rem] text-faint">Last updated October 26, 2026</p>
+          <p className="mt-2 text-[0.82rem] text-faint">Last updated October 28, 2026</p>
           <p className="mt-5 max-w-2xl text-[0.95rem] leading-relaxed text-muted">
             Tappd helps people share business cards and remember who they meet. This page explains what the app stores and what happens when you exchange details.
           </p>

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { AuthAside } from "@/components/auth-aside";
 import { AuthForm } from "@/components/auth-form";
 import { Logo } from "@/components/logo";
@@ -39,7 +40,7 @@ export default async function SignupPage({
           </p>
           <AuthForm mode="signup" redirectTo={redirectTo} />
           <p className="mt-8 text-center text-[0.72rem] leading-relaxed text-faint">
-            By creating an account you agree to keep the room friendly and your contact details honest.
+            Before your account is created, you’ll review and accept the <Link href="/terms" className="font-medium underline underline-offset-2">Terms of Use</Link>.
           </p>
         </div>
       </section>

@@ -71,7 +71,7 @@ export function CardActions({
           className="flex items-center justify-center gap-2 rounded-xl bg-[#0b0b0d] py-3 text-[0.82rem] font-semibold text-white transition hover:bg-[#26262d]"
         >
           <Download className="h-4 w-4" />
-          Save contact
+          Download contact
         </a>
         <button
           type="button"
@@ -90,6 +90,10 @@ export function CardActions({
           {copied ? <Check className="h-4 w-4" /> : <Share2 className="h-4 w-4" />}
         </button>
       </div>
+
+      <p className="mt-2 text-center text-[0.72rem] leading-relaxed text-muted">
+        Open the downloaded contact file to add this person to your phone.
+      </p>
 
       {(walletApple || walletGoogle) && (
         <div className="mt-2 grid gap-2 sm:grid-cols-2">

@@ -4,7 +4,7 @@ const TOKEN_KEY = "tappd.native.session.v1";
 const API_ORIGIN = (process.env.EXPO_PUBLIC_API_URL ?? "").trim().replace(/\/+$/, "");
 const API_TIMEOUT_MS = 20_000;
 
-export type NativeUser = { id: string; name: string; email: string };
+export type NativeUser = { id: string; name: string; email: string; termsAcceptedAt: string | null; termsVersion: string | null; currentTermsVersion: string };
 export type BusinessCard = {
   id: string;
   slug: string;
@@ -23,6 +23,7 @@ export type BusinessCard = {
   accent: string;
   tags: string[];
   isPublic: boolean;
+  collectLeads: boolean;
 };
 export type WalletContact = {
   id: string;
@@ -70,6 +71,10 @@ export function walletPassUrl(card: BusinessCard, provider: "apple" | "google") 
 
 export function privacyUrl() {
   return `${API_ORIGIN}/privacy`;
+}
+
+export function termsUrl() {
+  return `${API_ORIGIN}/terms`;
 }
 
 export function supportUrl() {

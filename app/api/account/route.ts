@@ -1,6 +1,7 @@
 import { eq, ne, and } from "drizzle-orm";
 import { getDb } from "@/db";
 import { sessions, users } from "@/db/schema";
+import { deleteAccountAndSharedCardData } from "@/lib/account-deletion";
 import {
   currentSessionId,
   destroySession,
@@ -10,6 +11,7 @@ import {
 } from "@/lib/auth";
 import { fail, isSameOrigin, ok, parseBody } from "@/lib/api";
 import { accountUpdateSchema } from "@/lib/validation";
+import { CURRENT_TERMS_VERSION } from "@/lib/terms";
 
 export const runtime = "nodejs";
 
@@ -30,6 +32,10 @@ export async function PATCH(request: Request) {
   const updates: Record<string, unknown> = {};
 
   if (input.name && input.name !== account.name) updates.name = input.name;
+  if (input.acceptTerms && (!account.termsAcceptedAt || account.termsVersion !== CURRENT_TERMS_VERSION)) {
+    updates.termsAcceptedAt = new Date();
+    updates.termsVersion = CURRENT_TERMS_VERSION;
+  }
 
   if (input.newPassword) {
     if (!input.currentPassword) return fail("Enter your current password to set a new one.", 422, { field: "currentPassword" });
@@ -39,7 +45,14 @@ export async function PATCH(request: Request) {
     updates.passwordHash = hashPassword(input.newPassword);
   }
 
-  if (Object.keys(updates).length === 0) return ok({ ok: true, unchanged: true });
+  if (Object.keys(updates).length === 0) {
+    return ok({
+      ok: true,
+      unchanged: true,
+      termsAcceptedAt: account.termsAcceptedAt?.toISOString() ?? null,
+      termsVersion: account.termsVersion,
+    });
+  }
 
   await db.update(users).set(updates).where(eq(users.id, user.id));
   if (updates.passwordHash) {
@@ -49,7 +62,11 @@ export async function PATCH(request: Request) {
       .delete(sessions)
       .where(keep ? and(eq(sessions.userId, user.id), ne(sessions.id, keep)) : eq(sessions.userId, user.id));
   }
-  return ok({ ok: true });
+  return ok({
+    ok: true,
+    termsAcceptedAt: (updates.termsAcceptedAt as Date | undefined)?.toISOString() ?? account.termsAcceptedAt?.toISOString() ?? null,
+    termsVersion: (updates.termsVersion as string | undefined) ?? account.termsVersion,
+  });
 }
 
 export async function DELETE(request: Request) {
@@ -71,7 +88,7 @@ export async function DELETE(request: Request) {
     return fail("That password is incorrect.", 401);
   }
 
-  await db.delete(users).where(eq(users.id, user.id));
+  await deleteAccountAndSharedCardData(db, user.id);
   await destroySession(request);
   return ok({ ok: true, deleted: true });
 }

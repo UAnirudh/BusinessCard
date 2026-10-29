@@ -1,6 +1,6 @@
 import crypto from "node:crypto";
 import { cookies } from "next/headers";
-import { and, eq, gt } from "drizzle-orm";
+import { and, eq, gt, isNull } from "drizzle-orm";
 import { cache } from "react";
 import { getDb } from "@/db";
 import { cards, sessions, users, type Card, type User } from "@/db/schema";
@@ -82,7 +82,7 @@ export async function destroySession(request?: Request): Promise<void> {
   store.delete(SESSION_COOKIE);
 }
 
-export type SessionUser = Pick<User, "id" | "email" | "name" | "createdAt">;
+export type SessionUser = Pick<User, "id" | "email" | "name" | "createdAt" | "termsAcceptedAt" | "termsVersion">;
 
 /** Resolves the signed-in user once per request. */
 export const getCurrentUser = cache(async (request?: Request): Promise<SessionUser | null> => {
@@ -96,10 +96,12 @@ export const getCurrentUser = cache(async (request?: Request): Promise<SessionUs
       email: users.email,
       name: users.name,
       createdAt: users.createdAt,
+      termsAcceptedAt: users.termsAcceptedAt,
+      termsVersion: users.termsVersion,
     })
     .from(sessions)
     .innerJoin(users, eq(sessions.userId, users.id))
-    .where(and(eq(sessions.id, sessionId(token)), gt(sessions.expiresAt, new Date())))
+    .where(and(eq(sessions.id, sessionId(token)), gt(sessions.expiresAt, new Date()), isNull(users.suspendedAt)))
     .limit(1);
 
   return rows[0] ?? null;
