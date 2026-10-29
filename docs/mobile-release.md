@@ -11,7 +11,7 @@ The Expo app calls the deployed service using `EXPO_PUBLIC_API_URL`. Native sign
 
 The production web service and Postgres database are deployed on Railway at `https://tappd.up.railway.app`; the database migration and public database-backed QR/vCard endpoints have been verified. The EAS preview and production profiles point to this API. The app still needs a linked EAS project, publisher-owned application identifiers, store credentials, and store submissions. There has not yet been end-to-end testing on physical iOS and Android devices. CI retains a 14-day debug-signed Android QA APK for tester installation; it bundles the production API URL but is not a Google Play artifact. Expo's JavaScript exports and CI builds are not signed store builds and do not replace device testing.
 
-Production page smoke check, 2026-10-27: `/`, `/privacy`, `/support`, and `/account-deletion` returned HTTP 200. The support page does not show an email contact, so production still needs a monitored `TAPPD_SUPPORT_EMAIL`. This check confirms the pages load; it does not verify signup mail, native actions, or store readiness.
+Production page smoke check, 2026-10-29: `/`, `/privacy`, `/support`, and `/account-deletion` returned HTTP 200. The support page does not show an email contact, so production still needs a monitored `TAPPD_SUPPORT_EMAIL`. This check confirms the pages load; it does not verify signup mail, native actions, or store readiness.
 
 ## Local development and CI
 
