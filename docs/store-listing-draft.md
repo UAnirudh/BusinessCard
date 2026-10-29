@@ -78,7 +78,7 @@ The app has a public support route at `https://tappd.up.railway.app/support` wit
 
 - Google Play: app name up to 30 characters, short description up to 80, and full description up to 4,000. See [Play listing setup](https://support.google.com/googleplay/android-developer/answer/9859152?hl=en-en) and [metadata policy](https://support.google.com/googleplay/android-developer/answer/9898842?hl=en).
 - App Store Connect: name and subtitle up to 30 characters each; promotional text up to 170; description up to 4,000; keywords up to 100 bytes. Privacy policy URL is required and Support URL must provide contact information. See [App information](https://developer.apple.com/help/app-store-connect/reference/app-information/app-information) and [platform version information](https://developer.apple.com/help/app-store-connect/reference/app-information/platform-version-information).
-- Apple screenshots are required (1–10 per localization). Because `ios.supportsTablet` is enabled, capture at least one supported iPad screenshot as well as an iPhone screenshot for a device with Dynamic Island. Verify the current device sizes and requirements in [Apple screenshot specifications](https://developer.apple.com/help/app-store-connect/reference/app-information/screenshot-specifications/), and confirm the layout on the final build before capture.
+- Apple screenshots are required (1–10 per localization). Tappd targets iPhone and Android phones; iPad support is disabled until a tablet layout is reviewed. Capture an iPhone screenshot for a device with Dynamic Island. Verify current device sizes and requirements in [Apple screenshot specifications](https://developer.apple.com/help/app-store-connect/reference/app-information/screenshot-specifications/), and confirm the layout on the final build before capture.
 
 The privacy page describes Tappd's current code-level data handling, but operator identity, production providers, data region, backup/retention details, and a monitored `TAPPD_SUPPORT_EMAIL` must be verified before that page is treated as final store documentation. Use [the internal disclosure worksheet](store-data-disclosure-worksheet.md) to prepare the console declarations; it is a code-based draft, not a final legal or store declaration.
 
@@ -108,7 +108,7 @@ These are production assets, not mockups. Capture them from the final signed bui
 
 ### Apple App Store
 
-- [ ] Upload 1–10 screenshots for each required device family and localization. The app supports iPad, so verify and capture the iPad layout as well as iPhone before submission.
+- [ ] Upload 1–10 screenshots for each required device family and localization. Tappd currently targets iPhone; if iPad support is enabled later, review and capture the tablet layout before submission.
 - [ ] App previews are optional. If added, capture the real app experience and verify Apple's current device-size and video specifications before export.
 
 See Google's [preview asset requirements](https://support.google.com/googleplay/android-developer/answer/9866151?hl=en) and Apple's [screenshot and app preview upload requirements](https://developer.apple.com/help/app-store-connect/manage-app-information/upload-app-previews-and-screenshots/). Recheck those pages when exporting because allowed sizes and device categories can change.
