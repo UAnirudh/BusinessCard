@@ -7,6 +7,8 @@ import { Contact } from 'expo-contacts';
 import QRCode from 'react-native-qrcode-svg';
 import NfcManager, { Ndef, NfcTech } from 'react-native-nfc-manager';
 import { ApiError, apiConfigured, apiRequest, BusinessCard, clearToken, deleteAccount, loadToken, NativeSession, NativeUser, passwordResetUrl, privacyUrl, publicCardUrl, saveToken, supportUrl, termsUrl, WalletContact, walletPassUrl } from './src/api';
+import { cardProfilePatch, type CardProfileDraft } from './src/card-profile';
+import { CardProfileEditor } from './src/components/card-profile-editor';
 import { parseCardReference } from './src/card-reference';
 
 type Tab = 'card' | 'wallet' | 'scan' | 'settings';
@@ -52,6 +54,7 @@ export default function App() {
   const [deletePassword, setDeletePassword] = useState('');
   const [deleteError, setDeleteError] = useState('');
   const [selected, setSelected] = useState<WalletContact | null>(null);
+  const [editingCard, setEditingCard] = useState(false);
   const [followUp, setFollowUp] = useState('');
   const [scanHandled, setScanHandled] = useState(false);
   const [cardReference, setCardReference] = useState('');
@@ -183,6 +186,30 @@ export default function App() {
       await loadWalletAvailability(token);
       await loadContacts(token);
     } catch (e) { Alert.alert('Could not refresh', e instanceof Error ? e.message : 'Try again.'); }
+  };
+
+  const startEditingCard = () => {
+    if (!user?.termsAcceptedAt || user.termsVersion !== user.currentTermsVersion) {
+      Alert.alert('Review the Terms of Use', 'Accept the current Terms of Use before adding card details.', [
+        { text: 'Not now', style: 'cancel' },
+        { text: 'Open Settings', onPress: () => setTab('settings') },
+      ]);
+      return;
+    }
+    setEditingCard(true);
+  };
+
+  const saveCardProfile = async (profile: CardProfileDraft) => {
+    if (!token || !card) throw new Error('Sign in again before saving your card.');
+    setBusy(true);
+    try {
+      const patch = cardProfilePatch(profile);
+      await apiRequest('/api/card', { method: 'PATCH', token, body: patch });
+      setCard((current) => current ? { ...current, ...patch } : current);
+      setEditingCard(false);
+    } finally {
+      setBusy(false);
+    }
   };
 
   const acceptTerms = async () => {
@@ -391,14 +418,15 @@ export default function App() {
     <Pressable onPress={() => { setAuthMode(authMode === 'login' ? 'signup' : 'login'); setError(''); setVerificationNotice(''); }} style={styles.authSwitch}><Text style={styles.muted}>{authMode === 'login' ? 'New to Tappd? ' : 'Already have an account? '}<Text style={{ color: C.ink, fontWeight: '700' }}>{authMode === 'login' ? 'Create account' : 'Sign in'}</Text></Text></Pressable>
     </View><Text style={styles.legal}>By continuing, you agree to use Tappd responsibly. Your session stays protected on this device.</Text><View style={styles.privacyEntry}><Pressable accessibilityRole="link" onPress={() => Linking.openURL(privacyUrl()).catch(() => Alert.alert('Could not open privacy policy', 'Check your connection and try again.'))}><Text style={styles.privacyEntryText}>Privacy policy</Text></Pressable><Text style={styles.privacyEntryArrow}>·</Text><Pressable accessibilityRole="link" onPress={contactSupport}><Text style={styles.privacyEntryText}>Contact support</Text></Pressable></View></>}</ScrollView></KeyboardAvoidingView></SafeAreaView>;
 
-  const renderCard = () => <ScrollView contentContainerStyle={styles.page}>
-    <View style={styles.topline}><View><Text style={styles.screenTitle}>Your card</Text></View><Pressable accessibilityRole="button" accessibilityLabel="Refresh card and wallet" onPress={refresh} style={styles.avatar}><Text style={styles.avatarText}>↻</Text></Pressable></View>
+  const renderCard = () => <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined} style={{ flex: 1 }}><ScrollView contentContainerStyle={styles.page} keyboardShouldPersistTaps="handled" keyboardDismissMode={Platform.OS === 'ios' ? 'interactive' : 'on-drag'}>
+    <View style={styles.topline}><View><Text style={styles.screenTitle}>Your card</Text></View><View style={{ flexDirection: 'row', alignItems: 'center', gap: 9 }}><Pressable accessibilityRole="button" accessibilityLabel="Edit your card details" onPress={startEditingCard} style={{ minHeight: 40, paddingHorizontal: 12, borderRadius: 12, borderWidth: 1, borderColor: C.line, backgroundColor: C.white, alignItems: 'center', justifyContent: 'center' }}><Text style={{ color: C.ink, fontSize: 12, fontWeight: '800' }}>Edit</Text></Pressable><Pressable accessibilityRole="button" accessibilityLabel="Refresh card and wallet" onPress={refresh} style={styles.avatar}><Text style={styles.avatarText}>↻</Text></Pressable></View></View>
     <View style={styles.card}><View style={styles.cardTop}><Text style={styles.cardBrand}>Tappd</Text><Text style={[styles.livePill, !card.isPublic && styles.privatePill]}>{card.isPublic ? '● Public' : '● Private'}</Text></View><View style={styles.cardIdentity}><View style={styles.cardAvatar}><Text style={styles.cardInitials}>{initials(card.displayName)}</Text></View><Text style={styles.cardName}>{card.displayName}</Text><Text style={styles.cardRole}>{[card.headline, card.company].filter(Boolean).join('  ·  ') || 'Add a role to your card'}</Text></View>{card.isPublic ? <><View style={styles.qrFrame}><QRCode value={publicCardUrl(card)} size={160} color={C.ink} backgroundColor={C.white} /></View><Text style={styles.qrCaption}>Scan to open card</Text><Text style={styles.cardUrl} numberOfLines={2} ellipsizeMode="middle" selectable accessibilityLabel={`Card link ${publicCardUrl(card)}`}>{publicCardUrl(card).replace(/^https?:\/\//, '')}</Text><Text style={{ color: C.muted, fontSize: 11, textAlign: 'center', marginTop: 7 }}>Anyone can open this link in a browser and save your contact.</Text></> : <View style={styles.privateCardNotice}><Text style={styles.privateCardTitle}>Only you can see this card</Text><Text style={styles.privateCardCopy}>Your card stays private until you choose to share it. Visitor contact submissions will stay off.</Text><Button title={busy ? 'Updating…' : 'Make my card public'} variant="light" onPress={confirmCardVisibility} disabled={busy} /></View>}</View>
-    {card.isPublic ? <View style={styles.actionsRow}><View style={{ flex: 1 }}><Button title="Share my card  ↗" onPress={shareCard} /></View><Pressable accessibilityRole="button" accessibilityLabel="Write card link to an NFC tag" onPress={writeNfc} style={styles.smallAction}><Text style={styles.smallActionIcon}>◉</Text><Text style={styles.smallActionLabel}>Write NFC</Text></Pressable></View> : <View style={styles.privateCardActions}><Text style={styles.privateCardCopy}>QR and NFC sharing are turned off while your card is private.</Text></View>}
+    {card.isPublic ? <View style={styles.actionsRow}><View style={{ flex: 1 }}><Button title="Share my card  ↗" onPress={shareCard} /></View><Pressable accessibilityRole="button" accessibilityLabel="Write card link to an NFC tag" onPress={writeNfc} style={styles.smallAction}><Text style={styles.smallActionIcon}>◉</Text><Text style={styles.smallActionLabel}>Write NFC</Text></Pressable></View> : <View style={styles.privateCardActions}><Text style={styles.privateCardCopy}>QR and NFC sharing are turned off while your card is private.</Text><View style={{ height: 10 }} /><Button title="Add details to your card" variant="outline" onPress={startEditingCard} /></View>}
+    {editingCard && <CardProfileEditor initial={{ displayName: card.displayName, headline: card.headline ?? '', company: card.company ?? '', email: card.email ?? '', phone: card.phone ?? '', website: card.website ?? '', location: card.location ?? '', bio: card.bio ?? '' }} isPublic={card.isPublic} busy={busy} onCancel={() => setEditingCard(false)} onSave={saveCardProfile} />}
     {card.isPublic && walletProvider && <View style={styles.walletActions}><Button title={`Add to ${walletProvider === 'apple' ? 'Apple' : 'Google'} Wallet`} variant="outline" onPress={addCardToWallet} /><Text style={styles.walletNote}>This adds a scannable pass to Wallet. People can save your contact details separately from your public card.</Text></View>}
 
     <View style={styles.sectionHead}><Text style={styles.sectionTitle}>Your activity</Text><Text style={styles.smallMuted}>Your network</Text></View><View style={styles.statsRow}><View style={styles.stat}><Text style={styles.statNum}>{contacts.length}</Text><Text style={styles.statLabel}>people met</Text></View><View style={styles.stat}><Text style={styles.statNum}>{dueCount}</Text><Text style={styles.statLabel}>follow-ups due</Text></View></View>
-  </ScrollView>;
+  </ScrollView></KeyboardAvoidingView>;
 
   const renderWallet = () => <ScrollView contentContainerStyle={styles.page}><View style={styles.topline}><View><Text style={styles.eyebrow}>People you've met</Text><Text style={styles.screenTitle}>Your wallet</Text></View><View style={styles.countBubble}><Text style={styles.countText}>{contacts.length}</Text></View></View><Text style={styles.body}>Connections, notes and the next reason to reach out.</Text>{dueCount > 0 && <View style={styles.dueBanner}><Text style={styles.dueMark}>↗</Text><Text style={styles.dueText}>{dueCount} {dueCount === 1 ? 'person' : 'people'} ready for a follow-up</Text></View>}{contacts.length === 0 ? <View style={styles.empty}><Text style={styles.emptyIcon}>↗</Text><Text style={styles.emptyTitle}>No contacts yet</Text><Text style={styles.body}>Scan a Tappd card or add someone after a conversation.</Text><Button title="Scan a card" onPress={openScanner} /></View> : contacts.map((person) => <Pressable key={person.id} accessibilityRole="button" accessibilityLabel={`${person.name}. ${person.followUpDate ? `Follow up ${friendlyDate(person.followUpDate)}` : 'Set a follow-up'}`} onPress={() => { setSelected(person); setFollowUp(person.followUpDate ?? ''); }} style={styles.personRow}><View style={styles.personAvatar}><Text style={styles.personInitial}>{initials(person.name)}</Text></View><View style={{ flex: 1 }}><Text style={styles.personName}>{person.name}</Text><Text style={styles.personMeta}>{[person.headline, person.company].filter(Boolean).join(' · ') || person.email || 'Connection'}</Text><Text style={styles.personFollow}>{person.followUpDate ? `↗  Follow up ${friendlyDate(person.followUpDate)}` : '＋  Set a follow-up'}</Text></View><Text style={styles.chevron}>›</Text></Pressable>)}<View style={styles.nativeHint}><Text style={styles.nativeHintIcon}>◎</Text><Text style={styles.nativeHintText}>Open a connection, then tap Save to phone contacts.</Text></View></ScrollView>;
 
