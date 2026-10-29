@@ -7,6 +7,7 @@ Start with individuals who meet prospective clients or collaborators often. Keep
 **Competitor snapshot checked 2026-10-28 (three vendor pages; not an exhaustive market count or proof of demand):** Blinq Free includes two cards, unlimited sharing/contact creation, and Apple/Google Wallet; Premium is $9.99 monthly or $7.33/month billed annually. Its help page also lists a free AI notetaker, so “notes” or “AI notes” alone are not defensible differentiators. HiHello Personal is free with four cards, five scans per month, and Apple/Google Wallet; Professional is $6/month or $72 billed yearly. Wave Connect describes a free individual card with QR, NFC, Apple/Google Wallet, unlimited sharing/contact saving, and no-app recipient access; Pro is $7/month billed yearly. Vendor claims and prices are snapshots that can change. Taken together, card creation, Wallet passes, QR/NFC, and no-app recipient access are already table stakes among these vendors. Recheck the live pages before setting Tappd pricing:
 
 - [Blinq pricing](https://blinq.me/pricing)
+- [Blinq Free and Premium feature details](https://support.blinq.me/en/articles/76397-free-vs-premium-what-s-included)
 - [HiHello pricing](https://www.hihello.com/pricing)
 - [Wave individual plans](https://wavecnct.com/individuals)
 
@@ -48,10 +49,20 @@ For a store subscription, estimate monthly contribution per paying subscriber as
 
 Once a paid cohort exists, calculate `monthly contribution per payer × retained paid subscribers − fixed monthly operating costs`. Track acquisition cost by channel as `(cash spent + founder outreach hours × agreed hourly value) ÷ new paying subscribers attributable to that channel`. Do not scale paid acquisition until a real cohort's contribution margin, renewal/churn, refund rate, and acquisition payback are measured. Until then, keep acquisition low-cost and founder-led, and describe revenue projections as scenarios rather than forecasts.
 
-Platform policy and fee pages checked 2026-10-26:
+**Fixed-cost sensitivity (illustration only):** using the $5.99 monthly hypothesis and 15% fee assumption gives at most about $5.09 per monthly payer before taxes, refunds, variable hosting/support, and acquisition. Using $49.99/year gives about $3.54 per active annual subscriber per month after the same assumed fee. The table shows the minimum subscriber count to cover example fixed costs *before* those other expenses; actual break-even would be higher.
 
-- [Apple App Store Small Business Program](https://developer.apple.com/help/account/membership/programs-overview) — 15% on paid apps and in-app purchases for eligible program members.
-- [Google Play service fees](https://support.google.com/googleplay/android-developer/answer/112622?hl=en) — for the listed US, EEA, UK, Japan, and Australia markets, the updated table specifies 10% service fee plus 5% billing fee for auto-renewing subscriptions; the rollout dates are June 30, 2026 for US/EEA/UK and September 30, 2026 for Australia/Japan. Other purchase types have different rates. The page lists 15% subscription service fees for remaining markets until the updated fees roll out there.
+| Example fixed costs per month | $5.99 monthly plan | $49.99 annual plan, monthly equivalent |
+| ---: | ---: | ---: |
+| $100 | 20 active payers | 29 active subscribers |
+| $500 | 99 active payers | 142 active subscribers |
+| $1,000 | 197 active payers | 283 active subscribers |
+
+Treat these as arithmetic scenarios, not a forecast. Measure actual service/support cost and renewal behavior before choosing the plan mix; annual discounts reduce monthly contribution and need to earn their place through better retention or lower billing churn.
+
+Platform policy and fee pages checked 2026-10-28:
+
+- [Apple's auto-renewable subscription terms](https://developer.apple.com/app-store/subscriptions/) — accepted App Store Small Business Program members receive 85% of subscription price at each billing cycle, less applicable taxes. Other subscriptions generally start at 70% proceeds during the first paid year and then rise to 85%, less applicable taxes.
+- [Google Play service fees](https://support.google.com/googleplay/android-developer/answer/112622?hl=en) — after the regional rollout (US/EEA/UK from June 30, 2026; Australia/Japan from September 30, 2026), auto-renewing subscriptions carry a 10% service fee plus a 5% billing fee in those markets. Fees for non-subscription purchases depend on new-vs-existing install status and developer programs; remaining markets continue to follow their stated rates until rollout. Verify the applicable market, install cohort, transaction, and program before forecasting.
 - [Apple App Review Guidelines](https://developer.apple.com/app-store/review/guidelines/) and [Google Play payments policy](https://support.google.com/googleplay/android-developer/answer/10281818?hl=en) — check current purchase requirements before implementing premium feature sales.
 
 ## Copy to send

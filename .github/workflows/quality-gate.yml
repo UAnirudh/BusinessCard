@@ -48,6 +48,9 @@ jobs:
       - name: Test native card profile validation
         run: npx tsx --test tests/mobile-card-profile.test.ts
 
+      - name: Test native connection note validation
+        run: npx tsx --test tests/mobile-connection-notes.test.ts
+
       - name: Build web app
         run: npm run build
         env:
