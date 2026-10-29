@@ -56,6 +56,7 @@ export default function App() {
   const [deleteError, setDeleteError] = useState('');
   const [selected, setSelected] = useState<WalletContact | null>(null);
   const selectedConnectionIdRef = useRef<string | null>(null);
+  const sessionGenerationRef = useRef(0);
   const [editingCard, setEditingCard] = useState(false);
   const [followUp, setFollowUp] = useState('');
   const [connectionNotes, setConnectionNotes] = useState('');
@@ -234,9 +235,12 @@ export default function App() {
   };
 
   const signOut = async () => {
+    sessionGenerationRef.current += 1;
     selectedConnectionIdRef.current = null;
     if (token) { try { await apiRequest('/api/auth/logout', { method: 'POST', token }); } catch { /* local credentials still need clearing */ } }
-    await clearToken(); setToken(null); setUser(null); setCard(null); setWalletAvailability({ apple: false, google: false }); setContacts([]); setSelected(null); setTab('card');
+    await clearToken();
+    sessionGenerationRef.current += 1;
+    setToken(null); setUser(null); setCard(null); setWalletAvailability({ apple: false, google: false }); setContacts([]); setSelected(null); setTab('card');
   };
 
   const requestAccountDeletion = () => {
@@ -262,6 +266,7 @@ export default function App() {
       await deleteAccount(token, deletePassword);
       const deletedEmail = user?.email ?? email;
       try { await clearToken(); } catch { /* the deleted account has already revoked this token */ }
+      sessionGenerationRef.current += 1;
       selectedConnectionIdRef.current = null;
       setToken(null); setUser(null); setCard(null); setWalletAvailability({ apple: false, google: false }); setContacts([]); setSelected(null); setTab('card');
       setAuthMode('login'); setEmail(deletedEmail); setPassword('');
@@ -278,17 +283,19 @@ export default function App() {
     if (!token || !selected) return;
     if (followUp && !isRealDate(followUp)) { Alert.alert('Enter a valid date', 'Use YYYY-MM-DD, for example, 2026-11-04.'); return; }
     const connectionId = selected.id;
+    const sessionGeneration = sessionGenerationRef.current;
     const followUpDate = followUp || null;
     setBusy(true);
     try {
       await apiRequest(`/api/connections/${encodeURIComponent(connectionId)}`, { method: 'PATCH', token, body: { followUpDate } });
+      if (sessionGenerationRef.current !== sessionGeneration) return;
       setContacts((items) => items.map((item) => item.id === connectionId ? { ...item, followUpDate } : item));
       setSelected((current) => current?.id === connectionId ? { ...current, followUpDate } : current);
       if (selectedConnectionIdRef.current === connectionId) {
         Alert.alert('Saved', followUpDate ? `Follow-up set for ${friendlyDate(followUpDate)}.` : 'Follow-up date removed.');
       }
     } catch (e) {
-      if (selectedConnectionIdRef.current === connectionId) {
+      if (sessionGenerationRef.current === sessionGeneration && selectedConnectionIdRef.current === connectionId) {
         Alert.alert('Could not save', e instanceof Error ? e.message : 'Try again.');
       }
     }
@@ -298,19 +305,21 @@ export default function App() {
   const saveConnectionNotes = async () => {
     if (!token || !selected || busy) return;
     const connectionId = selected.id;
+    const sessionGeneration = sessionGenerationRef.current;
     const issue = connectionNotesIssue(connectionNotes);
     if (issue) { Alert.alert('Shorten your notes', issue); return; }
     const savedNotes = connectionNotesValue(connectionNotes);
     setBusy(true);
     try {
       await apiRequest(`/api/connections/${encodeURIComponent(selected.id)}`, { method: 'PATCH', token, body: { notes: savedNotes } });
+      if (sessionGenerationRef.current !== sessionGeneration) return;
       setContacts((items) => items.map((item) => item.id === selected.id ? { ...item, notes: savedNotes } : item));
       setSelected((current) => current?.id === selected.id ? { ...current, notes: savedNotes } : current);
       if (selectedConnectionIdRef.current === connectionId) {
         Alert.alert('Saved', savedNotes ? 'Your note was saved.' : 'Your note was removed.');
       }
     } catch (e) {
-      if (selectedConnectionIdRef.current === connectionId) {
+      if (sessionGenerationRef.current === sessionGeneration && selectedConnectionIdRef.current === connectionId) {
         Alert.alert('Could not save notes', e instanceof Error ? e.message : 'Try again.');
       }
     }

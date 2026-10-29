@@ -41,6 +41,8 @@ jobs:
 
       - name: Test Wallet readiness
         run: npm run test:wallet
+      - name: Test private contact notes API
+        run: npm run test:connections
 
       - name: Test mobile card reference validation
         run: npx tsx --test tests/mobile-card-reference.test.ts
