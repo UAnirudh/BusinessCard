@@ -37,7 +37,7 @@ export default async function AccountDeletionPage() {
           </p>
 
           <div className="mt-6 rounded-2xl border border-[#f0dcd1] bg-[#fff8f4] p-4 text-[0.84rem] leading-relaxed text-muted">
-            Deletion permanently removes your Tappd account, card, avatar, sessions, and wallet records from the active database. Other people may retain contact details they previously saved. Provider backups may retain copies until their normal rotation period ends. Export your wallet before continuing if you need a copy.
+            Deletion permanently removes your Tappd account, card, avatar, sessions, and wallet records linked to your account or card from the active database, including linked copies in other members’ Tappd wallets. Independently saved contact details and copies exported as vCards or CSV files, added to phone contacts, shared through other services, or saved to external Wallet apps may remain. Provider backups may retain copies until their normal rotation period ends. Export your wallet before continuing if you need a copy.
           </div>
 
           <Link href={destination} className="btn btn-primary mt-6 w-full sm:w-auto">

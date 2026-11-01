@@ -27,12 +27,20 @@ const sections = [
     body: "Tappd records the card viewed, the link source (such as QR or NFC) and the time, then shows aggregate view counts to the card owner. A short-lived session-storage entry prevents repeat counting in the same browser tab session. Sign-in uses an HttpOnly session cookie. The service worker saves only the offline help page; it does not cache signed-in pages, wallet data or API responses. Hosting providers may process connection and diagnostic data in their own server logs.",
   },
   {
+    title: "Mobile permissions",
+    body: "The mobile app uses the camera to scan card QR codes and NFC to write a card link to a compatible tag. It requests Contacts access only when you choose to save one contact to your phone. Tappd does not read or upload your address book.",
+  },
+  {
+    title: "Abuse prevention",
+    body: "To limit abusive requests, the service uses request IP addresses and account or request identifiers to create rate-limit records. It stores a keyed digest of those values and removes expired counters during later cleanup.",
+  },
+  {
     title: "Reports and blocks",
     body: "Anyone can report a public card and optionally add details. If you are signed in, the report is linked to your account; authorized moderators can see the report, the card owner’s account email, and the reporter’s account identity when it is available. Reports are stored for moderator review. Signed-in members can block another member to hide that member’s card from their account and prevent exchanges between those accounts. A moderator may hide a reported card or suspend an account, which makes its cards private and revokes its sessions. Report details and moderation records remain in the active database until the card is deleted or the operator removes the records; backup copies may remain until provider backups rotate out.",
   },
   {
     title: "How information is used and stored",
-    body: "Tappd uses this information to display cards, exchange and organize contacts, provide search, export your wallet and protect accounts from abuse. It is stored by the database and hosting services configured for Tappd. When password recovery is enabled, Tappd sends your account email and a one-time reset link through Resend so it can deliver the message. We do not sell card or wallet contact information or use it for third-party ad targeting.",
+    body: "Tappd uses this information to display cards, exchange and organize contacts, provide search, export your wallet and protect accounts from abuse. It is stored by the database and hosting services configured for Tappd. When email delivery is configured, Tappd sends signup verification, password recovery, and sign-in email change messages through Resend. These messages include the relevant email address and links: signup verification links expire after 24 hours and can be used once; password reset and email change confirmation links expire after one hour and can each be used once. If someone requests signup with an email already on an account, Tappd may instead send sign-in and password-recovery instructions to that address. We do not sell card or wallet contact information or use it for third-party ad targeting.",
   },
   {
     title: "Your choices and deletion",
@@ -61,7 +69,7 @@ export default function PrivacyPage() {
             <ShieldCheck className="h-4 w-4" /> Your information, explained
           </div>
           <h1 className="mt-3 text-[2rem] font-semibold tracking-[-0.035em] sm:text-[2.5rem]">Privacy at Tappd</h1>
-          <p className="mt-2 text-[0.82rem] text-faint">Last updated October 28, 2026</p>
+          <p className="mt-2 text-[0.82rem] text-faint">Last updated October 31, 2026</p>
           <p className="mt-5 max-w-2xl text-[0.95rem] leading-relaxed text-muted">
             Tappd helps people share business cards and remember who they meet. This page explains what the app stores and what happens when you exchange details.
           </p>
