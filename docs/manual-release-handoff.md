@@ -4,7 +4,6 @@ This is the short list of owner-only actions needed to move from the verified CI
 
 ## Verified now
 
-- Branch `codex/signup-verification-ux-launch` is at `1904eeb`.
 - Quality Gate #74 passed web, Android, and iOS jobs. The Android artifact is a debug-signed QA APK, not a Play Store build. It expires 14 days after the workflow run; download it from [GitHub Actions run #74](https://github.com/UAnirudh/BusinessCard/actions/runs/41380768219).
 - Production `/` and `/privacy` respond, but `/c/maya-chen` and `/api/vcard/maya-chen` return 404. A real public-card recipient flow has not been verified in production.
 - Railway currently requires reauthentication. EAS CLI reports that it is not logged in.
