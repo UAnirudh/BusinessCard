@@ -372,7 +372,11 @@ export default function App() {
   const shareCard = async () => {
     if (!card) return;
     if (!card.isPublic) { Alert.alert('Your card is private', 'Turn on public sharing in Settings before sharing your card.'); return; }
-    await Share.share({ title: `${card.displayName} on Tappd`, message: `${card.displayName}${card.headline ? ` · ${card.headline}` : ''}\nView and save my contact — no app needed:\n${publicCardUrl(card)}` });
+    try {
+      await Share.share({ title: `${card.displayName} on Tappd`, message: `${card.displayName}${card.headline ? ` · ${card.headline}` : ''}\nView and save my contact — no app needed:\n${publicCardUrl(card)}` });
+    } catch {
+      Alert.alert('Could not share your card', 'Please try again, or let someone scan the QR code on your card.');
+    }
   };
 
   const updateCardVisibility = async (isPublic: boolean) => {
