@@ -83,12 +83,11 @@ export function FindSearch({ people }: { people: FindPerson[] }) {
         <div>
           <p className="eyebrow">
             <span className="h-1.5 w-1.5 rounded-full bg-lime-deep" />
-            Smart search
+            Search your wallet
           </p>
           <h1 className="mt-2 text-[1.8rem] font-semibold tracking-[-0.035em]">Find the right person</h1>
           <p className="mt-1 max-w-xl text-[0.9rem] leading-relaxed text-muted">
-            Ask the way you’d ask a colleague. Tappd ranks roles, companies, cities, tags and your own
-            notes — then tells you why each person matched.
+            Find contacts by role, company, city, tags, or notes. Results show which details matched.
           </p>
         </div>
         <Link href="/app/connections" className="btn btn-outline btn-sm">
