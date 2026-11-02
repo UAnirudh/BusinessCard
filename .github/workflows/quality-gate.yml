@@ -46,6 +46,9 @@ jobs:
       - name: Test public card exchange and visitor leads
         run: npm run test:exchange
 
+      - name: Test safe authentication redirects
+        run: npm run test:redirect
+
       - name: Test mobile card reference validation
         run: npx tsx --test tests/mobile-card-reference.test.ts
 

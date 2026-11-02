@@ -3,6 +3,7 @@ import { AuthAside } from "@/components/auth-aside";
 import { AuthForm } from "@/components/auth-form";
 import { Logo } from "@/components/logo";
 import { getCurrentUser } from "@/lib/auth";
+import { safeRedirectPath } from "@/lib/safe-redirect";
 import { redirect } from "next/navigation";
 
 export const metadata: Metadata = {
@@ -16,7 +17,7 @@ export default async function LoginPage({
   searchParams: Promise<{ next?: string }>;
 }) {
   const params = await searchParams;
-  const redirectTo = params.next && params.next.startsWith("/") ? params.next : "/app";
+  const redirectTo = safeRedirectPath(params.next, "/app");
   if (await getCurrentUser()) redirect(redirectTo);
 
   return (
