@@ -84,15 +84,16 @@ After downloading the Android App Bundle, inspect the manifest from the signed r
 - Upload the iOS build to TestFlight and prepare a reviewer-ready account and sample QR/NFC tag.
 - Submit disclosures and builds through the publisher accounts, address review feedback, and publish only after both stores approve.
 
-### Submission requirements checked October 2026
+### Submission requirements checked November 1, 2026
 
-- New Google Play apps and updates must target Android 16 (API level 36) or higher from August 31, 2026. Expo SDK 58's default target API is 36; confirm the generated release manifest before uploading.
+- New Google Play apps and updates must target Android 16 (API level 36) or higher from August 31, 2026. Expo SDK 58 currently uses Android compile SDK 37 and target SDK 36; inspect the generated signed release manifest before uploading.
 - If the Play Console publisher uses a personal developer account created after November 13, 2023, production access requires a closed test with at least 12 testers opted in continuously for 14 days, followed by a production-access application. Confirm the account type and creation date in Play Console; this requirement does not apply to every publisher account.
-- App Store Connect uploads must use Xcode 26 or later and an SDK for iOS 26 or later, effective April 28, 2026. Confirm the selected EAS build image when creating the signed iOS build.
+- App Store Connect uploads must use the iOS 26 SDK or later, effective April 28, 2026. Expo SDK 58's documented minimum is Xcode 26.4; confirm the selected EAS image meets that minimum when creating the signed iOS build.
 
 ## Platform references
 
 - [Expo EAS Build](https://docs.expo.dev/build/introduction/)
+- [Expo SDK 58 platform requirements](https://docs.expo.dev/versions/v58.0.0/)
 - [Google Play target API level requirements](https://support.google.com/googleplay/android-developer/answer/11926878?hl=en)
 - [Google Play testing requirements for new personal accounts](https://support.google.com/googleplay/android-developer/answer/14151465?hl=en)
 - [Apple upcoming submission requirements](https://developer.apple.com/news/upcoming-requirements/)
