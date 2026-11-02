@@ -37,9 +37,10 @@ Apple Wallet and Google Wallet pass buttons remain hidden until their separate s
 
 ## 3. Set publisher identity and link EAS
 
-1. Activate the publisher's Google Play Console and Apple Developer accounts.
-2. Choose unique Android package and iOS bundle IDs controlled by the publisher. Send me the chosen IDs; I can update the app config and run the checks. Do not use `com.tappd.app` without confirming the publisher controls it.
-3. On this computer, in PowerShell:
+1. **Resolve the product and legal publisher names before creating permanent store records.** The name Tappd has active digital-card products using the same or similar name, including offerings with overlapping Wallet/NFC features. This is a brand-clearance risk, not a legal determination. Check name, trademark, and store availability for the markets you plan to enter; choose another name if the risk is unacceptable. Update the store draft, app display name, support/privacy copy, and domain plan to match the chosen brand.
+2. Activate Google Play Console and Apple Developer/App Store Connect accounts under the publisher identity you intend to show customers.
+3. Choose unique Android package and iOS bundle IDs controlled by the publisher. Send me the chosen IDs; I can update the app config and run the checks. Do not use `com.tappd.app` without confirming the publisher controls it.
+4. On this computer, in PowerShell:
 
    ```powershell
    Set-Location C:\Users\uanir\OneDrive\Documents\GitHub\BusinessCard\mobile
@@ -49,8 +50,8 @@ Apple Wallet and Google Wallet pass buttons remain hidden until their separate s
    ```
 
    In `eas init`, select the publisher-owned Expo account/project. It will link the project in app config. Do not paste Expo passwords or tokens into chat.
-4. After the IDs and EAS project link are set, configure EAS production signing credentials for Android and iOS. Expo can create/manage signing credentials interactively. Add the production `EXPO_PUBLIC_API_URL` in the EAS production environment; the project already targets `https://tappd.up.railway.app` in `eas.json`.
-5. Create an Android App Bundle and iOS App Store build:
+5. After the IDs and EAS project link are set, configure EAS production signing credentials for Android and iOS. Expo can create/manage signing credentials interactively. Add the production `EXPO_PUBLIC_API_URL` in the EAS production environment; the project already targets `https://tappd.up.railway.app` in `eas.json`.
+6. Create an Android App Bundle and iOS App Store build:
 
    ```powershell
    npx eas-cli@latest build --platform android --profile production
