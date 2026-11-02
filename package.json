@@ -16,6 +16,7 @@
     "test:exchange": "tsx --test tests/exchange-route.test.ts",
     "test:redirect": "tsx --test tests/safe-redirect.test.ts",
     "test:share": "tsx --test tests/share-dismissal.test.ts",
+    "test:profile-writing": "tsx --test tests/profile-writing.test.ts",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "node scripts/migrate.mjs",
     "db:seed": "tsx scripts/seed.ts",

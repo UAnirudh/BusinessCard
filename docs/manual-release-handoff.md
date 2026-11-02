@@ -60,6 +60,14 @@ Apple Wallet and Google Wallet pass buttons remain hidden until their separate s
 
    The QA APK from GitHub Actions cannot be uploaded to Play. EAS production builds must use store signing credentials.
 
+For iPhone TestFlight, a custom app domain is not required; the Railway HTTPS URL can remain the API origin. TestFlight does require Apple Developer membership, App Store Connect access, the publisher-owned bundle ID, and a store-signed iOS build. After the build completes, upload it with:
+
+```powershell
+npx eas-cli@latest submit --platform ios --latest
+```
+
+Then add internal testers in App Store Connect. External testers require the TestFlight beta information and Apple's beta review for the first build. Install Apple's TestFlight app on the iPhone and accept the invitation there. Expo's current [TestFlight guide](https://docs.expo.dev/submit/testflight/) describes the flow.
+
 ## 4. Finish store setup and testing
 
 - Create the app records in Play Console and App Store Connect using the chosen IDs.

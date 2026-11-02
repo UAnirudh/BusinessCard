@@ -1,6 +1,7 @@
 import { QrCode } from "lucide-react";
 import { Avatar } from "@/components/avatar";
 import { getAccent } from "@/lib/site";
+import { formatSpecialty } from "@/lib/profile-writing";
 import { cx } from "@/lib/utils";
 
 export type PreviewCard = {
@@ -58,7 +59,7 @@ export function CardPreview({
                 className="rounded-md px-1.5 py-0.5 text-[0.62rem] font-medium"
                 style={{ background: accent.chip }}
               >
-                #{tag}
+                {formatSpecialty(tag)}
               </span>
             ))}
           </div>

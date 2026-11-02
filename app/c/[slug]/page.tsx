@@ -28,6 +28,7 @@ import { ViewTracker } from "@/components/view-tracker";
 import { normalizeUrl, prettyUrl, firstParam } from "@/lib/utils";
 import { walletAvailability } from "@/lib/wallet";
 import { CardSafetyActions } from "@/components/card-safety-actions";
+import { formatSpecialty } from "@/lib/profile-writing";
 
 export const dynamic = "force-dynamic";
 
@@ -218,9 +219,12 @@ export default async function PublicCardPage({
 
           {card.tags.length > 0 && (
             <div className="mt-4 flex flex-wrap gap-1.5">
+              <p className="w-full text-[0.68rem] font-semibold uppercase tracking-[0.08em] text-faint">
+                Specialties
+              </p>
               {card.tags.map((tag) => (
                 <span key={tag} className="rounded-md bg-[#f1efe7] px-2 py-1 text-[0.7rem] font-medium text-[#57574f]">
-                  {tag}
+                  {formatSpecialty(tag)}
                 </span>
               ))}
             </div>

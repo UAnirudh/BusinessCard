@@ -52,6 +52,9 @@ jobs:
       - name: Test share sheet dismissal handling
         run: npm run test:share
 
+      - name: Test profile writing suggestions
+        run: npm run test:profile-writing
+
       - name: Test mobile card reference validation
         run: npx tsx --test tests/mobile-card-reference.test.ts
 

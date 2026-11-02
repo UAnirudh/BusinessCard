@@ -86,14 +86,15 @@ export function CardActions({
           type="button"
           onClick={share}
           className="grid h-11 w-11 place-items-center rounded-xl border border-black/10 bg-white/60 text-[#0b0b0d] transition hover:bg-white"
-          aria-label="Share card"
+          aria-label="Send card link with Messages or another app"
+          title="Send card link with Messages or another app"
         >
           {copied ? <Check className="h-4 w-4" /> : <Share2 className="h-4 w-4" />}
         </button>
       </div>
 
       <p className="mt-2 text-center text-[0.72rem] leading-relaxed text-muted">
-        Open the downloaded contact file to add this person to your phone.
+        Share sends this card link through Messages or another app. Open the downloaded contact file to save it to your phone.
       </p>
 
       {(walletApple || walletGoogle) && (
