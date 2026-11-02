@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { Check, Download, QrCode, Share2, X } from "lucide-react";
+import { isShareCancellation } from "@/lib/share";
 
 export function CardActions({
   slug,
@@ -39,8 +40,8 @@ export function CardActions({
       try {
         await navigator.share({ title: `${name} on Tappd`, text: "Here's my card.", url });
         return;
-      } catch {
-        /* user dismissed the sheet */
+      } catch (error) {
+        if (isShareCancellation(error)) return;
       }
     }
     await copyLink();

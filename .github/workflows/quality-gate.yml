@@ -49,6 +49,9 @@ jobs:
       - name: Test safe authentication redirects
         run: npm run test:redirect
 
+      - name: Test share sheet dismissal handling
+        run: npm run test:share
+
       - name: Test mobile card reference validation
         run: npx tsx --test tests/mobile-card-reference.test.ts
 

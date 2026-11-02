@@ -18,6 +18,7 @@ import {
   X,
 } from "lucide-react";
 import { cx } from "@/lib/utils";
+import { isShareCancellation } from "@/lib/share";
 
 type NdefRecord = { recordType: string; data?: DataView; encoding?: string };
 type NdefReader = {
@@ -78,8 +79,8 @@ export function TapShare({
       try {
         await navigator.share({ title: `${displayName} on Tappd`, text: "Here is my card.", url });
         return;
-      } catch {
-        /* dismissed */
+      } catch (error) {
+        if (isShareCancellation(error)) return;
       }
     }
     await copy();
