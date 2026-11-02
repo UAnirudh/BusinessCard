@@ -87,6 +87,10 @@ jobs:
         working-directory: mobile
         run: npm ci
 
+      - name: Audit mobile dependencies
+        working-directory: mobile
+        run: npm audit --audit-level=low
+
       - name: Typecheck mobile app
         working-directory: mobile
         run: npm run typecheck
