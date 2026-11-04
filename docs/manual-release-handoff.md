@@ -4,9 +4,9 @@ This is the short list of owner-only actions needed to move from the verified CI
 
 ## Verified now
 
-- Quality Gate #74 passed web, Android, and iOS jobs. The Android artifact is a debug-signed QA APK, not a Play Store build. It expires 14 days after the workflow run; download it from [GitHub Actions run #74](https://github.com/UAnirudh/BusinessCard/actions/runs/41380768219).
-- Production `/` and `/privacy` respond, but `/c/maya-chen` and `/api/vcard/maya-chen` return 404. A real public-card recipient flow has not been verified in production.
-- Railway currently requires reauthentication. EAS CLI reports that it is not logged in.
+- Quality Gate #80 passed web, Android, and iOS jobs on November 4, 2026. Its 40,264,322-byte Android artifact is a debug-signed QA APK, not a Play Store build; it expires November 18, 2026. Download it from [GitHub Actions run #80](https://github.com/UAnirudh/BusinessCard/actions/runs/41855101403).
+- Production `/`, `/privacy`, and `/support` return HTTP 200. `/c/maya-chen` and `/api/vcard/maya-chen` return HTTP 404; `/health` is not a configured route. A real public-card recipient flow has not been verified in production.
+- Railway's connected app still requires reauthentication, the local Railway CLI is unavailable, and EAS CLI reports that it is not logged in.
 - `mobile/app.json` still has provisional IDs `com.tappd.app`; `mobile/eas.json` has no EAS project link and an empty `submit.production` profile.
 
 ## 1. Restore production access and email
