@@ -7,7 +7,6 @@ import { ArrowRight, Check, Eye, EyeOff, Loader2, Mail } from "lucide-react";
 
 export function AuthForm({ mode, redirectTo }: { mode: "login" | "signup"; redirectTo: string }) {
   const router = useRouter();
-  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -27,7 +26,7 @@ export function AuthForm({ mode, redirectTo }: { mode: "login" | "signup"; redir
       const response = await fetch(isSignup ? "/api/auth/signup" : "/api/auth/login", {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify(isSignup ? { name, email } : { email, password }),
+        body: JSON.stringify(isSignup ? { email } : { email, password }),
       });
       const data = (await response.json().catch(() => ({}))) as { error?: string; verificationRequired?: boolean };
 
@@ -59,7 +58,7 @@ export function AuthForm({ mode, redirectTo }: { mode: "login" | "signup"; redir
         </div>
         <h2 className="mt-4 text-lg font-semibold tracking-[-0.02em]">Check your inbox</h2>
         <p className="mt-2 text-sm leading-relaxed text-muted">
-          If this address can create an account, watch for a verification link at <strong className="break-all text-ink">{email}</strong>. Open it to verify your email and choose your password. The link expires in 24 hours.
+          If this address can create an account, watch for a verification link at <strong className="break-all text-ink">{email}</strong>. Open it to verify your email and choose your name and password. The link expires in 24 hours.
         </p>
         <p className="mt-3 text-xs leading-relaxed text-faint">If it doesn’t arrive, check your spam folder or try signing up again to request a fresh link.</p>
         <Link href="/login" className="btn btn-primary mt-6 w-full justify-center">
@@ -72,23 +71,6 @@ export function AuthForm({ mode, redirectTo }: { mode: "login" | "signup"; redir
 
   return (
     <form onSubmit={handleSubmit} className="mt-8 space-y-4" noValidate>
-      {isSignup && (
-        <div>
-          <label htmlFor="name" className="label">Full name</label>
-          <input
-            id="name"
-            name="name"
-            type="text"
-            autoComplete="name"
-            required
-            value={name}
-            onChange={(event) => setName(event.target.value)}
-            className="input"
-            placeholder="Maya Chen"
-          />
-        </div>
-      )}
-
       <div>
         <label htmlFor="email" className="label">Work email</label>
         <input
@@ -131,7 +113,7 @@ export function AuthForm({ mode, redirectTo }: { mode: "login" | "signup"; redir
             {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
           </button>
         </div>
-      </div> : <p className="rounded-xl bg-white/70 px-3 py-3 text-[0.8rem] leading-relaxed text-muted">We’ll ask you to choose a password after you verify your email.</p>}
+      </div> : <p className="rounded-xl bg-white/70 px-3 py-3 text-[0.8rem] leading-relaxed text-muted">After you verify your email, you’ll choose the name and password for your Tappd account.</p>}
 
       {error && (
         <p className="rounded-xl border border-[#f0d5c7] bg-[#fff7f2] px-3 py-2.5 text-[0.82rem] leading-relaxed text-danger" role="alert">

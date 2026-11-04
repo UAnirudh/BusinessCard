@@ -19,7 +19,6 @@ const optionalEmail = z
   });
 
 export const signupSchema = z.object({
-  name: z.string().trim().min(2, "Tell us your name").max(80),
   email: z.string().trim().toLowerCase().email("Enter a valid email address").max(200),
 });
 

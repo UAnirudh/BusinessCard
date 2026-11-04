@@ -13,7 +13,7 @@ import { hashPassword, verifyPassword } from "@/lib/auth";
 import { completeSignupVerification, hashVerificationToken, replacePendingSignup } from "@/lib/signup-verification";
 import { requestSignupVerification, SignupVerificationDeliveryError } from "@/lib/signup-email";
 import { CURRENT_TERMS_VERSION } from "@/lib/terms";
-import { emailVerificationSchema } from "@/lib/validation";
+import { emailVerificationSchema, signupSchema } from "@/lib/validation";
 
 async function testDatabase() {
   const client = new PGlite();
@@ -75,6 +75,14 @@ test("email verification requires affirmative Terms of Use acceptance", () => {
   assert.equal(emailVerificationSchema.safeParse(base).success, false);
   assert.equal(emailVerificationSchema.safeParse({ ...base, acceptedTerms: false }).success, false);
   assert.equal(emailVerificationSchema.safeParse({ ...base, acceptedTerms: true }).success, true);
+});
+
+test("initial signup requires only a valid email and normalizes its casing", () => {
+  assert.deepEqual(signupSchema.safeParse({ email: "PERSON@example.test" }), {
+    success: true,
+    data: { email: "person@example.test" },
+  });
+  assert.equal(signupSchema.safeParse({ email: "not-an-email" }).success, false);
 });
 
 test("failed verification email delivery removes the pending token and returns a generic delivery error", async () => {
