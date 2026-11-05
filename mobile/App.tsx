@@ -174,7 +174,7 @@ export default function App() {
     const sessionGeneration = sessionGenerationRef.current;
     setBusy(true); setError(''); setVerificationNotice('');
     try {
-      const result = await apiRequest<NativeSession | NativeSignupVerification>(`/api/native/auth/${authMode}`, { method: 'POST', body: authMode === 'signup' ? { name: name.trim(), email: email.trim() } : { email: email.trim(), password } });
+      const result = await apiRequest<NativeSession | NativeSignupVerification>(`/api/native/auth/${authMode}`, { method: 'POST', body: authMode === 'signup' ? { email: email.trim() } : { email: email.trim(), password } });
       if (sessionGenerationRef.current !== sessionGeneration) return;
       if (!('token' in result)) {
         setVerificationEmail(result.email);
