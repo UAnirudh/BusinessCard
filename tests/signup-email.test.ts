@@ -8,7 +8,7 @@ test("signup verification email sends the one-time link through the configured p
   const originalFrom = process.env.TAPPD_EMAIL_FROM;
   let captured: { url: string; init?: RequestInit } | undefined;
   process.env.RESEND_API_KEY = "test-api-key";
-  process.env.TAPPD_EMAIL_FROM = "Tappd <verify@example.test>";
+  process.env.TAPPD_EMAIL_FROM = "Followfolk <verify@example.test>";
   globalThis.fetch = async (input, init) => {
     captured = { url: String(input), init };
     return new Response("{}", { status: 200, headers: { "content-type": "application/json" } });
@@ -20,9 +20,9 @@ test("signup verification email sends the one-time link through the configured p
     assert.equal(new Headers(captured?.init?.headers).get("authorization"), "Bearer test-api-key");
     assert.equal(new Headers(captured?.init?.headers).get("idempotency-key"), "signup-verification/digest");
     const body = JSON.parse(String(captured?.init?.body)) as { from: string; to: string[]; subject: string; text: string };
-    assert.equal(body.from, "Tappd <verify@example.test>");
+    assert.equal(body.from, "Followfolk <verify@example.test>");
     assert.deepEqual(body.to, ["person@example.test"]);
-    assert.equal(body.subject, "Verify your Tappd email");
+    assert.equal(body.subject, "Verify your Followfolk email");
     assert.match(body.text, /https:\/\/tappd\.example\.test\/verify-email\?token=opaque/);
     assert.match(body.text, /expires in 24 hours/);
   } finally {

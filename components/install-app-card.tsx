@@ -53,7 +53,7 @@ export function InstallAppCard() {
       <div className="mt-2 flex items-start gap-2.5">
         <Smartphone className="mt-0.5 h-4 w-4 shrink-0 text-muted" aria-hidden="true" />
         <div>
-          <p className="text-[0.82rem] font-medium">{isInstalled ? "Tappd is on your home screen" : "Add Tappd to your home screen"}</p>
+          <p className="text-[0.82rem] font-medium">{isInstalled ? "Followfolk is on your home screen" : "Add Followfolk to your home screen"}</p>
           {isInstalled ? (
             <p className="mt-1 text-[0.76rem] leading-relaxed text-muted">Open it directly when you’re heading out to meet people.</p>
           ) : isIOS ? (
@@ -63,7 +63,7 @@ export function InstallAppCard() {
               <p className="mt-1 text-[0.76rem] leading-relaxed text-muted">Launch your card, QR and wallet from one icon.</p>
               <button type="button" onClick={install} className="btn btn-outline btn-sm mt-2">
                 <Download className="h-3.5 w-3.5" />
-                Install Tappd
+                Install Followfolk
               </button>
             </>
           ) : (

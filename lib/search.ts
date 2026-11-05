@@ -1,5 +1,5 @@
 /**
- * Tappd's "who do I know that…" search.
+ * Followfolk's "who do I know that…" search.
  *
  * It is a deterministic ranking model, not an LLM call: the query is normalized,
  * expanded with role synonyms, then scored against weighted contact fields so

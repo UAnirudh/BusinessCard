@@ -113,7 +113,7 @@ export function AuthForm({ mode, redirectTo }: { mode: "login" | "signup"; redir
             {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
           </button>
         </div>
-      </div> : <p className="rounded-xl bg-white/70 px-3 py-3 text-[0.8rem] leading-relaxed text-muted">After you verify your email, you’ll choose the name and password for your Tappd account.</p>}
+      </div> : <p className="rounded-xl bg-white/70 px-3 py-3 text-[0.8rem] leading-relaxed text-muted">After you verify your email, you’ll choose the name and password for your Followfolk account.</p>}
 
       {error && (
         <p className="rounded-xl border border-[#f0d5c7] bg-[#fff7f2] px-3 py-2.5 text-[0.82rem] leading-relaxed text-danger" role="alert">
@@ -145,7 +145,7 @@ export function AuthForm({ mode, redirectTo }: { mode: "login" | "signup"; redir
           </>
         ) : (
           <>
-            New to Tappd?{" "}
+            New to Followfolk?{" "}
             <Link href="/signup" className="font-medium text-ink underline decoration-line underline-offset-4 hover:decoration-ink">
               Create your card
             </Link>

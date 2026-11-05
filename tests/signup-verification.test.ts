@@ -91,7 +91,7 @@ test("failed verification email delivery removes the pending token and returns a
   const originalFrom = process.env.TAPPD_EMAIL_FROM;
   const originalConsoleError = console.error;
   process.env.RESEND_API_KEY = "test-api-key";
-  process.env.TAPPD_EMAIL_FROM = "Tappd <verify@example.test>";
+  process.env.TAPPD_EMAIL_FROM = "Followfolk <verify@example.test>";
   console.error = () => {};
   try {
     await assert.rejects(
@@ -119,7 +119,7 @@ test("signup for an existing address sends neutral account-access guidance witho
   const originalKey = process.env.RESEND_API_KEY;
   const originalFrom = process.env.TAPPD_EMAIL_FROM;
   process.env.RESEND_API_KEY = "test-api-key";
-  process.env.TAPPD_EMAIL_FROM = "Tappd <verify@example.test>";
+  process.env.TAPPD_EMAIL_FROM = "Followfolk <verify@example.test>";
   try {
     await db.insert(users).values({ email: "existing@example.test", name: "Existing Person", passwordHash: hashPassword("safe-password") });
     let captured: { to: string; loginUrl: string; resetUrl: string; idempotencyKey: string } | undefined;
@@ -154,7 +154,7 @@ test("failed account-access email delivery returns the same generic failure and 
   const originalFrom = process.env.TAPPD_EMAIL_FROM;
   const originalConsoleError = console.error;
   process.env.RESEND_API_KEY = "test-api-key";
-  process.env.TAPPD_EMAIL_FROM = "Tappd <verify@example.test>";
+  process.env.TAPPD_EMAIL_FROM = "Followfolk <verify@example.test>";
   console.error = () => {};
   try {
     await db.insert(users).values({ email: "existing@example.test", name: "Existing Person", passwordHash: hashPassword("safe-password") });

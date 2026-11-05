@@ -173,7 +173,7 @@ export async function googleWalletSaveUrl(card: Card) {
   const origin = await getOrigin();
   const cardUrl = `${origin}/c/${card.slug}`;
   const safeId = card.slug.replace(/[^a-zA-Z0-9._-]/g, "-").slice(0, 64);
-  const identity = [card.headline, card.company].filter(Boolean).join(" · ").slice(0, 140) || "Tappd member";
+  const identity = [card.headline, card.company].filter(Boolean).join(" · ").slice(0, 140) || "Followfolk member";
 
   const payload = {
     iss: credentials.client_email,
@@ -187,7 +187,7 @@ export async function googleWalletSaveUrl(card: Card) {
         classId,
         genericType: "GENERIC_TYPE_UNSPECIFIED",
         state: "ACTIVE",
-        cardTitle: localized("Tappd"),
+        cardTitle: localized("Followfolk"),
         subheader: localized(identity),
         header: localized(card.displayName),
         hexBackgroundColor: "#182018",
@@ -216,8 +216,8 @@ export async function appleWalletPass(card: Card) {
     passTypeIdentifier,
     teamIdentifier,
     serialNumber: card.id,
-    organizationName: "Tappd",
-    description: `${card.displayName} on Tappd`,
+    organizationName: "Followfolk",
+    description: `${card.displayName} on Followfolk`,
     backgroundColor: "rgb(24, 32, 24)",
     foregroundColor: "rgb(255, 255, 255)",
     labelColor: "rgb(206, 233, 153)",

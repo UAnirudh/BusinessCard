@@ -1,6 +1,6 @@
 # Seattle customer interview outreach
 
-Use this as a first, low-cost validation sprint for Tappd's individual-professional audience. The goal is to learn how people share and follow up on professional contacts, not to sell subscriptions. Ask each organization to forward an opt-in invitation; do not ask for member lists.
+Use this as a first, low-cost validation sprint for Followfolk's individual-professional audience. The goal is to learn how people share and follow up on professional contacts, not to sell subscriptions. Ask each organization to forward an opt-in invitation; do not ask for member lists.
 
 ## First outreach routes
 
@@ -20,7 +20,7 @@ Start with YPIN and ProVisors for the first two asks: one broad networking commu
 
 Hi [Name],
 
-I’m building Tappd, a digital business card for individual professionals. I’m speaking with Seattle-area people about how they share contact details and remember to follow up after meeting someone.
+I’m building Followfolk, a digital business card for individual professionals. I’m speaking with Seattle-area people about how they share contact details and remember to follow up after meeting someone.
 
 Would you be open to forwarding the short invitation below to members who may want to take part? It’s a 15-minute research conversation, not a sales pitch. Interested people can contact me directly, and I don’t need access to your member list.
 
@@ -57,7 +57,7 @@ Thanks,
 7. What would make you trust or distrust a shareable card that saves to a phone's contacts or Wallet?
 8. If you could change one part of your current process, what would you change?
 
-Ask about the most recent real example before describing Tappd. Record the interview only with the participant's permission. Track answers without collecting contact lists or sensitive personal information.
+Ask about the most recent real example before describing Followfolk. Record the interview only with the participant's permission. Track answers without collecting contact lists or sensitive personal information.
 
 ## What to measure
 
@@ -69,11 +69,11 @@ Ask about the most recent real example before describing Tappd. Record the inter
 
 ## Product wording until Wallet issuance is configured
 
-The current public-card path works in a browser without Tappd and offers a vCard contact download. Apple Wallet and Google Wallet passes require issuer/signing credentials and approvals, which are not configured yet. Describe that feature as planned or in setup; do not promise that it is available until real passes have been issued and verified on devices.
+The current public-card path works in a browser without Followfolk and offers a vCard contact download. Apple Wallet and Google Wallet passes require issuer/signing credentials and approvals, which are not configured yet. Describe that feature as planned or in setup; do not promise that it is available until real passes have been issued and verified on devices.
 
 ## Seattle prospects and community connectors (checked October 2026)
 
-The Apollo people-search source is unavailable until the Firecrawl organization administrator accepts that provider's terms. No private contact details were retrieved. Use the following people only as public community connectors; their listing does not mean they agreed to interview or endorse Tappd. Start by asking the organization to forward an opt-in invitation.
+The Apollo people-search source is unavailable until the Firecrawl organization administrator accepts that provider's terms. No private contact details were retrieved. Use the following people only as public community connectors; their listing does not mean they agreed to interview or endorse Followfolk. Start by asking the organization to forward an opt-in invitation.
 
 | Publicly listed person | Published role and organization | Why they may be a useful connector | Appropriate first route |
 | --- | --- | --- | --- |
@@ -90,9 +90,9 @@ All four were listed on the [official ProVisors Seattle page](https://www.provis
 
 > Hello [organizer/team],
 >
-> I’m a Seattle-area founder researching how independent professionals share contact details and follow up after meeting a potential client or collaborator. I’m building Tappd, a digital business card with a contact wallet and follow-up reminders. I’m looking for a few consultants, coaches, fractional leaders, and other client-facing professionals for a 15-minute conversation about their current process. This is research, not a sales call, and there is no preparation required.
+> I’m a Seattle-area founder researching how independent professionals share contact details and follow up after meeting a potential client or collaborator. I’m building Followfolk, a digital business card with a contact wallet and follow-up reminders. I’m looking for a few consultants, coaches, fractional leaders, and other client-facing professionals for a 15-minute conversation about their current process. This is research, not a sales call, and there is no preparation required.
 >
-> Would you be willing to forward the invitation below to interested members, or point me to the right public channel? I don’t need a member list, and I won’t imply your organization endorses Tappd.
+> Would you be willing to forward the invitation below to interested members, or point me to the right public channel? I don’t need a member list, and I won’t imply your organization endorses Followfolk.
 >
 > Thank you,
 > [Your name]
@@ -101,6 +101,6 @@ All four were listed on the [official ProVisors Seattle page](https://www.provis
 
 ### Short opt-in message
 
-> Seattle consultants, coaches, and independent professionals: I’m looking for a few people to talk for 15 minutes about how you exchange contact details and remember to follow up after meeting someone. I’m building Tappd, but this is research—not a sales pitch. No prep needed. Interested? Contact [your email] or book here: [scheduling link].
+> Seattle consultants, coaches, and independent professionals: I’m looking for a few people to talk for 15 minutes about how you exchange contact details and remember to follow up after meeting someone. I’m building Followfolk, but this is research—not a sales pitch. No prep needed. Interested? Contact [your email] or book here: [scheduling link].
 
 Do not describe anyone as a customer or interview participant until they opt in. Verify the public page and channel again before sending, and ask for permission before recording a call.

@@ -1,5 +1,5 @@
 export const SITE = {
-  name: "Tappd",
+  name: "Followfolk",
   tagline: "Digital cards, contacts and follow-ups.",
   description:
     "Create a digital business card to share by link, QR code or NFC. Save contacts with meeting notes and follow-up dates.",

@@ -1,8 +1,8 @@
-# Tappd
+# Followfolk
 
 **Digital business cards that remember who you met.**
 
-Tappd turns a phone into a shareable business card: tap an NFC tag, show a QR code, or send a link. Everyone you meet lands in a searchable wallet, complete with tags, notes and the context you need to follow up.
+Followfolk turns a phone into a shareable business card: tap an NFC tag, show a QR code, or send a link. Everyone you meet lands in a searchable wallet, complete with tags, notes and the context you need to follow up.
 
 The web service is built with Next.js 16 (App Router), TypeScript, Tailwind CSS v4, Drizzle ORM and Postgres. The repository also includes an Expo / React Native app for iOS and Android. The intended production host is Railway with a hosted Postgres database. Local web development needs no database server: it runs on an embedded PGlite database that is migrated automatically.
 

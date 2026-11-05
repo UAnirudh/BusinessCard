@@ -58,6 +58,9 @@ jobs:
       - name: Test mobile card reference validation
         run: npx tsx --test tests/mobile-card-reference.test.ts
 
+      - name: Test mobile auth return link
+        run: npx tsx --test tests/mobile-auth-link.test.ts
+
       - name: Test native card profile validation
         run: npx tsx --test tests/mobile-card-profile.test.ts
 

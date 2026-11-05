@@ -59,7 +59,7 @@ const features = [
 
 const faqs = [
   {
-    q: "Does someone need Tappd to see my card?",
+    q: "Does someone need Followfolk to see my card?",
     a: "No. Your card opens in a web browser from a link, QR code or NFC tag. They can save your details to their phone contacts without creating an account.",
   },
   {
@@ -68,7 +68,7 @@ const faqs = [
   },
   {
     q: "Can I bring in contacts I already have?",
-    a: "Yes. Add contacts one at a time or import a CSV file. Imported contacts are searchable alongside the people you meet through Tappd.",
+    a: "Yes. Add contacts one at a time or import a CSV file. Imported contacts are searchable alongside the people you meet through Followfolk.",
   },
   {
     q: "Can I leave with my data?",
@@ -263,7 +263,7 @@ export default function LandingPage() {
             <Link href="/account-deletion" className="hover:text-ink">Delete account</Link>
             <a href="#faq" className="hover:text-ink">FAQ</a>
           </nav>
-          <p className="w-full text-xs text-faint sm:w-auto">© {new Date().getFullYear()} Tappd</p>
+          <p className="w-full text-xs text-faint sm:w-auto">© {new Date().getFullYear()} Followfolk</p>
         </div>
       </footer>
     </main>

@@ -46,14 +46,14 @@ export default function VerifyEmailPage() {
       }
       if (returnToApp) {
         setPassword("");
-        setMessage("Your email is verified. Return to Tappd and sign in to finish setting up your card.");
+        setMessage("Your email is verified. Return to Followfolk and sign in to finish setting up your card.");
         setState("complete");
         return;
       }
       router.replace("/app/card");
       router.refresh();
     } catch {
-      setMessage("Could not reach Tappd. Check your connection and try again.");
+      setMessage("Could not reach Followfolk. Check your connection and try again.");
       setState("ready");
     }
   }
@@ -68,7 +68,7 @@ export default function VerifyEmailPage() {
         <p className="eyebrow mt-5">One last step</p>
         <h1 className="mt-2 text-[1.65rem] font-semibold tracking-[-0.035em]">Verify your email</h1>
         <p className="mt-2 text-[0.9rem] leading-relaxed text-muted">
-          Confirm you can receive mail at this address, then choose the name and password for your Tappd account.
+          Confirm you can receive mail at this address, then choose the name and password for your Followfolk account.
         </p>
         {state === "loading" && <p role="status" className="mt-5 text-[0.82rem] text-muted">Checking your link…</p>}
         {message && <p role="alert" className="mt-5 text-[0.82rem] text-danger">{message}</p>}
@@ -100,12 +100,12 @@ export default function VerifyEmailPage() {
           </form>
         ) : null}
         {state === "complete" && (
-          <a href="tappd://auth/verified" className="btn btn-primary mt-6 w-full justify-center">
-            Return to Tappd
+          <a href="followfolk://auth/verified" className="btn btn-primary mt-6 w-full justify-center">
+            Return to Followfolk
           </a>
         )}
         {state === "error" && <Link href="/signup" className="btn btn-outline mt-6 w-full justify-center">Request a new verification link</Link>}
-        <p className="mt-6 text-center text-xs text-faint">Need help? Visit <Link href="/support" className="font-medium underline underline-offset-2">Tappd support</Link>.</p>
+        <p className="mt-6 text-center text-xs text-faint">Need help? Visit <Link href="/support" className="font-medium underline underline-offset-2">Followfolk support</Link>.</p>
       </section>
     </main>
   );

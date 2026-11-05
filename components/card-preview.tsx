@@ -34,7 +34,7 @@ export function CardPreview({
     >
       <div className={cx("px-6", compact ? "pb-5 pt-5" : "pb-7 pt-6")}>
         <div className="flex items-center justify-between text-[0.68rem] font-medium opacity-65">
-          <span>Tappd card</span>
+          <span>Followfolk card</span>
           <span>Preview</span>
         </div>
 

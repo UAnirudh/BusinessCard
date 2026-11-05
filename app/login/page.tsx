@@ -8,7 +8,7 @@ import { redirect } from "next/navigation";
 
 export const metadata: Metadata = {
   title: "Log in",
-  description: "Log in to your Tappd card and wallet.",
+  description: "Log in to your Followfolk card and wallet.",
 };
 
 export default async function LoginPage({
@@ -33,7 +33,7 @@ export default async function LoginPage({
             Welcome back
           </span>
           <h1 className="mt-3 text-[2rem] font-semibold leading-tight tracking-[-0.03em]">
-            Log in to Tappd
+            Log in to Followfolk
           </h1>
           <p className="mt-2 text-[0.92rem] leading-relaxed text-muted">
             Your card, your wallet and everyone you met are right where you left them.

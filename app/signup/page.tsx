@@ -9,7 +9,7 @@ import { redirect } from "next/navigation";
 
 export const metadata: Metadata = {
   title: "Create your card",
-  description: "Claim your Tappd handle and start sharing a card that stays up to date.",
+  description: "Claim your Followfolk handle and start sharing a card that stays up to date.",
 };
 
 export default async function SignupPage({

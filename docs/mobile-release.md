@@ -2,7 +2,7 @@
 
 ## Current product
 
-Tappd has two clients backed by the same web service:
+Followfolk has two clients backed by the same web service:
 
 - The Next.js 16 web app is the public card experience and backend. It supports public cards at `/c/{slug}`, QR/vCard sharing, browser installation, and the signed-in web wallet.
 - `mobile/` is an Expo / React Native app for iOS and Android. It supports account sign-in and signup, native card editing, public/private card and QR display, system sharing, QR scanning, NFC tag writing, wallet connections, private notes and follow-up dates for saved contacts, native contact saving, and privacy links. Profile edits keep the card's current visibility and require current Terms consent. It stores its bearer session in SecureStore (Keychain / Keystore) and holds wallet data in memory rather than persisting it locally.

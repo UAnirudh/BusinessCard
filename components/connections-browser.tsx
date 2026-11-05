@@ -393,7 +393,7 @@ function AddContactDialog({
       open={open}
       onClose={onClose}
       title="Add a contact"
-      description="For the cards you collected before Tappd, or someone who didn’t have their phone."
+      description="For the cards you collected before Followfolk, or someone who didn’t have their phone."
     >
       <form onSubmit={submit} className="space-y-3">
         <div className="grid gap-3 sm:grid-cols-2">

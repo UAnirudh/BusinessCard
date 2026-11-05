@@ -38,7 +38,7 @@ export function CardActions({
   async function share() {
     if (typeof navigator !== "undefined" && navigator.share) {
       try {
-        await navigator.share({ title: `${name} on Tappd`, text: "Here's my card.", url });
+        await navigator.share({ title: `${name} on Followfolk`, text: "Here's my card.", url });
         return;
       } catch (error) {
         if (isShareCancellation(error)) return;
@@ -148,7 +148,7 @@ export function CardActions({
               {copied ? "Link copied" : "Copy link instead"}
             </button>
             <p className="mt-3 text-[0.66rem] leading-relaxed text-faint">
-              Android can also write this link to an NFC tag from the Tappd share screen.
+              Android can also write this link to an NFC tag from the Followfolk share screen.
             </p>
           </div>
         </div>

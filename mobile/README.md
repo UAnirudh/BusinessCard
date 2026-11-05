@@ -1,6 +1,6 @@
-# Tappd mobile app
+# Followfolk mobile app
 
-An Expo / React Native client for Android and iOS. It uses the same Tappd account and wallet as the web app, with platform share, Contacts, QR camera, NFC tag writing, and Keychain/Keystore-backed session storage.
+An Expo / React Native client for Android and iOS. It uses the same Followfolk account and wallet as the web app, with platform share, Contacts, QR camera, NFC tag writing, and Keychain/Keystore-backed session storage.
 
 ## Run locally
 

@@ -67,7 +67,7 @@ export async function generateMetadata({
   const description =
     card.bio ??
     [card.headline, card.company].filter(Boolean).join(" at ") ??
-    `${card.displayName} on Tappd`;
+    `${card.displayName} on Followfolk`;
 
   return {
     title,
@@ -320,7 +320,7 @@ export default async function PublicCardPage({
 
             <p className="border-t border-[#f0eee7] bg-[#fbfaf6] px-5 py-2.5 text-center text-[0.72rem] text-muted">
               {card.isPublic
-                ? "Works in any browser. No Tappd account needed to view or download this contact."
+                ? "Works in any browser. No Followfolk account needed to view or download this contact."
                 : "Private preview. Only you can view these contact details."}
             </p>
           </section>
@@ -345,7 +345,7 @@ export default async function PublicCardPage({
 
         <footer className="mt-10 flex items-center justify-between border-t border-line pt-5 text-[0.7rem] text-faint">
           <span>Keep your contacts and follow-ups together.</span>
-          <Link href="/" className="hover:text-ink">Tappd</Link>
+          <Link href="/" className="hover:text-ink">Followfolk</Link>
         </footer>
       </div>
 

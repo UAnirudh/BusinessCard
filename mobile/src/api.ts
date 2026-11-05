@@ -108,7 +108,7 @@ export async function apiRequest<T>(
   options: { token?: string | null; method?: string; body?: unknown } = {},
 ): Promise<T> {
   if (!API_ORIGIN) {
-    throw new Error("This build is missing EXPO_PUBLIC_API_URL. Connect the Tappd service before signing in.");
+    throw new Error("This build is missing EXPO_PUBLIC_API_URL. Connect the Followfolk service before signing in.");
   }
 
   const headers: Record<string, string> = { Accept: "application/json" };
@@ -141,9 +141,9 @@ export async function apiRequest<T>(
   } catch (error) {
     if (error instanceof ApiError) throw error;
     if (controller.signal.aborted) {
-      throw new Error("Tappd took too long to respond. Check your connection and try again.");
+      throw new Error("Followfolk took too long to respond. Check your connection and try again.");
     }
-    throw new Error("Couldn’t reach Tappd. Check your connection and try again.");
+    throw new Error("Couldn’t reach Followfolk. Check your connection and try again.");
   } finally {
     clearTimeout(timeout);
   }

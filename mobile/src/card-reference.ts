@@ -1,6 +1,6 @@
 const CARD_SLUG = /^[A-Za-z0-9_-]+$/;
 
-/** Accept a Tappd slug or a card URL on this app's configured service. */
+/** Accept a Followfolk slug or a card URL on this app's configured service. */
 export function parseCardReference(value: string, serviceOrigin: string): string | null {
   const input = value.trim();
   if (CARD_SLUG.test(input)) return input;

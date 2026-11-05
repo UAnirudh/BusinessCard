@@ -6,29 +6,29 @@ import { CURRENT_TERMS_VERSION } from "@/lib/terms";
 
 export const metadata: Metadata = {
   title: "Terms of Use",
-  description: "Terms for using Tappd and sharing business card content.",
+  description: "Terms for using Followfolk and sharing business card content.",
 };
 
 const sections = [
   {
-    title: "Using Tappd",
-    body: "Tappd helps you create a business card, share it, and organize contacts you meet. Keep your sign-in details private and use an email address you control. You are responsible for activity on your account.",
+    title: "Using Followfolk",
+    body: "Followfolk helps you create a business card, share it, and organize contacts you meet. Keep your sign-in details private and use an email address you control. You are responsible for activity on your account.",
   },
   {
     title: "Content you add",
-    body: "You are responsible for the names, photos, contact details, links, notes, and other material you add to Tappd. Share only material you have the right to use and information you intend to disclose. When you make a card public, anyone with its link may view and save the fields on it.",
+    body: "You are responsible for the names, photos, contact details, links, notes, and other material you add to Followfolk. Share only material you have the right to use and information you intend to disclose. When you make a card public, anyone with its link may view and save the fields on it.",
   },
   {
     title: "Content and conduct we prohibit",
-    body: "Do not use Tappd to post illegal or infringing material; impersonate someone; expose another person’s private information without permission; threaten, harass, bully, or target a person; share sexually exploitative or explicit material; send spam; or use cards to facilitate fraud or other abuse. Do not use contact information obtained from Tappd to send unsolicited bulk messages.",
+    body: "Do not use Followfolk to post illegal or infringing material; impersonate someone; expose another person’s private information without permission; threaten, harass, bully, or target a person; share sexually exploitative or explicit material; send spam; or use cards to facilitate fraud or other abuse. Do not use contact information obtained from Followfolk to send unsolicited bulk messages.",
   },
   {
     title: "Reports, blocks, and moderation",
-    body: "You can report a public card and block another member. Tappd may review reports, remove or hide content, limit sharing, suspend accounts, or revoke sessions when needed to protect people or enforce these terms. A filter does not catch every harmful post, and reporting does not guarantee a particular outcome. The service operator must review reports and respond to serious safety concerns.",
+    body: "You can report a public card and block another member. Followfolk may review reports, remove or hide content, limit sharing, suspend accounts, or revoke sessions when needed to protect people or enforce these terms. A filter does not catch every harmful post, and reporting does not guarantee a particular outcome. The service operator must review reports and respond to serious safety concerns.",
   },
   {
     title: "Permission to operate the service",
-    body: "You keep ownership of content you add. You give Tappd permission to host, store, display, and transmit that content as needed to provide the service and the sharing features you choose. Making a card private stops people from viewing it through its public Tappd link, but copies already saved in other members’ Tappd wallets may remain. Deleting your account removes Tappd-managed wallet copies linked to your card. It cannot remove copies exported to phones, address books, vCards, other services, or external Wallet apps, and provider backups may take time to expire.",
+    body: "You keep ownership of content you add. You give Followfolk permission to host, store, display, and transmit that content as needed to provide the service and the sharing features you choose. Making a card private stops people from viewing it through its public Followfolk link, but copies already saved in other members’ Followfolk wallets may remain. Deleting your account removes Followfolk-managed wallet copies linked to your card. It cannot remove copies exported to phones, address books, vCards, other services, or external Wallet apps, and provider backups may take time to expire.",
   },
   {
     title: "Changes and account access",
@@ -36,7 +36,7 @@ const sections = [
   },
   {
     title: "Questions",
-    body: "For help or to report a concern, visit the Tappd support page.",
+    body: "For help or to report a concern, visit the Followfolk support page.",
   },
 ];
 const updatedDate = new Date(`${CURRENT_TERMS_VERSION}T12:00:00Z`).toLocaleDateString("en-US", {
@@ -58,12 +58,12 @@ export default function TermsPage() {
         </header>
         <section className="surface mt-8 p-5 sm:mt-12 sm:p-9">
           <div className="flex items-center gap-2 text-[0.74rem] font-semibold uppercase tracking-[0.12em] text-muted">
-            <FileText className="h-4 w-4" /> Using Tappd
+            <FileText className="h-4 w-4" /> Using Followfolk
           </div>
           <h1 className="mt-3 text-[2rem] font-semibold tracking-[-0.035em] sm:text-[2.5rem]">Terms of Use</h1>
           <p className="mt-2 text-[0.82rem] text-faint">Version {CURRENT_TERMS_VERSION} · Updated {updatedDate}</p>
           <p className="mt-5 max-w-2xl text-[0.95rem] leading-relaxed text-muted">
-            These terms explain the basic rules for using Tappd and sharing card content. You must accept them before creating an account or adding card content.
+            These terms explain the basic rules for using Followfolk and sharing card content. You must accept them before creating an account or adding card content.
           </p>
           <div className="mt-8 divide-y divide-line">
             {sections.map((section) => (
@@ -74,7 +74,7 @@ export default function TermsPage() {
             ))}
           </div>
           <p className="mt-6 text-[0.82rem] text-muted">
-            Read the <Link href="/privacy" className="font-medium underline underline-offset-2">Privacy page</Link> to learn how Tappd handles account and contact information.
+            Read the <Link href="/privacy" className="font-medium underline underline-offset-2">Privacy page</Link> to learn how Followfolk handles account and contact information.
           </p>
         </section>
       </div>

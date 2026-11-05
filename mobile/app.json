@@ -1,9 +1,9 @@
 {
   "expo": {
-    "name": "Tappd",
-    "slug": "tappd",
+    "name": "Followfolk",
+    "slug": "followfolk",
     "version": "1.0.0",
-    "scheme": "tappd",
+    "scheme": "followfolk",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
@@ -29,20 +29,20 @@
       [
         "expo-camera",
         {
-          "cameraPermission": "Allow Tappd to scan another person's card QR code.",
+          "cameraPermission": "Allow Followfolk to scan another person's card QR code.",
           "recordAudioAndroid": false
         }
       ],
       [
         "expo-contacts",
         {
-          "contactsPermission": "Tappd uses contact access only when you tap ‘Save to phone contacts’ to create a contact."
+          "contactsPermission": "Followfolk uses contact access only when you tap ‘Save to phone contacts’ to create a contact."
         }
       ],
       [
         "react-native-nfc-manager",
         {
-          "nfcPermission": "Allow Tappd to share a card through an NFC tag."
+          "nfcPermission": "Allow Followfolk to share a card through an NFC tag."
         }
       ]
     ]

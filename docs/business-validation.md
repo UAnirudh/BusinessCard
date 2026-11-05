@@ -1,4 +1,4 @@
-# Tappd business validation plan
+# Followfolk business validation plan
 
 ## Positioning to test
 
@@ -13,18 +13,18 @@ Start with individuals who meet prospective clients or collaborators often. Keep
 - [Rill card and people features](https://hellorill.com/fr/features)
 - [PeopleBrief](https://peoplebrief.app/)
 
-The prices above are competitor list prices observed on 2026-10-28, not Tappd prices or evidence of willingness to pay. **Product implication:** basic cards, QR/NFC, no-app recipient access, contact capture, and follow-up are already represented in the market; the existing feature set is not a defensible differentiator by itself. Keep the card and vCard path simple while validating a narrower job among individuals—such as a specific profession's exchange workflow, a consent/privacy requirement, or a better cross-platform experience. In the first interviews, compare actual behavior and existing tools (including Rill and personal CRMs), then pursue only a repeated, costly gap that people agree to pilot. This is a hypothesis to test against real use, not a claim of competitor absence or proven demand. Do not price an undifferentiated checklist or promise a paid tier until repeated use and compliant store billing are demonstrated.
+The prices above are competitor list prices observed on 2026-10-28, not Followfolk prices or evidence of willingness to pay. **Product implication:** basic cards, QR/NFC, no-app recipient access, contact capture, and follow-up are already represented in the market; the existing feature set is not a defensible differentiator by itself. Keep the card and vCard path simple while validating a narrower job among individuals—such as a specific profession's exchange workflow, a consent/privacy requirement, or a better cross-platform experience. In the first interviews, compare actual behavior and existing tools (including Rill and personal CRMs), then pursue only a repeated, costly gap that people agree to pilot. This is a hypothesis to test against real use, not a claim of competitor absence or proven demand. Do not price an undifferentiated checklist or promise a paid tier until repeated use and compliant store billing are demonstrated.
 
 ## First 10 interviews
 
 Recruit a balanced sample because the founder has not selected a niche: four independent consultants/freelancers, three recruiters, and three real-estate agents. Screen for people who meet at least two new professional contacts per month. Use more than one Seattle channel, and keep these cohort counts even if one organization produces most of the replies. Young Professionals of Seattle can help reach early-career professionals, but do not let that channel silently replace the three role-based quotas. These are discovery cohorts, not a conclusion about which group will pay.
 
-Ask about their last three introductions, how each person’s details were captured, what happened next, what was forgotten, and the exact consequences. Ask them to demonstrate their current workflow if they are comfortable. Only after hearing their story, show the public Tappd card and contact-saving flow. Invite participants into a two-week pilot and observe real use.
+Ask about their last three introductions, how each person’s details were captured, what happened next, what was forgotten, and the exact consequences. Ask them to demonstrate their current workflow if they are comfortable. Only after hearing their story, show the public Followfolk card and contact-saving flow. Invite participants into a two-week pilot and observe real use.
 
 Use these directional gates to decide which cohort to test next:
 
 - At least six of ten describe a recent, concrete follow-up failure or costly manual workaround.
-- At least four agree to a two-week pilot; at least three use Tappd after a real introduction.
+- At least four agree to a two-week pilot; at least three use Followfolk after a real introduction.
 - Continue only if people return after the initial card setup and use the follow-up feature in real situations.
 - After repeated use, test a specific offer such as $5.99/month or $49.99/year against free. These are hypotheses, not validated prices or a profit forecast.
 
@@ -37,8 +37,8 @@ This is a learning sprint, not a claim that ten interviews can establish product
 | Days | Action | Evidence to record |
 | --- | --- | --- |
 | 1–2 | Send 20 personalized, opt-in interview invitations through at least three public community routes. Keep the 4 consultant / 3 recruiter / 3 real-estate interview quotas visible. | Invites sent, replies, booked calls, role, and referral channel. Do not treat community connectors as prospects who have agreed to participate. |
-| 3–6 | Complete the ten 15-minute interviews. Ask for recent examples before showing Tappd. Invite the earliest four suitable participants into a free, observed pilot. | Concrete recent failures, existing workaround and spend, introductions per month, and whether the problem repeats within each role. |
-| 4–13 | Have pilot participants use Tappd for real introductions. Keep the browser card and vCard path available to recipients who do not have Tappd. Follow up once after the first use and near the end; do not coach them through the product. | Activation (card published and shared), real introductions captured, notes or follow-up dates added, second use after setup, and abandonment points. Count observed actions, not stated intent. |
+| 3–6 | Complete the ten 15-minute interviews. Ask for recent examples before showing Followfolk. Invite the earliest four suitable participants into a free, observed pilot. | Concrete recent failures, existing workaround and spend, introductions per month, and whether the problem repeats within each role. |
+| 4–13 | Have pilot participants use Followfolk for real introductions. Keep the browser card and vCard path available to recipients who do not have Followfolk. Follow up once after the first use and near the end; do not coach them through the product. | Activation (card published and shared), real introductions captured, notes or follow-up dates added, second use after setup, and abandonment points. Count observed actions, not stated intent. |
 | 14 | Review results by role and recruitment channel. Choose one segment for the next cohort only if the same problem and repeated behavior appear in that segment. | Interview-to-pilot conversion, first real use, repeat use, and unresolved trust or setup barriers. Preserve negative and mixed results. |
 
 Use the existing qualitative gates as stop / continue signals, not statistical claims: at least 6/10 describe a recent concrete follow-up failure or costly workaround; at least 4/10 accept the pilot; and at least 3 pilot users capture a real introduction. For the first cohort, a second real use on a different day is a stronger signal than a completed profile. If people share cards but do not use the follow-up workflow, test a card-sharing wedge instead of assuming the paid follow-up product is validated. If interviews do not reveal one repeated problem in a segment, do not pick a winner from compliments or tiny differences in counts.
@@ -86,7 +86,7 @@ Platform policy and fee pages checked 2026-10-28:
 
 ### Short message
 
-> Hi [Name] — I’m researching how independent professionals keep track of people they meet and follow up afterward. I’m building Tappd, a digital card and contact follow-up tool. Could I ask you about the last time you met a potential client or collaborator and what happened next? It’s a 15-minute conversation, no sales pitch. I can share the prototype later if useful.
+> Hi [Name] — I’m researching how independent professionals keep track of people they meet and follow up afterward. I’m building Followfolk, a digital card and contact follow-up tool. Could I ask you about the last time you met a potential client or collaborator and what happened next? It’s a 15-minute conversation, no sales pitch. I can share the prototype later if useful.
 
 ### Email
 
@@ -94,7 +94,7 @@ Platform policy and fee pages checked 2026-10-28:
 
 > Hi [Name],
 >
-> I’m learning how [consultants / recruiters / real-estate agents] exchange details and make sure new introductions don’t fall through the cracks. I’m building Tappd and want to understand your current process before deciding what to ship. Would you be open to a 15-minute call this week? I’ll ask about your last few introductions; this isn’t a sales call.
+> I’m learning how [consultants / recruiters / real-estate agents] exchange details and make sure new introductions don’t fall through the cracks. I’m building Followfolk and want to understand your current process before deciding what to ship. Would you be open to a 15-minute call this week? I’ll ask about your last few introductions; this isn’t a sales call.
 >
 > Thanks,  
 > [Founder]
@@ -139,9 +139,9 @@ Prefer warm introductions and professional community referrals. For direct inter
 
 > Hello,
 >
-> I’m researching how Seattle professionals exchange contact details and follow up after meeting someone new. I’m building Tappd, a digital business card and follow-up tool that people can open and save without installing the app. I’m looking for four independent consultants/freelancers, three recruiters, and three real-estate agents for 15-minute conversations about their current workflow. This is customer research, not a sales pitch, and there is no preparation required.
+> I’m researching how Seattle professionals exchange contact details and follow up after meeting someone new. I’m building Followfolk, a digital business card and follow-up tool that people can open and save without installing the app. I’m looking for four independent consultants/freelancers, three recruiters, and three real-estate agents for 15-minute conversations about their current workflow. This is customer research, not a sales pitch, and there is no preparation required.
 >
-> Would you be willing to forward this invitation to relevant members or attendees, or point me to the right public channel? Please feel free to decline if it is not a fit. I’ll avoid implying your organization endorses Tappd.
+> Would you be willing to forward this invitation to relevant members or attendees, or point me to the right public channel? Please feel free to decline if it is not a fit. I’ll avoid implying your organization endorses Followfolk.
 >
 > Thank you,
 > [Founder]
@@ -150,7 +150,7 @@ Prefer warm introductions and professional community referrals. For direct inter
 
 **Seattle Corporate Search contact form**
 
-> I’m a founder researching how Seattle recruiters keep track of professional introductions and follow up. Could you share this invitation with a recruiter who might be open to a 15-minute research conversation? I’m asking about their existing workflow, not selling recruiting services or software. The goal is to learn before deciding what Tappd should build. Thank you.
+> I’m a founder researching how Seattle recruiters keep track of professional introductions and follow up. Could you share this invitation with a recruiter who might be open to a 15-minute research conversation? I’m asking about their existing workflow, not selling recruiting services or software. The goal is to learn before deciding what Followfolk should build. Thank you.
 
 **Windermere Seattle–West Seattle office**
 
@@ -158,7 +158,7 @@ Prefer warm introductions and professional community referrals. For direct inter
 
 **RedCloud Consulting shared inbox**
 
-> Hello, I’m exploring how independent consultants manage contacts and follow-up after networking. Could you forward this invitation to any independent consultants in your network who might be open to a 15-minute research conversation? I’m building Tappd, a digital card and follow-up tool, and want to understand real workflows before deciding what to build. This is research, not a sales pitch. Thank you.
+> Hello, I’m exploring how independent consultants manage contacts and follow-up after networking. Could you forward this invitation to any independent consultants in your network who might be open to a 15-minute research conversation? I’m building Followfolk, a digital card and follow-up tool, and want to understand real workflows before deciding what to build. This is research, not a sales pitch. Thank you.
 
 **Seattle SHRM chapter email**
 
@@ -181,7 +181,7 @@ Prefer warm introductions and professional community referrals. For direct inter
 
 ## Wallet and no-app sharing
 
-Anyone can already open `/c/{slug}` in a browser without installing Tappd, scan its QR with a standard camera, and save the public contact as a vCard. Make this the default “works for everyone” path. A vCard download is a contacts import file, not an Apple Wallet or Google Wallet pass.
+Anyone can already open `/c/{slug}` in a browser without installing Followfolk, scan its QR with a standard camera, and save the public contact as a vCard. Make this the default “works for everyone” path. A vCard download is a contacts import file, not an Apple Wallet or Google Wallet pass.
 
 True Wallet passes are separate from the no-app vCard path. This repo now has Apple `.pkpass` and Google Wallet web-issuance handlers, but their buttons stay hidden until issuer configuration is complete. Apple requires a signed pass tied to a Pass Type ID certificate; this implementation uses OpenSSL to sign the pass manifest. Google requires an issuer, an approved Generic Pass class, and a server-signed JWT; a new Google issuer starts in demo mode and can issue only to test users until publishing access is granted. Keep signing keys server-side, configure the server OpenSSL binary, and verify both passes on physical devices before advertising this as launch-ready.
 
@@ -192,10 +192,10 @@ True Wallet passes are separate from the no-app vCard path. This repo now has Ap
 
 ## Brand and business risk
 
-**Brand risk is a launch gate.** On 2026-10-26, public product sites using the same `tappd` name were live at [tappd.co.za](https://tappd.co.za/pages/pricing), [tappd.solutions](https://tappd.solutions/help), and [tappd.store](https://tappd.store/). They market overlapping digital business cards, NFC/QR sharing, and, on tappd.co.za and tappd.solutions, Apple/Google Wallet passes. These pages establish user-facing name and product-category overlap, but not who owns a mark or whether Tappd can legally use it in the United States. Do not publish store listings or spend on paid acquisition under this name until the publisher checks the USPTO and target-store names and obtains qualified trademark advice. The official [USPTO trademark search](https://tmsearch.uspto.gov/search/) is the starting point, not a legal clearance opinion. Consider selecting a distinct name before creating permanent Android/iOS identifiers.
+**Brand clearance is a launch gate.** The former working name Tappd had direct category/name overlap: public sites using `tappd` were live at [tappd.co.za](https://tappd.co.za/pages/pricing), [tappd.solutions](https://tappd.solutions/help), and [tappd.store](https://tappd.store/), including digital cards, QR/NFC sharing, and Wallet passes. Followfolk is the current working display brand for this branch. Initial exact-match web/store searches and RDAP lookups did not surface an obvious current Followfolk product or domain record; that is not trademark clearance or a guarantee of availability. Before publishing or creating permanent Android/iOS identifiers, search the [USPTO trademark database](https://tmsearch.uspto.gov/search/) and target app stores, and get qualified advice. Keep the package and bundle IDs provisional until that review is complete.
 
 ## Store economics and launch gate
 
-Store fees, payment rules, and enrollment requirements change. The current links and date-checked fee snapshot above are for research, not a guarantee of the rate Tappd will receive. Apple generally requires In-App Purchase when an iOS app unlocks digital functionality; Google Play generally requires Play Billing for digital features sold inside the Play app. Both policies describe exceptions and region-specific programs, so choose and verify the purchase path before implementation. Before launch, recheck the live [Apple App Review Guidelines](https://developer.apple.com/app-store/review/guidelines/), [Apple Small Business Program](https://developer.apple.com/help/account/membership/programs-overview), [Google Play payments policy](https://support.google.com/googleplay/android-developer/answer/10281818?hl=en), and [Google Play service fees](https://support.google.com/googleplay/android-developer/answer/112622?hl=en). Keep this pricing experiment out of production until there is repeat usage and a compliant purchase flow.
+Store fees, payment rules, and enrollment requirements change. The current links and date-checked fee snapshot above are for research, not a guarantee of the rate Followfolk will receive. Apple generally requires In-App Purchase when an iOS app unlocks digital functionality; Google Play generally requires Play Billing for digital features sold inside the Play app. Both policies describe exceptions and region-specific programs, so choose and verify the purchase path before implementation. Before launch, recheck the live [Apple App Review Guidelines](https://developer.apple.com/app-store/review/guidelines/), [Apple Small Business Program](https://developer.apple.com/help/account/membership/programs-overview), [Google Play payments policy](https://support.google.com/googleplay/android-developer/answer/10281818?hl=en), and [Google Play service fees](https://support.google.com/googleplay/android-developer/answer/112622?hl=en). Keep this pricing experiment out of production until there is repeat usage and a compliant purchase flow.
 
 This plan does not claim profitability. Profitability depends on retained paid users, store fees, service costs, support, and customer acquisition, none of which have been measured yet.

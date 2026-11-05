@@ -2,7 +2,7 @@ import { Nfc, QrCode, Search } from "lucide-react";
 import Link from "next/link";
 import { Logo } from "@/components/logo";
 
-const waysToUseTappd = [
+const waysToUseFollowfolk = [
   { icon: QrCode, title: "Share your card", body: "Send a link or show your QR code." },
   { icon: Nfc, title: "Make the handoff easy", body: "Use an NFC tag when you meet in person." },
   { icon: Search, title: "Find the details later", body: "Keep a note and follow-up date with each contact." },
@@ -24,7 +24,7 @@ export function AuthAside() {
         </p>
 
         <ul className="mt-8 divide-y divide-black/10 border-y border-black/10">
-          {waysToUseTappd.map(({ icon: Icon, title, body }) => (
+          {waysToUseFollowfolk.map(({ icon: Icon, title, body }) => (
             <li key={title} className="flex gap-4 py-4">
               <Icon aria-hidden="true" className="mt-0.5 h-5 w-5 shrink-0 text-[#526b13]" />
               <span>
@@ -37,7 +37,7 @@ export function AuthAside() {
       </div>
 
       <p className="text-xs text-muted">
-        <Link href="/" className="hover:text-ink">Back to Tappd</Link>
+        <Link href="/" className="hover:text-ink">Back to Followfolk</Link>
       </p>
     </aside>
   );

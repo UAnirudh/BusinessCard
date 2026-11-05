@@ -4,7 +4,7 @@ import { parseCardReference } from '../mobile/src/card-reference';
 
 const origin = 'https://tappd.up.railway.app';
 
-test('accepts a Tappd card slug or same-service card URL', () => {
+test('accepts a Followfolk card slug or same-service card URL', () => {
   assert.equal(parseCardReference(' maya-chen_7 ', origin), 'maya-chen_7');
   assert.equal(parseCardReference(`${origin}/c/maya-chen_7`, origin), 'maya-chen_7');
   assert.equal(parseCardReference(`${origin}/c/maya-chen_7/`, origin), 'maya-chen_7');

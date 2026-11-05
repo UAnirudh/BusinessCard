@@ -1,4 +1,4 @@
-# Tappd release handoff
+# Followfolk release handoff
 
 This is the short list of owner-only actions needed to move from the verified CI builds to production releases. Do not send passwords, API keys, service-account JSON, signing keys, or recovery codes in chat or commit them to this repository.
 
@@ -11,7 +11,7 @@ This is the short list of owner-only actions needed to move from the verified CI
 
 ## 1. Configure production email and operator access
 
-1. Railway is now connected and the existing Tappd production project is accessible.
+1. Railway is now connected and the existing production project is accessible. The current API host remains `https://tappd.up.railway.app` until a replacement domain is configured.
 2. Control an email-sending domain and verify it with Resend. Choose the sender address you want customers to see.
 3. In the Railway Web service's production variables, confirm or set the values documented in [`.env.example`](../.env.example):
    - `RESEND_API_KEY` and `TAPPD_EMAIL_FROM` for signup verification, password recovery, and email changes.
@@ -26,7 +26,7 @@ Do not enable public signup until Resend delivers a verification link to a real 
 
 After signup email works, create an owner-controlled test account using an inbox you can access. Confirm the verification link, sign in, create a card, and turn on public sharing. Record its public URL. Then verify that:
 
-- The public card, QR image, and `.vcf` download load without signing in or installing Tappd.
+- The public card, QR image, and `.vcf` download load without signing in or installing Followfolk.
 - Opening the `.vcf` on iPhone and Android offers to add the contact.
 - Password recovery, account deletion, report intake, and moderator review work against production.
 - `/support` shows the monitored support contact.
@@ -37,7 +37,7 @@ Apple Wallet and Google Wallet pass buttons remain hidden until their separate s
 
 ## 3. Set publisher identity and link EAS
 
-1. **Choose and clear the replacement brand before creating permanent store records.** The founder chose to use a different name instead of keeping Tappd; no replacement has been selected. Followfolk was surfaced as a preliminary candidate, not approved or cleared. Rechecked November 4, 2026: Tappd.co.za actively offers digital business cards with link, QR, NFC, Apple/Google Wallet, lead capture, and analytics features, closely overlapping this product's category and feature set ([product site](https://tappd.co.za/), [pricing/features](https://tappd.co.za/pages/pricing)). This creates name-confusion and store-search risk, not a legal determination. Search trademarks and store listings in target markets, get qualified counsel for clearance, then update the app display name, support/privacy copy, domain plan, and publisher-controlled IDs to match the selected brand.
+1. **Clear Followfolk before creating permanent store records.** Followfolk is the current working display brand for this branch. The former name Tappd had close category/name overlap with [Tappd.co.za](https://tappd.co.za/pages/pricing). Initial exact-match web/store searches and RDAP lookups did not surface an obvious current Followfolk match, but that is not legal clearance. Search the USPTO and target stores and obtain qualified advice before launch. The app display name and verification scheme now use Followfolk; keep `com.tappd.app` provisional until the publisher controls final IDs. The current Railway API host remains `tappd.up.railway.app` until an owner-controlled replacement domain is set up.
 2. Activate Google Play Console and Apple Developer/App Store Connect accounts under the publisher identity you intend to show customers.
 3. Choose unique Android package and iOS bundle IDs controlled by the publisher. Send me the chosen IDs; I can update the app config and run the checks. Do not use `com.tappd.app` without confirming the publisher controls it.
 4. On this computer, in PowerShell:
