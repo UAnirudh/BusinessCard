@@ -6,37 +6,49 @@ import { SUPPORT_EMAIL } from "@/lib/support";
 
 export const metadata: Metadata = {
   title: "Privacy",
-  description: "How Tappd handles account, card and contact information.",
+  description: "How Followfolk handles account, card and contact information.",
 };
 
 const sections = [
   {
     title: "Information you add",
-    body: "When you create an account, Tappd stores your name, email address and a password hash. Your card can include your photo, role, company, bio, location, contact details, social links and tags. Your wallet stores contacts you add or exchange, along with notes, tags, favorites, how you met and when.",
+    body: "When you create an account, Followfolk stores your name, email address, password hash, and the date and version of the Terms of Use you accepted. Your card can include your photo, role, company, bio, location, contact details, social links and tags. Your wallet stores contacts you add or exchange, along with notes, tags, favorites, how you met and when.",
   },
   {
     title: "When someone sends you their details",
-    body: "A visitor can send their name and one contact method (email or phone), plus an optional note, without creating an account. That information is added to the card owner's wallet so they can follow up. Signed-in members can exchange their Tappd card details with each other. Only share contact details you are comfortable sending to that card owner.",
+    body: "A visitor can send their name and one contact method (email or phone), plus an optional note, without creating an account. That information is added to the card owner's wallet so they can follow up. Signed-in members can exchange their Followfolk card details with each other. Only share contact details you are comfortable sending to that card owner.",
   },
   {
     title: "What other people can see",
-    body: "Cards are public by default. Anyone with a public card link can see the fields you have added to it, download its contact file and use its QR code. You can make your card private in the card editor. Turning off visitor details stops new accountless submissions; it does not remove contacts already in your wallet. Your wallet and account pages require sign-in.",
+    body: "New cards start private. When you turn on public sharing in the card editor, anyone with the card link can see the fields you have added, download its contact file and use its QR code. You can make the card private again at any time to stop access through its public link; this does not remove details already saved in another member's Followfolk wallet. Visitor details are off until you choose to enable them; turning them off stops new accountless submissions but does not remove contacts already in your wallet. Your wallet and account pages require sign-in.",
   },
   {
     title: "Card views, cookies and this device",
-    body: "Tappd records the card viewed, the link source (such as QR or NFC) and the time, then shows aggregate view counts to the card owner. A short-lived session-storage entry prevents repeat counting in the same browser tab session. Sign-in uses an HttpOnly session cookie. The service worker saves only the offline help page; it does not cache signed-in pages, wallet data or API responses. Hosting providers may process connection and diagnostic data in their own server logs.",
+    body: "Followfolk records the card viewed, the link source (such as QR or NFC) and the time, then shows aggregate view counts to the card owner. A short-lived session-storage entry prevents repeat counting in the same browser tab session. Sign-in uses an HttpOnly session cookie. The service worker saves only the offline help page; it does not cache signed-in pages, wallet data or API responses. Hosting providers may process connection and diagnostic data in their own server logs.",
+  },
+  {
+    title: "Mobile permissions",
+    body: "The mobile app uses the camera to scan card QR codes and NFC to write a card link to a compatible tag. It requests Contacts access only when you choose to save one contact to your phone. Followfolk does not read or upload your address book.",
+  },
+  {
+    title: "Abuse prevention",
+    body: "To limit abusive requests, the service uses request IP addresses and account or request identifiers to create rate-limit records. It stores a keyed digest of those values and removes expired counters during later cleanup.",
+  },
+  {
+    title: "Reports and blocks",
+    body: "Anyone can report a public card and optionally add details. If you are signed in, the report is linked to your account; authorized moderators can see the report, the card owner’s account email, and the reporter’s account identity when it is available. Reports are stored for moderator review. Signed-in members can block another member to hide that member’s card from their account and prevent exchanges between those accounts. A moderator may hide a reported card or suspend an account, which makes its cards private and revokes its sessions. Report details and moderation records remain in the active database until the card is deleted or the operator removes the records; backup copies may remain until provider backups rotate out.",
   },
   {
     title: "How information is used and stored",
-    body: "Tappd uses this information to display cards, exchange and organize contacts, provide search, export your wallet and protect accounts from abuse. It is stored by the database and hosting services configured for Tappd. When password recovery is enabled, Tappd sends your account email and a one-time reset link through Resend so it can deliver the message. We do not sell card or wallet contact information or use it for third-party ad targeting.",
+    body: "Followfolk uses this information to display cards, exchange and organize contacts, provide search, export your wallet and protect accounts from abuse. It is stored by the database and hosting services configured for Followfolk. When email delivery is configured, Followfolk sends signup verification, password recovery, and sign-in email change messages through Resend. These messages include the relevant email address and links: signup verification links expire after 24 hours and can be used once; password reset and email change confirmation links expire after one hour and can each be used once. If someone requests signup with an email already on an account, Followfolk may instead send sign-in and password-recovery instructions to that address. We do not sell card or wallet contact information or use it for third-party ad targeting.",
   },
   {
     title: "Your choices and deletion",
-    body: "You can edit or remove card details, export your wallet as CSV, and delete individual contacts in the app. You can delete your account from Settings after entering your password. Account deletion removes the account, card, avatar, sessions and wallet records from the active Tappd database. Other people may keep contact details they already received in their own wallet. Copies held in provider backups may remain until those backups rotate out. A visitor who sent details can ask the card owner to remove them or contact Tappd for help.",
+    body: "You can edit or remove card details, export your wallet as CSV, and delete individual contacts in the app. You can delete your account from Settings after entering your password. Account deletion removes the account, card, avatar, sessions, owned wallet records, and Followfolk wallet copies linked to your card from the active database. Copies previously exported as vCards or CSVs, saved to phone contacts or external Wallet apps, or shared through other services may remain outside Followfolk. Copies held in provider backups may remain until those backups rotate out. A visitor who sent details can ask the card owner to remove them or contact Followfolk for help.",
   },
   {
     title: "Security and contact",
-    body: `Tappd uses hashed passwords, hashed session identifiers and access controls for signed-in pages. No online service can promise perfect security.${SUPPORT_EMAIL ? ` For a privacy question or removal request, contact ${SUPPORT_EMAIL}.` : " A monitored privacy contact must be configured by the operator before production release."}`,
+    body: `Followfolk uses hashed passwords, hashed session identifiers and access controls for signed-in pages. No online service can promise perfect security.${SUPPORT_EMAIL ? ` For a privacy question or removal request, contact ${SUPPORT_EMAIL}.` : " A monitored privacy contact must be configured by the operator before production release."}`,
   },
 ];
 
@@ -56,10 +68,10 @@ export default function PrivacyPage() {
           <div className="flex items-center gap-2 text-[0.74rem] font-semibold uppercase tracking-[0.12em] text-muted">
             <ShieldCheck className="h-4 w-4" /> Your information, explained
           </div>
-          <h1 className="mt-3 text-[2rem] font-semibold tracking-[-0.035em] sm:text-[2.5rem]">Privacy at Tappd</h1>
-          <p className="mt-2 text-[0.82rem] text-faint">Last updated October 26, 2026</p>
+          <h1 className="mt-3 text-[2rem] font-semibold tracking-[-0.035em] sm:text-[2.5rem]">Privacy at Followfolk</h1>
+          <p className="mt-2 text-[0.82rem] text-faint">Last updated October 31, 2026</p>
           <p className="mt-5 max-w-2xl text-[0.95rem] leading-relaxed text-muted">
-            Tappd helps people share business cards and remember who they meet. This page explains what the app stores and what happens when you exchange details.
+            Followfolk helps people share business cards and remember who they meet. This page explains what the app stores and what happens when you exchange details.
           </p>
 
           <div className="mt-8 divide-y divide-line">

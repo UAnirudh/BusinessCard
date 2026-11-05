@@ -4,6 +4,7 @@ import { avatars } from "@/db/schema";
 import { getCurrentUser } from "@/lib/auth";
 import { fail, isSameOrigin, ok } from "@/lib/api";
 import { ensureCard } from "@/lib/cards";
+import { CURRENT_TERMS_VERSION } from "@/lib/terms";
 
 export const runtime = "nodejs";
 
@@ -14,6 +15,9 @@ export async function POST(request: Request) {
   if (!isSameOrigin(request)) return fail("Cross-origin request blocked", 403);
   const user = await getCurrentUser(request);
   if (!user) return fail("Sign in first", 401);
+  if (!user.termsAcceptedAt || user.termsVersion !== CURRENT_TERMS_VERSION) {
+    return fail("Accept the Terms of Use before uploading card content.", 403, { code: "terms_required" });
+  }
 
   let body: { dataUrl?: string };
   try {

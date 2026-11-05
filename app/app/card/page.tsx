@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { getCurrentUser } from "@/lib/auth";
+import { CURRENT_TERMS_VERSION } from "@/lib/terms";
 import { ensureCard } from "@/lib/cards";
 import { hasAvatar } from "@/lib/avatars";
 import { getOrigin } from "@/lib/origin";
@@ -18,6 +19,7 @@ export default async function CardStudioPage() {
   return (
     <CardEditor
       host={host}
+    hasAcceptedTerms={Boolean(user.termsAcceptedAt && user.termsVersion === CURRENT_TERMS_VERSION)}
       initialAvatar={photo ? `/api/avatar/${card.id}` : null}
       initial={{
         slug: card.slug,

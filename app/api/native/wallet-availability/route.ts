@@ -8,9 +8,10 @@ export const dynamic = "force-dynamic";
 export async function GET(request: Request) {
   const user = await getCurrentUser(request);
   if (!user) return fail("Sign in first", 401);
+  const availability = await walletAvailability();
 
   return ok(
-    { walletAvailability: walletAvailability() },
+    { walletAvailability: availability },
     200,
     { "cache-control": "private, no-store" },
   );

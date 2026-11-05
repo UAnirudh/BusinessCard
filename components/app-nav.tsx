@@ -45,12 +45,24 @@ export function Sidebar({
   const pathname = usePathname();
   const router = useRouter();
   const [signingOut, setSigningOut] = useState(false);
+  const [logoutError, setLogoutError] = useState<string | null>(null);
 
   async function logout() {
     setSigningOut(true);
-    await fetch("/api/auth/logout", { method: "POST" });
-    router.push("/");
-    router.refresh();
+    setLogoutError(null);
+    try {
+      const response = await fetch("/api/auth/logout", { method: "POST" });
+      if (!response.ok) {
+        setLogoutError("Couldn’t sign you out. Please try again.");
+        setSigningOut(false);
+        return;
+      }
+      router.replace("/");
+      router.refresh();
+    } catch {
+      setLogoutError("Connection failed. Please try signing out again.");
+      setSigningOut(false);
+    }
   }
 
   return (
@@ -97,6 +109,7 @@ export function Sidebar({
           {signingOut ? <Loader2 className="h-3 w-3 spin" /> : <LogOut className="h-3 w-3" />}
           Sign out
         </button>
+        {logoutError && <p role="alert" className="mt-2 text-center text-[0.7rem] text-danger">{logoutError}</p>}
       </div>
     </aside>
   );

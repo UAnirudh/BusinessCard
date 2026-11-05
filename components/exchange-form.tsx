@@ -151,7 +151,7 @@ export function ExchangeForm({
       <div>
         <p className="text-[0.9rem] font-medium">Give {ownerFirstName} your details</p>
         <p className="mt-1 text-[0.78rem] leading-relaxed text-muted">
-          No account needed. They’ll get this in their Tappd wallet.
+          No account needed. They’ll get this in their Followfolk wallet.
         </p>
       </div>
       <div className="grid gap-2.5 sm:grid-cols-2">
@@ -220,7 +220,7 @@ export function ExchangeForm({
         />
       </div>
       <p className="text-[0.72rem] leading-relaxed text-muted">
-        Your details will be saved to {ownerFirstName}’s Tappd wallet. Read our{" "}
+        Your details will be saved to {ownerFirstName}’s Followfolk wallet. Read our{" "}
         <Link href="/privacy" className="underline underline-offset-2">Privacy Policy</Link>.
       </p>
       {error && <p role="alert" className="text-[0.75rem] text-danger">{error}</p>}
@@ -229,7 +229,7 @@ export function ExchangeForm({
         {state === "sending" ? "Sending…" : "Send my details"}
       </button>
       <p className="text-center text-[0.7rem] text-faint">
-        Already on Tappd?{" "}
+        Already on Followfolk?{" "}
         <Link href={`/login?next=/c/${slug}`} className="underline underline-offset-2 hover:text-ink">
           Log in
         </Link>{" "}

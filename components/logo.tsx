@@ -40,7 +40,7 @@ export function Logo({
           tone === "light" ? "text-white" : "text-ink",
         )}
       >
-        Tappd
+        Followfolk
       </span>
     </Link>
   );

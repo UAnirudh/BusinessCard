@@ -3,7 +3,7 @@ import { normalizeUrl } from "./utils";
 
 function escapeValue(value: string | null | undefined): string {
   if (!value) return "";
-  return value.replace(/\\/g, "\\\\").replace(/\n/g, "\\n").replace(/,/g, "\\,").replace(/;/g, "\\;");
+  return value.replace(/\\/g, "\\\\").replace(/\r\n|\r|\n/g, "\\n").replace(/,/g, "\\,").replace(/;/g, "\\;");
 }
 
 function splitName(displayName: string): { first: string; last: string } {

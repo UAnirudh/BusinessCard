@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
-import { ArrowUpRight, Search, Sparkles, Star, Users, X } from "lucide-react";
+import { ArrowUpRight, Search, Star, Users, X } from "lucide-react";
 import { Avatar } from "@/components/avatar";
 import { rankConnections, type SearchableConnection } from "@/lib/search";
 import { cx } from "@/lib/utils";
@@ -83,12 +83,11 @@ export function FindSearch({ people }: { people: FindPerson[] }) {
         <div>
           <p className="eyebrow">
             <span className="h-1.5 w-1.5 rounded-full bg-lime-deep" />
-            Smart search
+            Search your wallet
           </p>
           <h1 className="mt-2 text-[1.8rem] font-semibold tracking-[-0.035em]">Find the right person</h1>
           <p className="mt-1 max-w-xl text-[0.9rem] leading-relaxed text-muted">
-            Ask the way you’d ask a colleague. Tappd ranks roles, companies, cities, tags and your own
-            notes — then tells you why each person matched.
+            Find contacts by role, company, city, tags, or notes. Results show which details matched.
           </p>
         </div>
         <Link href="/app/connections" className="btn btn-outline btn-sm">
@@ -176,15 +175,15 @@ export function FindSearch({ people }: { people: FindPerson[] }) {
           </span>
           <p className="mt-3 text-[1rem] font-medium">Nothing to search yet</p>
           <p className="mt-1 max-w-sm text-[0.83rem] leading-relaxed text-muted">
-            Swap cards with a few people or add contacts manually, then ask anything. Tags, notes and
-            roles all become searchable.
+            Add a contact or exchange cards to build your wallet. Search names, roles, companies,
+            tags and notes whenever you need them.
           </p>
           <Link href="/app/connections?new=1" className="btn btn-primary btn-sm mt-4">Add your first contact</Link>
         </div>
       ) : results.length === 0 ? (
         <div className="surface mt-4 p-6">
           <div className="flex items-center gap-2">
-            <Sparkles className="h-4 w-4 text-muted" />
+            <Search className="h-4 w-4 text-muted" />
             <p className="text-[0.92rem] font-medium">No one matches “{query}” yet.</p>
           </div>
           <p className="mt-1 text-[0.82rem] text-muted">

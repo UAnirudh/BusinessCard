@@ -282,7 +282,7 @@ export function ConnectionDetail({ person }: { person: ConnectionRecord }) {
                     target="_blank"
                     className="inline-flex items-center gap-1 text-[0.76rem] font-medium text-muted hover:text-ink"
                   >
-                    Their Tappd card
+                    Their Followfolk card
                     <ExternalLink className="h-3 w-3" />
                   </Link>
                 )}

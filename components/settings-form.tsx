@@ -31,6 +31,7 @@ export function SettingsForm({
   const [passwordError, setPasswordError] = useState<string | null>(null);
 
   const [signingOut, setSigningOut] = useState(false);
+  const [signOutError, setSignOutError] = useState<string | null>(null);
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [deletePassword, setDeletePassword] = useState("");
   const [deleteError, setDeleteError] = useState<string | null>(null);
@@ -114,9 +115,20 @@ export function SettingsForm({
 
   async function signOutEverywhere() {
     setSigningOut(true);
-    await fetch("/api/auth/logout-all", { method: "POST" });
-    router.push("/login");
-    router.refresh();
+    setSignOutError(null);
+    try {
+      const response = await fetch("/api/auth/logout-all", { method: "POST" });
+      if (!response.ok) {
+        setSignOutError("Couldn’t sign out other sessions. Please try again.");
+        setSigningOut(false);
+        return;
+      }
+      router.replace("/login");
+      router.refresh();
+    } catch {
+      setSignOutError("Connection failed. Please try again.");
+      setSigningOut(false);
+    }
   }
 
   async function deleteAccount() {
@@ -249,6 +261,7 @@ export function SettingsForm({
               {signingOut ? <Loader2 className="h-3.5 w-3.5 spin" /> : <LogOut className="h-3.5 w-3.5" />}
               Sign out everywhere
             </button>
+            {signOutError && <p role="alert" className="text-[0.78rem] text-danger sm:self-center">{signOutError}</p>}
             <button type="submit" className="btn btn-primary btn-sm w-full sm:w-auto" disabled={passwordStatus === "saving"}>
               {passwordStatus === "saving" ? <Loader2 className="h-3.5 w-3.5 spin" /> : <Check className="h-3.5 w-3.5" />}
               {passwordStatus === "saved" ? "Updated" : "Update password"}

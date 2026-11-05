@@ -17,6 +17,7 @@ import {
 import { ACCENTS } from "@/lib/site";
 import { CardPreview } from "@/components/card-preview";
 import { CopyButton } from "@/components/copy-button";
+import { appendBioStarter, BIO_STARTERS, formatSpecialty, specialtySuggestions } from "@/lib/profile-writing";
 import { cx } from "@/lib/utils";
 
 type EditorCard = {
@@ -39,11 +40,6 @@ type EditorCard = {
   isPublic: boolean;
   collectLeads: boolean;
 };
-
-const TAG_SUGGESTIONS = [
-  "design", "engineering", "product", "growth", "sales", "founder",
-  "investor", "marketing", "data", "legal", "recruiting", "photography",
-];
 
 function Toggle({
   checked,
@@ -107,10 +103,12 @@ export function CardEditor({
   initial,
   initialAvatar,
   host,
+  hasAcceptedTerms: initiallyAcceptedTerms,
 }: {
   initial: EditorCard;
   initialAvatar: string | null;
   host: string;
+  hasAcceptedTerms: boolean;
 }) {
   const router = useRouter();
   const [draft, setDraft] = useState<EditorCard>(initial);
@@ -120,11 +118,41 @@ export function CardEditor({
   const [error, setError] = useState<string | null>(null);
   const [fieldError, setFieldError] = useState<string | null>(null);
   const [uploading, setUploading] = useState(false);
+  const [hasAcceptedTerms, setHasAcceptedTerms] = useState(initiallyAcceptedTerms);
+  const [termsConsentChecked, setTermsConsentChecked] = useState(false);
+  const [termsError, setTermsError] = useState<string | null>(null);
+  const [acceptingTerms, setAcceptingTerms] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
   const initialSnapshot = useRef(JSON.stringify(initial));
 
   const dirty = useMemo(() => JSON.stringify(draft) !== initialSnapshot.current, [draft]);
   const publicPath = `/c/${draft.slug}`;
+  const suggestedSpecialties = specialtySuggestions(draft.headline, draft.tags);
+
+  async function acceptTerms() {
+    if (!termsConsentChecked || acceptingTerms) return;
+    setAcceptingTerms(true);
+    setTermsError(null);
+    try {
+      const response = await fetch("/api/account", {
+        method: "PATCH",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ acceptTerms: true }),
+      });
+      const data = (await response.json().catch(() => ({}))) as { error?: string };
+      if (!response.ok) {
+        setTermsError(data.error ?? "Could not save your agreement. Try again.");
+        return;
+      }
+      setHasAcceptedTerms(true);
+      setTermsConsentChecked(false);
+      router.refresh();
+    } catch {
+      setTermsError("Network error — your agreement wasn’t saved.");
+    } finally {
+      setAcceptingTerms(false);
+    }
+  }
 
   function set<K extends keyof EditorCard>(key: K, value: EditorCard[K]) {
     setDraft((current) => ({ ...current, [key]: value }));
@@ -144,6 +172,10 @@ export function CardEditor({
 
   function removeTag(tag: string) {
     set("tags", draft.tags.filter((entry) => entry !== tag));
+  }
+
+  function addBioStarter(starter: string) {
+    set("bio", appendBioStarter(draft.bio, starter));
   }
 
   function updateLink(index: number, patch: Partial<{ label: string; url: string }>) {
@@ -223,6 +255,22 @@ export function CardEditor({
 
   return (
     <div className="pb-24">
+      {!hasAcceptedTerms && (
+        <section className="surface mb-5 border border-line p-5" aria-labelledby="terms-acceptance-title">
+          <h2 id="terms-acceptance-title" className="text-[0.95rem] font-semibold">Review the Terms before editing your card</h2>
+          <p className="mt-1 text-[0.8rem] leading-relaxed text-muted">You need to accept the current Terms of Use before adding or sharing card content.</p>
+          <Link href="/terms" target="_blank" className="mt-2 inline-block text-[0.8rem] font-medium underline underline-offset-2">Read the Terms of Use</Link>
+          <label className="mt-4 flex items-start gap-2.5 text-[0.78rem] leading-relaxed text-muted">
+            <input type="checkbox" checked={termsConsentChecked} onChange={(event) => setTermsConsentChecked(event.target.checked)} className="mt-0.5 h-4 w-4 shrink-0 accent-[#18211b]" />
+            <span>I have read and agree to the Terms of Use.</span>
+          </label>
+          <button type="button" onClick={acceptTerms} disabled={!termsConsentChecked || acceptingTerms} className="btn btn-primary btn-sm mt-4 disabled:cursor-not-allowed disabled:opacity-50">
+            {acceptingTerms ? <Loader2 className="h-3.5 w-3.5 spin" /> : <Check className="h-3.5 w-3.5" />}
+            I agree to the Terms of Use
+          </button>
+          {termsError && <p role="alert" className="mt-2 text-[0.78rem] text-danger">{termsError}</p>}
+        </section>
+      )}
       <header className="mb-6 flex flex-wrap items-end justify-between gap-4">
         <div>
           <p className="eyebrow">
@@ -231,7 +279,7 @@ export function CardEditor({
           </p>
           <h1 className="mt-2 text-[1.8rem] font-semibold tracking-[-0.035em]">My card</h1>
           <p className="mt-1 text-[0.9rem] text-muted">
-            Everything here updates your live card instantly after you save.
+            Edit the details people see on your public card.
           </p>
         </div>
         <div className="flex items-center gap-2">
@@ -296,7 +344,7 @@ export function CardEditor({
                     if (file) handlePhoto(file);
                   }}
                 />
-                <p className="hint mt-2">Square crop, up to 1.5 MB. Photos make a card 3× more memorable.</p>
+                <p className="hint mt-2">Square crop, up to 1.5 MB. Your photo appears on your public card.</p>
               </div>
             </div>
 
@@ -370,6 +418,24 @@ export function CardEditor({
                   maxLength={500}
                   placeholder="What you do, who you help, and the one thing people should ask you about."
                 />
+                <div className="mt-3 rounded-lg border border-line-soft bg-[#fbfaf6] p-3.5">
+                  <p className="text-[0.78rem] font-medium">Make it sound like you</p>
+                  <p className="mt-1 text-[0.72rem] leading-relaxed text-muted">
+                    Choose a starting point, then replace the brackets with a real detail.
+                  </p>
+                  <div className="mt-2.5 flex flex-wrap gap-1.5">
+                    {BIO_STARTERS.map((starter) => (
+                      <button
+                        key={starter}
+                        type="button"
+                        onClick={() => addBioStarter(starter)}
+                        className="rounded-md border border-line bg-white px-2.5 py-1.5 text-left text-[0.7rem] text-muted transition hover:border-ink hover:text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink"
+                      >
+                        {starter}
+                      </button>
+                    ))}
+                  </div>
+                </div>
               </div>
             </div>
           </section>
@@ -425,16 +491,16 @@ export function CardEditor({
             </div>
           </section>
 
-          {/* tags */}
+          {/* specialties */}
           <section className="surface p-5">
-            <h2 className="text-[0.95rem] font-semibold">Tags</h2>
+            <h2 className="text-[0.95rem] font-semibold">Specialties</h2>
             <p className="text-[0.78rem] text-muted">
-              Powers “find someone in design” later. Two or three is plenty.
+              A few subjects, skills, or kinds of work you would enjoy talking about. Choose two or three.
             </p>
             <div className="mt-4 flex flex-wrap gap-1.5">
               {draft.tags.map((tag) => (
                 <span key={tag} className="chip">
-                  #{tag}
+                  {formatSpecialty(tag)}
                   <button
                     type="button"
                     onClick={() => removeTag(tag)}
@@ -445,7 +511,7 @@ export function CardEditor({
                   </button>
                 </span>
               ))}
-              {draft.tags.length === 0 && <span className="hint">No tags yet.</span>}
+              {draft.tags.length === 0 && <span className="hint">No specialties added yet.</span>}
             </div>
             <div className="mt-3 flex gap-2">
               <input
@@ -458,7 +524,7 @@ export function CardEditor({
                     addTag(tagInput);
                   }
                 }}
-                placeholder="Type a tag and press Enter"
+                placeholder="Add a specialty"
                 maxLength={30}
               />
               <button type="button" className="btn btn-outline btn-sm" onClick={() => addTag(tagInput)}>
@@ -467,18 +533,17 @@ export function CardEditor({
               </button>
             </div>
             <div className="mt-3 flex flex-wrap gap-1.5">
-              {TAG_SUGGESTIONS.filter((tag) => !draft.tags.includes(tag))
-                .slice(0, 8)
-                .map((tag) => (
-                  <button
-                    key={tag}
-                    type="button"
-                    onClick={() => addTag(tag)}
-                    className="rounded-lg border border-dashed border-[#d9d5c8] px-2 py-1 text-[0.7rem] text-muted transition hover:border-ink hover:text-ink"
-                  >
-                    + {tag}
-                  </button>
-                ))}
+              {suggestedSpecialties.map((specialty) => (
+                <button
+                  key={specialty}
+                  type="button"
+                  onClick={() => addTag(specialty)}
+                  disabled={draft.tags.length >= 12}
+                  className="rounded-lg border border-dashed border-[#d9d5c8] px-2 py-1 text-[0.7rem] text-muted transition hover:border-ink hover:text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink disabled:cursor-not-allowed disabled:opacity-50"
+                >
+                  + {specialty}
+                </button>
+              ))}
             </div>
           </section>
 

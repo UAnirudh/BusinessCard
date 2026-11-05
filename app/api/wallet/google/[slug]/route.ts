@@ -12,7 +12,7 @@ export async function GET(_request: Request, { params }: { params: Promise<{ slu
   }
   const card = await getCardBySlug(slug);
   if (!card || !card.isPublic) return new Response("Not found", { status: 404 });
-  if (!walletAvailability().google) return new Response("Google Wallet passes are not configured yet.", { status: 503 });
+  if (!(await walletAvailability()).google) return new Response("Google Wallet passes are not configured yet.", { status: 503 });
 
   try {
     const saveUrl = await googleWalletSaveUrl(card);

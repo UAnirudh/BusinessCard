@@ -7,7 +7,7 @@ import { PasswordResetForm } from "@/components/password-reset-form";
 
 export const metadata: Metadata = {
   title: "Choose a new password",
-  description: "Set a new password for your Tappd account.",
+  description: "Set a new password for your Followfolk account.",
   referrer: "no-referrer",
 };
 
@@ -26,7 +26,7 @@ export default async function ResetPasswordPage({ searchParams }: { searchParams
           <h1 className="mt-3 text-[2rem] font-semibold leading-tight tracking-[-0.03em]">Choose a new password</h1>
           {validTokenShape ? (
             <>
-              <p className="mt-2 text-[0.92rem] leading-relaxed text-muted">Use at least 8 characters. You’ll be signed out of Tappd on your other devices.</p>
+              <p className="mt-2 text-[0.92rem] leading-relaxed text-muted">Use at least 8 characters. You’ll be signed out of Followfolk on your other devices.</p>
               <PasswordResetForm token={token} />
             </>
           ) : (

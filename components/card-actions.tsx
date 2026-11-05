@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { Check, Download, QrCode, Share2, X } from "lucide-react";
+import { isShareCancellation } from "@/lib/share";
 
 export function CardActions({
   slug,
@@ -37,10 +38,10 @@ export function CardActions({
   async function share() {
     if (typeof navigator !== "undefined" && navigator.share) {
       try {
-        await navigator.share({ title: `${name} on Tappd`, text: "Here's my card.", url });
+        await navigator.share({ title: `${name} on Followfolk`, text: "Here's my card.", url });
         return;
-      } catch {
-        /* user dismissed the sheet */
+      } catch (error) {
+        if (isShareCancellation(error)) return;
       }
     }
     await copyLink();
@@ -71,7 +72,7 @@ export function CardActions({
           className="flex items-center justify-center gap-2 rounded-xl bg-[#0b0b0d] py-3 text-[0.82rem] font-semibold text-white transition hover:bg-[#26262d]"
         >
           <Download className="h-4 w-4" />
-          Save contact
+          Download contact
         </a>
         <button
           type="button"
@@ -85,11 +86,16 @@ export function CardActions({
           type="button"
           onClick={share}
           className="grid h-11 w-11 place-items-center rounded-xl border border-black/10 bg-white/60 text-[#0b0b0d] transition hover:bg-white"
-          aria-label="Share card"
+          aria-label="Send card link with Messages or another app"
+          title="Send card link with Messages or another app"
         >
           {copied ? <Check className="h-4 w-4" /> : <Share2 className="h-4 w-4" />}
         </button>
       </div>
+
+      <p className="mt-2 text-center text-[0.72rem] leading-relaxed text-muted">
+        Share sends this card link through Messages or another app. Open the downloaded contact file to save it to your phone.
+      </p>
 
       {(walletApple || walletGoogle) && (
         <div className="mt-2 grid gap-2 sm:grid-cols-2">
@@ -142,7 +148,7 @@ export function CardActions({
               {copied ? "Link copied" : "Copy link instead"}
             </button>
             <p className="mt-3 text-[0.66rem] leading-relaxed text-faint">
-              Android can also write this link to an NFC tag from the Tappd share screen.
+              Android can also write this link to an NFC tag from the Followfolk share screen.
             </p>
           </div>
         </div>

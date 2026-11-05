@@ -18,6 +18,7 @@ import {
   X,
 } from "lucide-react";
 import { cx } from "@/lib/utils";
+import { isShareCancellation } from "@/lib/share";
 
 type NdefRecord = { recordType: string; data?: DataView; encoding?: string };
 type NdefReader = {
@@ -76,10 +77,10 @@ export function TapShare({
   async function share() {
     if (navigator.share) {
       try {
-        await navigator.share({ title: `${displayName} on Tappd`, text: "Here is my card.", url });
+        await navigator.share({ title: `${displayName} on Followfolk`, text: "Here is my card.", url });
         return;
-      } catch {
-        /* dismissed */
+      } catch (error) {
+        if (isShareCancellation(error)) return;
       }
     }
     await copy();
@@ -365,9 +366,9 @@ function QrScanner({ onCard }: { onCard: (path: string) => void }) {
           <ScanLine className="h-5 w-5 text-muted" />
         </span>
         <div>
-          <h2 className="text-[0.95rem] font-semibold">Scan a Tappd card</h2>
+          <h2 className="text-[0.95rem] font-semibold">Scan a Followfolk card</h2>
           <p className="mt-1 text-[0.82rem] leading-relaxed text-muted">
-            Point your camera at someone’s QR code. If it’s a Tappd card, it opens instantly so you can
+            Point your camera at someone’s QR code. If it’s a Followfolk card, it opens instantly so you can
             save them or swap details.
           </p>
         </div>

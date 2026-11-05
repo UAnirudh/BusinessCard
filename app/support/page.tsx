@@ -6,21 +6,21 @@ import { SUPPORT_EMAIL } from "@/lib/support";
 
 export const metadata: Metadata = {
   title: "Support",
-  description: "Help with Tappd digital business cards, contact sharing, and your account.",
+  description: "Help with Followfolk digital business cards, contact sharing, and your account.",
 };
 
 const topics = [
   {
-    title: "Sharing a card with someone who does not use Tappd",
-    body: "Send your public card link or let them scan your QR code. They can open the card in a browser and save its contact file without installing Tappd. Your card must be public for people with the link to view it.",
+    title: "Sharing a card with someone who does not use Followfolk",
+    body: "Send your public card link or let them scan your QR code. They can open the card in a browser and save its contact file without installing Followfolk. Your card must be public for people with the link to view it.",
   },
   {
     title: "Saving a card to Apple Wallet or Google Wallet",
-    body: "Wallet passes are available only when the corresponding issuer is enabled for Tappd. If you do not see an Apple Wallet or Google Wallet action, save the contact file from the public card instead.",
+    body: "Wallet passes are available only when the corresponding issuer is enabled for Followfolk. If you do not see an Apple Wallet or Google Wallet action, save the contact file from the public card instead.",
   },
   {
     title: "Managing your contacts and account",
-    body: "Sign in to search and manage saved contacts, edit your card, and export your wallet. To remove your account and its Tappd data, use the self-service deletion controls after signing in.",
+    body: "Sign in to search and manage saved contacts, edit your card, and export your wallet. To remove your account and its Followfolk data, use the self-service deletion controls after signing in.",
   },
   {
     title: "QR scanning, NFC, or a contact that did not save",
@@ -42,7 +42,7 @@ export default function SupportPage() {
 
         <section className="surface mt-8 p-5 sm:mt-12 sm:p-9">
           <div className="flex items-center gap-2 text-[0.74rem] font-semibold uppercase tracking-[0.12em] text-muted">
-            <HelpCircle className="h-4 w-4" /> Tappd help
+            <HelpCircle className="h-4 w-4" /> Followfolk help
           </div>
           <h1 className="mt-3 text-[2rem] font-semibold tracking-[-0.035em] sm:text-[2.5rem]">How can we help?</h1>
           <p className="mt-4 max-w-2xl text-[0.95rem] leading-relaxed text-muted">
@@ -61,7 +61,7 @@ export default function SupportPage() {
           <div className="mt-7 flex flex-col gap-4 rounded-2xl border border-line bg-white/70 p-4 sm:flex-row sm:items-center sm:justify-between">
             <div>
               <h2 className="font-semibold">Still need help?</h2>
-              <p className="mt-1 text-sm text-muted">{SUPPORT_EMAIL ? "Email the Tappd support address. Never send your password." : "Support email is not configured yet. Never send your password by email."}</p>
+              <p className="mt-1 text-sm text-muted">{SUPPORT_EMAIL ? "Email the Followfolk support address. Never send your password." : "Support email is not configured yet. Never send your password by email."}</p>
             </div>
             {SUPPORT_EMAIL && <a href={`mailto:${SUPPORT_EMAIL}`} className="btn btn-primary shrink-0">
               <Mail className="h-4 w-4" />
