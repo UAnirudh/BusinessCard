@@ -26,7 +26,7 @@ const isRealDate = (value: string) => {
 };
 
 function Button({ title, onPress, variant = 'dark', disabled = false }: { title: string; onPress: () => void; variant?: 'dark' | 'light' | 'outline'; disabled?: boolean }) {
-  return <Pressable accessibilityRole="button" disabled={disabled} onPress={onPress} style={[styles.button, variant === 'dark' ? styles.buttonDark : variant === 'light' ? styles.buttonLight : styles.buttonOutline, disabled && { opacity: 0.5 }]}><Text style={[styles.buttonText, variant === 'light' && { color: C.ink }, variant === 'outline' && { color: C.ink }]}>{title}</Text></Pressable>;
+  return <Pressable accessibilityRole="button" disabled={disabled} accessibilityState={{ disabled }} onPress={onPress} style={[styles.button, variant === 'dark' ? styles.buttonDark : variant === 'light' ? styles.buttonLight : styles.buttonOutline, disabled && { opacity: 0.5 }]}><Text style={[styles.buttonText, variant === 'light' && { color: C.ink }, variant === 'outline' && { color: C.ink }]}>{title}</Text></Pressable>;
 }
 
 function Field({ label, ...props }: { label: string } & React.ComponentProps<typeof TextInput>) {
