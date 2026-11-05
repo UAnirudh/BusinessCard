@@ -4,14 +4,14 @@ This is the short list of owner-only actions needed to move from the verified CI
 
 ## Verified now
 
-- Quality Gate #80 passed web, Android, and iOS jobs on November 4, 2026. Its 40,264,322-byte Android artifact is a debug-signed QA APK, not a Play Store build; it expires November 18, 2026. Download it from [GitHub Actions run #80](https://github.com/UAnirudh/BusinessCard/actions/runs/41855101403).
-- Production `/`, `/privacy`, and `/support` return HTTP 200. `/c/maya-chen` and `/api/vcard/maya-chen` return HTTP 404; `/health` is not a configured route. A real public-card recipient flow has not been verified in production.
-- Railway's connected app still requires reauthentication, the local Railway CLI is unavailable, and EAS CLI reports that it is not logged in.
+- Quality Gate #83 passed web, Android, and iOS jobs on November 4, 2026. Its 40,264,314-byte Android artifact is a debug-signed QA APK, not a Play Store build; it expires 2026-11-19 01:04 UTC. Download it from [GitHub Actions run #83](https://github.com/UAnirudh/BusinessCard/actions/runs/41943935499).
+- Production `/`, `/signup`, `/privacy`, `/support`, and `/account-deletion` return HTTP 200. `/c/maya-chen` and `/api/vcard/maya-chen` return HTTP 404; a real public-card recipient flow has not been verified.
+- Railway access is restored. The production Web and Postgres services report online with no recent failures. Web deploys from `main` and runs `npm run db:migrate` before deploy. The Web service currently lacks `RESEND_API_KEY`, `TAPPD_EMAIL_FROM`, `TAPPD_SUPPORT_EMAIL`, and `TAPPD_MODERATOR_EMAILS`; I inspected variable names only and did not read secret values. EAS CLI is still not logged in.
 - `mobile/app.json` still has provisional IDs `com.tappd.app`; `mobile/eas.json` has no EAS project link and an empty `submit.production` profile.
 
-## 1. Restore production access and email
+## 1. Configure production email and operator access
 
-1. Reconnect Railway in Codex/app connections and make sure you can access the existing Tappd production project and Web service.
+1. Railway is now connected and the existing Tappd production project is accessible.
 2. Control an email-sending domain and verify it with Resend. Choose the sender address you want customers to see.
 3. In the Railway Web service's production variables, confirm or set the values documented in [`.env.example`](../.env.example):
    - `RESEND_API_KEY` and `TAPPD_EMAIL_FROM` for signup verification, password recovery, and email changes.
