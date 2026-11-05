@@ -4,10 +4,10 @@ This is the short list of owner-only actions needed to move from the verified CI
 
 ## Verified now
 
-- Quality Gate #83 passed web, Android, and iOS jobs on November 4, 2026. Its 40,264,314-byte Android artifact is a debug-signed QA APK, not a Play Store build; it expires 2026-11-19 01:04 UTC. Download it from [GitHub Actions run #83](https://github.com/UAnirudh/BusinessCard/actions/runs/41943935499).
-- Production `/`, `/signup`, `/privacy`, `/support`, and `/account-deletion` return HTTP 200. `/c/maya-chen` and `/api/vcard/maya-chen` return HTTP 404; a real public-card recipient flow has not been verified.
-- Railway access is restored. The production Web and Postgres services report online with no recent failures. Web deploys from `main` and runs `npm run db:migrate` before deploy. The Web service currently lacks `RESEND_API_KEY`, `TAPPD_EMAIL_FROM`, `TAPPD_SUPPORT_EMAIL`, and `TAPPD_MODERATOR_EMAILS`; I inspected variable names only and did not read secret values. EAS CLI is still not logged in.
-- `mobile/app.json` still has provisional IDs `com.tappd.app`; `mobile/eas.json` has no EAS project link and an empty `submit.production` profile.
+- Quality Gate #87 passed the web, Android, and iOS simulator jobs. Its [40,264,314-byte Android QA APK](https://github.com/UAnirudh/BusinessCard/actions/runs/41952950851/artifacts/13383180246) is debug-signed, not for Google Play, and expires 2026-11-19 02:27:39 UTC. See the [run](https://github.com/UAnirudh/BusinessCard/actions/runs/41952950851).
+- Production GET checks return HTTP 200 for `/` and `/signup`, and HTTP 404 for `/c/maya-chen` and `/api/vcard/maya-chen`; the public-card recipient flow remains unverified.
+- Railway access is restored. The production Web and Postgres services report online, and Web deploys from `main` with `npm run db:migrate` before deploy. The Web service lacks `RESEND_API_KEY`, `TAPPD_EMAIL_FROM`, `TAPPD_SUPPORT_EMAIL`, and `TAPPD_MODERATOR_EMAILS`; only variable names were inspected. EAS CLI is not on this machine's PATH, and `mobile/app.json` has no EAS project link.
+- `mobile/app.json` still has provisional IDs `com.tappd.app`; `mobile/eas.json` has an empty `submit.production` profile.
 
 ## 1. Configure production email and operator access
 
@@ -37,7 +37,7 @@ Apple Wallet and Google Wallet pass buttons remain hidden until their separate s
 
 ## 3. Set publisher identity and link EAS
 
-1. **Resolve the product and legal publisher names before creating permanent store records.** Rechecked November 4, 2026: Tappd.co.za actively offers digital business cards with link, QR, NFC, Apple/Google Wallet, lead capture, and analytics features, closely overlapping this product's category and feature set ([product site](https://tappd.co.za/), [pricing/features](https://tappd.co.za/pages/pricing)). This creates substantial name-confusion and store-search risk; it is not a legal determination. Check trademark and store availability in intended markets with qualified counsel, and choose another brand if the risk is unacceptable. Update the store draft, app display name, support/privacy copy, and domain plan to match the chosen brand.
+1. **Choose and clear the replacement brand before creating permanent store records.** The founder chose to use a different name instead of keeping Tappd; no replacement has been selected. Followfolk was surfaced as a preliminary candidate, not approved or cleared. Rechecked November 4, 2026: Tappd.co.za actively offers digital business cards with link, QR, NFC, Apple/Google Wallet, lead capture, and analytics features, closely overlapping this product's category and feature set ([product site](https://tappd.co.za/), [pricing/features](https://tappd.co.za/pages/pricing)). This creates name-confusion and store-search risk, not a legal determination. Search trademarks and store listings in target markets, get qualified counsel for clearance, then update the app display name, support/privacy copy, domain plan, and publisher-controlled IDs to match the selected brand.
 2. Activate Google Play Console and Apple Developer/App Store Connect accounts under the publisher identity you intend to show customers.
 3. Choose unique Android package and iOS bundle IDs controlled by the publisher. Send me the chosen IDs; I can update the app config and run the checks. Do not use `com.tappd.app` without confirming the publisher controls it.
 4. On this computer, in PowerShell:
